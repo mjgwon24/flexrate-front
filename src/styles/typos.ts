@@ -1,5 +1,3 @@
-'use client';
-
 export const typoStyleMap = {
   head1: `
     font-size: 24px;
