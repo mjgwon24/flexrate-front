@@ -252,7 +252,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, loading }) => {
       birth: '',
       status: '',
       joinDate: '',
-      loanCount: '',
+      loanCount: 0,
       loanStatus: '',
       isEmpty: true,
     }));
