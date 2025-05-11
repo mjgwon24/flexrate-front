@@ -11,7 +11,7 @@ export const TableWrapper = styled.div`
 `;
 
 export const TableTitleWrapper = styled.div`
-    text-align: 'center';
+    text-align: center;
 `;
 
 export const PaginationCenterWrapper = styled.div`
