@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export const SidebarWrapper = styled.aside`
   width: 250px;
-  height: 100vh;
+  min-height: calc(100vh - 73px);
   background-color: #f9fafc;
   padding: 24px 16px;
   border-right: 1px solid #d9d9d9;

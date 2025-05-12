@@ -7,14 +7,13 @@
   "extends": [
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended",
-    "plugin:react-hooks/recommended",
     "plugin:import/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:react/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "react-refresh", "react", "import", "prettier", "@emotion"],
   "rules": {
-    "@emotion/no-vanilla": "warn",
     "@emotion/syntax-preference": ["error", "string"],
     "react-refresh/only-export-components": [
       "warn",
@@ -34,6 +33,17 @@
         "namedComponents": "arrow-function"
       }
     ],
+    "@typescript-eslint/no-restricted-types": [
+      "error",
+      {
+        "types": {
+          "React.FC": {
+            "message": "Do not use React.FC😭"
+          }
+        }
+      }
+    ],
+    "import/no-unresolved": "off",
     "import/order": [
       "error",
       {
@@ -58,11 +68,17 @@
         }
       }
     ],
-    "@typescript-eslint/no-unused-vars": "warn"
+    "@typescript-eslint/no-unused-vars": "warn",
+    "react/react-in-jsx-scope": "off"
   },
   "settings": {
     "import/resolver": {
-      "typescript": {}
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    },
+    "react": {
+      "version": "detect"
     }
   },
   "ignorePatterns": ["dist", ".eslintrc.cjs"]
