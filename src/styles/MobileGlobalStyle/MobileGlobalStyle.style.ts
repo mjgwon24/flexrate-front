@@ -30,7 +30,7 @@ export const mobileGlobalStyleCss = css`
 
 export const AppContainer = styled.div`
   margin: 0px auto;
-  padding: 57px 22px 0px 22px;
+  padding: 0;
   background-color: ${primitiveColor.background.wt};
   min-height: calc(var(--vh, 1vh) * 100);
   overflow-x: hidden;
@@ -39,4 +39,9 @@ export const AppContainer = styled.div`
   @media screen and (max-width: 768px) {
     width: 100%;
   }
+`;
+
+export const InnerContainer = styled.div`
+  padding: 57px 22px 0;
+  box-sizing: border-box;
 `;
