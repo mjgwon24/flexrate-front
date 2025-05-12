@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import '@/app/globals.css';
+import GlobalStyleProvider from '@/components/GlobalStyleProvider/GlobalStyleProvider';
+import { AppContainer, InnerContainer } from '@/styles/MobileGlobalStyle/MobileGlobalStyle.style';
 
 export const metadata: Metadata = {
   title: 'FlexRate',
@@ -13,7 +15,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <GlobalStyleProvider />
+        <AppContainer>
+          <InnerContainer>{children}</InnerContainer>
+        </AppContainer>
+      </body>
     </html>
   );
 }
