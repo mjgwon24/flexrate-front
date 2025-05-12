@@ -1,6 +1,8 @@
 import Header from '@/components/admin/Header/Header';
-import { AdminBody, AdminWrapper } from './AdminLayout.style';
+
 import Sidebar from '../Sidebar/Sidebar';
+
+import { AdminBody, AdminWrapper } from './AdminLayout.style';
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (

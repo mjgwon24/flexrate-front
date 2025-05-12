@@ -1,10 +1,12 @@
 'use client';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 import AdminLayout from '@/components/admin/AdminLayout/AdminLayout';
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   const [queryClient] = React.useState(() => new QueryClient());
 
   return (
@@ -12,4 +14,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <AdminLayout>{children}</AdminLayout>
     </QueryClientProvider>
   );
-}
+};
+
+export default Layout;

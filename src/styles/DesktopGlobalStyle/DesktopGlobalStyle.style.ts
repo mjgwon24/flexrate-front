@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+
 import { primitiveColor } from '../colors';
 
 export const desktopGlobalStyleCss = css`

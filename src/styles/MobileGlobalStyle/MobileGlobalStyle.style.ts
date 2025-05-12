@@ -2,6 +2,7 @@
 
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+
 import { primitiveColor } from '../colors';
 
 export const mobileGlobalStyleCss = css`

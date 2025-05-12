@@ -1,9 +1,9 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
+
 import DesktopGlobalStyle from '@/styles/DesktopGlobalStyle/DesktopGlobalStyle';
 import MobileGlobalStyle from '@/styles/MobileGlobalStyle/MobileGlobalStyle';
-import { css, Global } from '@emotion/react';
-import { usePathname } from 'next/navigation';
 
 const GlobalStyleProvider = () => {
   const pathname = usePathname();

@@ -29,7 +29,7 @@ export const Total = styled.span`
 export const ConditionBox = styled.div`
   width: 100%;
   padding: 20px 30px;
-  border: 1px solid #D9D9D9;
+  border: 1px solid #d9d9d9;
   border-radius: 8px;
   display: flex;
   justify-content: space-between;

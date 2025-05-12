@@ -1,4 +1,7 @@
 import Image from 'next/image';
+
+import Logo from '@/assets/img/logo(green).png';
+
 import {
   EmailBox,
   HeaderRightContainer,
@@ -7,7 +10,6 @@ import {
   LogoContainer,
   LogoSmallText,
 } from './Header.style';
-import Logo from '@/assets/img/logo(green).png';
 
 const Header = () => {
   return (
