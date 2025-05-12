@@ -1,4 +1,4 @@
-const primitiveColor = {
+export const primitiveColor = {
   background: {
     wt: '#ffffff',
     bk: '#000000',
