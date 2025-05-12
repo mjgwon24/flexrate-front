@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { Table, Pagination } from 'antd';
+
 import { css, cx } from '@emotion/css';
+import { Table, Pagination } from 'antd';
+
 import {
   rowCellStyle,
   emptyRowStyle,
@@ -14,7 +16,7 @@ import {
 } from './DataTable.style';
 
 interface DataTableProps {
-  data: any[];
+  data: DataType[];
   loading: boolean;
 }
 
@@ -234,7 +236,7 @@ const sampleData: DataType[] = [
 
 const PAGE_SIZE = 8;
 
-const DataTable: React.FC<DataTableProps> = ({ data, loading }) => {
+const DataTable = ({ data, loading }: DataTableProps) => {
   const tableData = data && data.length > 0 ? data : sampleData;
   const [current, setCurrent] = React.useState(1);
   const pagedData = tableData.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE);
@@ -246,7 +248,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, loading }) => {
     const emptyRowsCount = PAGE_SIZE - pagedData.length;
     const emptyRows = Array.from({ length: emptyRowsCount }, (_, idx) => ({
       key: `empty-${idx}`,
-      no: '',
+      no: 0,
       name: '',
       gender: '',
       birth: '',
@@ -291,7 +293,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, loading }) => {
             key="no"
             width={COLUMN_WIDTHS.no}
             align="center"
-            render={(text, record: any) => record.isEmpty ? null : text}
+            render={(text, record: DataType) => (record.isEmpty ? null : text)}
           />
           <Table.Column
             title={<TableTitleWrapper>이름</TableTitleWrapper>}
@@ -299,7 +301,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, loading }) => {
             key="name"
             width={COLUMN_WIDTHS.name}
             align="center"
-            render={(text, record: any) => record.isEmpty ? null : text}
+            render={(text, record: DataType) => (record.isEmpty ? null : text)}
           />
           <Table.Column
             title={<TableTitleWrapper>성별</TableTitleWrapper>}
@@ -307,7 +309,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, loading }) => {
             key="gender"
             width={COLUMN_WIDTHS.gender}
             align="center"
-            render={(text, record: any) => record.isEmpty ? null : text}
+            render={(text, record: DataType) => (record.isEmpty ? null : text)}
           />
           <Table.Column
             title={<TableTitleWrapper>생년월일</TableTitleWrapper>}
@@ -315,7 +317,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, loading }) => {
             key="birth"
             width={COLUMN_WIDTHS.birth}
             align="center"
-            render={(text, record: any) => record.isEmpty ? null : text}
+            render={(text, record: DataType) => (record.isEmpty ? null : text)}
           />
           <Table.Column
             title={<TableTitleWrapper>상태</TableTitleWrapper>}
@@ -323,7 +325,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, loading }) => {
             key="status"
             width={COLUMN_WIDTHS.status}
             align="center"
-            render={(text, record: any) => record.isEmpty ? null : text}
+            render={(text, record: DataType) => (record.isEmpty ? null : text)}
           />
           <Table.Column
             title={<TableTitleWrapper>가입일</TableTitleWrapper>}
@@ -331,7 +333,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, loading }) => {
             key="joinDate"
             width={COLUMN_WIDTHS.joinDate}
             align="center"
-            render={(text, record: any) => record.isEmpty ? null : text}
+            render={(text, record: DataType) => (record.isEmpty ? null : text)}
           />
           <Table.Column
             title={<TableTitleWrapper>대출 횟수</TableTitleWrapper>}
@@ -339,7 +341,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, loading }) => {
             key="loanCount"
             width={COLUMN_WIDTHS.loanCount}
             align="center"
-            render={(text, record: any) => record.isEmpty ? null : text}
+            render={(text, record: DataType) => (record.isEmpty ? null : text)}
           />
           <Table.Column
             title={<TableTitleWrapper>대출 중 여부</TableTitleWrapper>}
@@ -347,7 +349,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, loading }) => {
             key="loanStatus"
             width={COLUMN_WIDTHS.loanStatus}
             align="center"
-            render={(text, record: any) => record.isEmpty ? null : text}
+            render={(text, record: DataType) => (record.isEmpty ? null : text)}
           />
         </Table>
       </TableWrapper>

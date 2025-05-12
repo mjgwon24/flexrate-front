@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  ConditionbarWrapper,
-  TitleRow,
-  Title,
-  Total,
-  ConditionBox
-} from './Conditionbar.style';
+
+import { ConditionbarWrapper, TitleRow, Title, Total, ConditionBox } from './Conditionbar.style';
 
 interface ConditionbarProps {
   title: string;
@@ -13,18 +8,16 @@ interface ConditionbarProps {
   children: React.ReactNode;
 }
 
-const Conditionbar: React.FC<ConditionbarProps> = ({ title, totalElements, children}) => {
+const Conditionbar = ({ title, totalElements, children }: ConditionbarProps) => {
   return (
     <ConditionbarWrapper>
       <TitleRow>
         <Title>{title}</Title>
         {totalElements && <Total>{totalElements}</Total>}
       </TitleRow>
-      <ConditionBox>
-        {children}
-      </ConditionBox>
+      <ConditionBox>{children}</ConditionBox>
     </ConditionbarWrapper>
   );
-}
+};
 
 export default Conditionbar;

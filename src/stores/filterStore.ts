@@ -1,33 +1,30 @@
 import { create } from 'zustand';
 
-type FilterState = {
-  name: string;
-  gender: string;
-  birthRange: [string, string] | null;
-  userStatus: string;
-  joinDateRange: [string, string] | null;
-  loanStatus: string;
-  transactionCountMin: number | null;
-  transactionCountMax: number | null;
+import { GenderType, UserStatusType, LoanStatusType, FilterType } from '@/types/filter.type';
+
+/**
+ * 관리자 페이지 필터 정보 타입
+ */
+export interface FilterState extends FilterType {
   setName: (name: string) => void;
-  setGender: (gender: string) => void;
+  setGender: (gender: GenderType) => void;
   setBirthRange: (range: [string, string] | null) => void;
-  setUserStatus: (status: string) => void;
+  setUserStatus: (status: UserStatusType) => void;
   setJoinDateRange: (range: [string, string] | null) => void;
-  setLoanStatus: (status: string) => void;
+  setLoanStatus: (status: LoanStatusType) => void;
   setTransactionCountMin: (min: number | null) => void;
   setTransactionCountMax: (max: number | null) => void;
-};
+}
 
 export const useFilterStore = create<FilterState>((set) => ({
   name: '',
-  gender: 'all',
+  gender: 'ALL',
   birthRange: null,
-  userStatus: 'all',
+  userStatus: 'ALL',
   joinDateRange: null,
-  loanStatus: 'all',
-  transactionCountMin: 0,
-  transactionCountMax: 100,
+  loanStatus: 'ALL',
+  transactionCountMin: null,
+  transactionCountMax: null,
   setName: (name) => set({ name }),
   setGender: (gender) => set({ gender }),
   setBirthRange: (birthRange) => set({ birthRange }),
