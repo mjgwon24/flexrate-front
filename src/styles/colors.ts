@@ -52,6 +52,7 @@ export const semanticColor = {
     },
   },
   bg: {
+    default: primitiveColor.background.wt,
     primary: primitiveColor.blue.primary,
   },
   icon: {
