@@ -1,3 +1,14 @@
-/**
- * 버튼 컴포넌트 구현 코드
- */
+'use client';
+
+import { ButtonContainer } from './Button.style';
+import { ButtonProps } from './Button.type';
+
+const Button = ({ text, size, varient, ...props }: ButtonProps) => {
+  return (
+    <ButtonContainer $size={size} $varient={varient} {...props}>
+      {text}
+    </ButtonContainer>
+  );
+};
+
+export default Button;
