@@ -5,8 +5,8 @@ import React, { useState } from 'react';
 import { Input, InputNumber, Select, Space, Button, DatePicker } from 'antd';
 import dayjs from 'dayjs';
 
-import Conditionbar from '@/components/admin/conditionbar/Conditionbar';
-import DataTable from '@/components/admin/dataTable/DataTable';
+import Conditionbar from '@/components/admin/Conditionbar/Conditionbar';
+import DataTable from '@/components/admin/DataTable/DataTable';
 import { useCustomersQuery } from '@/hooks/useCustomersQuery';
 import { useFilterStore } from '@/stores/filterStore';
 import type { FilterType } from '@/types/filter.type';

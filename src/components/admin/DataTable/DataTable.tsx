@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { css, cx } from '@emotion/css';
 import { Table, Pagination } from 'antd';
 
+import TableSkeleton from '@/components/admin/skeleton/TableSkeleton/TableSkeleton';
+
 import {
   rowCellStyle,
   emptyRowStyle,
@@ -12,13 +14,6 @@ import {
   TableWrapper,
   TableTitleWrapper,
   PaginationCenterWrapper,
-  SkeletonTableWrapper,
-  SkeletonHeader,
-  SkeletonHeaderCell,
-  SkeletonRow,
-  SkeletonCell,
-  SkeletonCellContainer,
-  SkeletonPagination,
 } from './DataTable.style';
 
 interface DataTableProps {
@@ -167,36 +162,8 @@ const DataTable = ({ data, loading }: DataTableProps) => {
     return () => clearTimeout(timer);
   }, []);
 
-  // 스켈레톤 UI 렌더링
-  const renderSkeleton = () => {
-    return (
-      <>
-        <SkeletonTableWrapper>
-          <SkeletonHeader>
-            {SKELETON_COLUMNS.map((column) => (
-              <SkeletonCellContainer key={column.key} width={column.width}>
-                <SkeletonHeaderCell />
-              </SkeletonCellContainer>
-            ))}
-          </SkeletonHeader>
-
-          {[...Array(8)].map((_, index) => (
-            <SkeletonRow key={index}>
-              {SKELETON_COLUMNS.map((column) => (
-                <SkeletonCellContainer key={column.key} width={column.width}>
-                  <SkeletonCell />
-                </SkeletonCellContainer>
-              ))}
-            </SkeletonRow>
-          ))}
-        </SkeletonTableWrapper>
-        <SkeletonPagination />
-      </>
-    );
-  };
-
   if (showSkeleton) {
-    return renderSkeleton();
+    return <TableSkeleton columns={SKELETON_COLUMNS} rowCount={PAGE_SIZE} />;
   }
 
   return (
