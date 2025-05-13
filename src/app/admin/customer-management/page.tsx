@@ -23,6 +23,7 @@ interface CustomerDataType {
   joinDate: string;
   loanCount: number;
   loanStatus: string;
+  userId: number;
   isEmpty?: boolean;
 }
 
@@ -105,6 +106,7 @@ const CustomerManagementPage = () => {
     joinDate: 120,
     loanCount: 100,
     loanStatus: 140,
+    userId: 60,
   };
 
   const CUSTOMER_COLUMN_METAS = [
@@ -116,6 +118,7 @@ const CustomerManagementPage = () => {
     { title: '가입일', dataIndex: 'joinDate', key: 'joinDate' },
     { title: '대출 횟수', dataIndex: 'loanCount', key: 'loanCount' },
     { title: '대출 상태', dataIndex: 'loanStatus', key: 'loanStatus' },
+    { title: '', dataIndex: 'userId', key: 'userId' },
   ] as const;
   const { data = [], isLoading } = useCustomersQuery(filters);
   const sampleData: CustomerDataType[] = [
@@ -129,6 +132,7 @@ const CustomerManagementPage = () => {
       joinDate: '2022-01-01',
       loanCount: 2,
       loanStatus: '대출중',
+      userId: 1,
     },
     {
       key: 2,
@@ -140,6 +144,7 @@ const CustomerManagementPage = () => {
       joinDate: '2021-03-14',
       loanCount: 0,
       loanStatus: '대출중 아님',
+      userId: 2,
     },
     {
       key: 3,
@@ -151,6 +156,7 @@ const CustomerManagementPage = () => {
       joinDate: '2022-07-21',
       loanCount: 1,
       loanStatus: '대출중',
+      userId: 3,
     },
     {
       key: 4,
@@ -162,6 +168,7 @@ const CustomerManagementPage = () => {
       joinDate: '2023-02-18',
       loanCount: 3,
       loanStatus: '대출중 아님',
+      userId: 4,
     },
     {
       key: 5,
@@ -173,6 +180,7 @@ const CustomerManagementPage = () => {
       joinDate: '2020-11-11',
       loanCount: 0,
       loanStatus: '대출중 아님',
+      userId: 5,
     },
     {
       key: 6,
@@ -184,6 +192,7 @@ const CustomerManagementPage = () => {
       joinDate: '2021-06-25',
       loanCount: 4,
       loanStatus: '대출중',
+      userId: 6,
     },
     {
       key: 7,
@@ -195,6 +204,7 @@ const CustomerManagementPage = () => {
       joinDate: '2022-10-30',
       loanCount: 2,
       loanStatus: '대출중',
+      userId: 7,
     },
     {
       key: 8,
@@ -206,6 +216,7 @@ const CustomerManagementPage = () => {
       joinDate: '2020-12-09',
       loanCount: 1,
       loanStatus: '대출중 아님',
+      userId: 8,
     },
     {
       key: 9,
@@ -217,6 +228,7 @@ const CustomerManagementPage = () => {
       joinDate: '2021-05-13',
       loanCount: 5,
       loanStatus: '대출중',
+      userId: 9,
     },
     {
       key: 10,
@@ -228,6 +240,7 @@ const CustomerManagementPage = () => {
       joinDate: '2023-01-05',
       loanCount: 0,
       loanStatus: '대출중 아님',
+      userId: 10,
     },
     {
       key: 11,
@@ -239,6 +252,7 @@ const CustomerManagementPage = () => {
       joinDate: '2022-04-18',
       loanCount: 1,
       loanStatus: '대출중',
+      userId: 11,
     },
     {
       key: 12,
@@ -250,6 +264,7 @@ const CustomerManagementPage = () => {
       joinDate: '2020-09-21',
       loanCount: 2,
       loanStatus: '대출중 아님',
+      userId: 12,
     },
     {
       key: 13,
@@ -261,6 +276,7 @@ const CustomerManagementPage = () => {
       joinDate: '2021-08-15',
       loanCount: 3,
       loanStatus: '대출중',
+      userId: 13,
     },
     {
       key: 14,
@@ -272,6 +288,7 @@ const CustomerManagementPage = () => {
       joinDate: '2022-12-12',
       loanCount: 0,
       loanStatus: '대출중 아님',
+      userId: 14,
     },
     {
       key: 15,
@@ -283,6 +300,7 @@ const CustomerManagementPage = () => {
       joinDate: '2023-03-01',
       loanCount: 4,
       loanStatus: '대출중',
+      userId: 15,
     },
     {
       key: 16,
@@ -294,6 +312,7 @@ const CustomerManagementPage = () => {
       joinDate: '2020-07-07',
       loanCount: 1,
       loanStatus: '대출중 아님',
+      userId: 16,
     },
     {
       key: 17,
@@ -305,6 +324,7 @@ const CustomerManagementPage = () => {
       joinDate: '2021-11-30',
       loanCount: 2,
       loanStatus: '대출중',
+      userId: 17,
     },
   ];
 
@@ -429,6 +449,7 @@ const CustomerManagementPage = () => {
           loading={isLoading}
           columnMetas={[...CUSTOMER_COLUMN_METAS]}
           columnWidths={CUSTOMER_COLUMN_WIDTHS}
+          linkPrefix="/admin/customer-management/"
         />
       </ContentColumn>
     </PageContainer>

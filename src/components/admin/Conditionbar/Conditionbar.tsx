@@ -15,6 +15,15 @@ interface ConditionbarProps {
   children: React.ReactNode;
 }
 
+/**
+ * 조회조건 컴포넌트
+ * @param title - 메뉴명
+ * @param totalElements - 조회된 데이터 총 개수
+ * @param children - 조회조건 요소
+ *
+ * @since 2025.05.13
+ * @author 권민지
+ */
 const Conditionbar = ({ title, totalElements, children }: ConditionbarProps) => {
   const [isInternalLoading, setIsInternalLoading] = React.useState(true);
 

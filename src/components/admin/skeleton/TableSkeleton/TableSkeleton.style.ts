@@ -70,7 +70,7 @@ export const SkeletonCell = styled.div`
 export const SkeletonPagination = styled.div`
   width: 300px;
   height: 32px;
-  margin: 24px auto;
+  margin: 0 auto;
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 468px 100%;
   animation: ${shimmer} 1.5s infinite linear;

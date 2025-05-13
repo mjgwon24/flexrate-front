@@ -17,7 +17,6 @@ export const TableTitleWrapper = styled.div`
 export const PaginationCenterWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 24px;
 `;
 
 export const EmptyTextWrapper = styled.div`
@@ -28,13 +27,26 @@ export const EmptyTextWrapper = styled.div`
   justify-content: center;
 `;
 
+export const UserDetailButtonWrapper = styled.button`
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 export const rowCellStyle = css`
-  height: 54px;
-  min-height: 54px;
-  max-height: 54px;
-  padding-top: 0;
-  padding-bottom: 0;
-  vertical-align: middle;
+  .ant-table-cell {
+    height: 55px;
+    min-height: 100px;
+    max-height: 54px;
+    vertical-align: middle;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
 `;
 
 export const emptyRowStyle = css`

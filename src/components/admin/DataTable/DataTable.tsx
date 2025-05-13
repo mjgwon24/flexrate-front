@@ -4,7 +4,9 @@ import React, { useEffect, useState } from 'react';
 
 import { css, cx } from '@emotion/css';
 import { Table, Pagination } from 'antd';
+import { useRouter } from 'next/navigation';
 
+import UserDetailButton from '@/assets/icons/userDetailButton.svg';
 import TableSkeleton from '@/components/admin/skeleton/TableSkeleton/TableSkeleton';
 
 import {
@@ -16,20 +18,22 @@ import {
   TableWrapper,
   TableTitleWrapper,
   PaginationCenterWrapper,
+  UserDetailButtonWrapper,
 } from './DataTable.style';
 
-interface ColumnMeta<T> {
+interface ColumnMeta {
   title: string;
-  dataIndex: keyof T;
-  key: keyof T & string;
+  dataIndex: string;
+  key: string;
 }
 
-interface DataTableProps<T extends { key: React.Key; isEmpty?: boolean }> {
+interface DataTableProps<T extends { key: React.Key; isEmpty?: boolean; userId?: number }> {
   data: T[];
   loading: boolean;
-  columnMetas: ColumnMeta<T>[];
+  columnMetas: ColumnMeta[];
   columnWidths: Record<string, number>;
   pageSize?: number;
+  linkPrefix?: string;
 }
 
 /**
@@ -39,28 +43,55 @@ interface DataTableProps<T extends { key: React.Key; isEmpty?: boolean }> {
  * @param columnMetas - 컬럼 메타 정보 배열
  * @param columnWidths - 컬럼 너비 정보 객체
  * @param pageSize - 페이지 크기 (기본값: 8)
+ * @param linkPrefix - 링크 접두사
  *
  * @since 2025.05.13
  * @author 권민지
  */
-const DataTable = <T extends { key: React.Key; isEmpty?: boolean }>({
+const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number }>({
   data,
   loading,
   columnMetas,
   columnWidths,
   pageSize = 8,
+  linkPrefix,
 }: DataTableProps<T>) => {
+  const router = useRouter();
   const [initialLoading, setInitialLoading] = useState(true);
   const [current, setCurrent] = useState(1);
 
-  const columns = columnMetas.map((meta) => ({
-    title: <TableTitleWrapper>{meta.title}</TableTitleWrapper>,
-    dataIndex: meta.dataIndex as Extract<keyof T, string | number>, // 타입 좁히기// 2. skeleton columns 생성
-    key: meta.key,
-    width: columnWidths[meta.key],
-    align: 'center' as const,
-    render: (text: string, record: T) => (record.isEmpty ? null : text),
-  }));
+  const columns = columnMetas.map((meta) => {
+    if (meta.key === 'userId') {
+      return {
+        title: <TableTitleWrapper>{meta.title}</TableTitleWrapper>,
+        dataIndex: meta.dataIndex,
+        key: meta.key,
+        width: columnWidths[meta.key],
+        align: 'center' as const,
+        render: (_: unknown, record: T) =>
+          record.isEmpty ? null : (
+            <UserDetailButtonWrapper
+              aria-label="상세 페이지 이동"
+              onClick={() => {
+                if (record.userId) {
+                  router.push(`${linkPrefix}${record.userId}`);
+                }
+              }}
+            >
+              <UserDetailButton width={34} />
+            </UserDetailButtonWrapper>
+          ),
+      };
+    }
+    return {
+      title: <TableTitleWrapper>{meta.title}</TableTitleWrapper>,
+      dataIndex: meta.dataIndex,
+      key: meta.key,
+      width: columnWidths[meta.key],
+      align: 'center' as const,
+      render: (text: string, record: T) => (record.isEmpty ? null : text),
+    };
+  });
 
   const skeletonColumns = columnMetas.map((meta) => ({
     key: meta.key,
