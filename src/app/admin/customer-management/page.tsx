@@ -13,7 +13,7 @@ import type { FilterType } from '@/types/filter.type';
 
 import { PageContainer, ContentColumn, FilterRow, FilterLabel } from './page.style';
 
-interface DataType {
+interface CustomerDataType {
   key: React.Key;
   no: number;
   name: string;
@@ -75,10 +75,50 @@ const CustomerManagementPage = () => {
     transactionCountMin,
     transactionCountMax,
   };
-  const { data, isLoading } = useCustomersQuery(filters);
 
-  // 더미 데이터
-  const sampleData: DataType[] = [
+  // 임시 필터 변경 핸들러
+  const handleTempFilterChange = <K extends keyof FilterType>(key: K, value: FilterType[K]) => {
+    setTempFilters((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  // 조회 버튼 클릭 핸들러
+  const handleSearchClick = () => {
+    setName(tempFilters.name);
+    setGender(tempFilters.gender);
+    setBirthRange(tempFilters.birthRange);
+    setUserStatus(tempFilters.userStatus);
+    setJoinDateRange(tempFilters.joinDateRange);
+    setLoanStatus(tempFilters.loanStatus);
+    setTransactionCountMin(tempFilters.transactionCountMin);
+    setTransactionCountMax(tempFilters.transactionCountMax);
+  };
+
+  const CUSTOMER_COLUMN_WIDTHS = {
+    no: 30,
+    name: 100,
+    gender: 80,
+    birth: 120,
+    status: 80,
+    joinDate: 120,
+    loanCount: 100,
+    loanStatus: 140,
+  };
+
+  const CUSTOMER_COLUMN_METAS = [
+    { title: 'No', dataIndex: 'no', key: 'no' },
+    { title: '이름', dataIndex: 'name', key: 'name' },
+    { title: '성별', dataIndex: 'gender', key: 'gender' },
+    { title: '생년월일', dataIndex: 'birth', key: 'birth' },
+    { title: '상태', dataIndex: 'status', key: 'status' },
+    { title: '가입일', dataIndex: 'joinDate', key: 'joinDate' },
+    { title: '대출 횟수', dataIndex: 'loanCount', key: 'loanCount' },
+    { title: '대출 상태', dataIndex: 'loanStatus', key: 'loanStatus' },
+  ] as const;
+  const { data = [], isLoading } = useCustomersQuery(filters);
+  const sampleData: CustomerDataType[] = [
     {
       key: 1,
       no: 1,
@@ -268,26 +308,6 @@ const CustomerManagementPage = () => {
     },
   ];
 
-  // 임시 필터 변경 핸들러
-  const handleTempFilterChange = <K extends keyof FilterType>(key: K, value: FilterType[K]) => {
-    setTempFilters((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
-
-  // 조회 버튼 클릭 핸들러
-  const handleSearchClick = () => {
-    setName(tempFilters.name);
-    setGender(tempFilters.gender);
-    setBirthRange(tempFilters.birthRange);
-    setUserStatus(tempFilters.userStatus);
-    setJoinDateRange(tempFilters.joinDateRange);
-    setLoanStatus(tempFilters.loanStatus);
-    setTransactionCountMin(tempFilters.transactionCountMin);
-    setTransactionCountMax(tempFilters.transactionCountMax);
-  };
-
   return (
     <PageContainer>
       <ContentColumn>
@@ -404,8 +424,12 @@ const CustomerManagementPage = () => {
           </Button>
         </Conditionbar>
 
-        {/*<DataTable data={data?.list ?? []} loading={isLoading} />*/}
-        <DataTable data={sampleData} loading={isLoading} />
+        <DataTable<CustomerDataType>
+          data={sampleData}
+          loading={isLoading}
+          columnMetas={[...CUSTOMER_COLUMN_METAS]}
+          columnWidths={CUSTOMER_COLUMN_WIDTHS}
+        />
       </ContentColumn>
     </PageContainer>
   );
