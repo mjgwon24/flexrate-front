@@ -31,6 +31,7 @@ export const primitiveColor = {
   },
   red: {
     500: '#ff6969',
+    50: '#ffe1e1',
   },
 } as const;
 
@@ -59,14 +60,21 @@ export const semanticColor = {
   icon: {
     active: {
       default: primitiveColor.gray[900],
+      subtitle: primitiveColor.gray[200],
+      error: primitiveColor.red[500],
     },
+  },
+  card: {
+    card1: primitiveColor.background.wt,
   },
   border: {
     active: {
       primary: primitiveColor.blue.primary,
+      active: primitiveColor.red[500],
       default: primitiveColor.gray[900],
       sub2: primitiveColor.gray[600],
       sub3: primitiveColor.gray[300],
+      sub4: primitiveColor.gray[100],
     },
     inactive: {
       default: primitiveColor.gray[100],
@@ -75,11 +83,14 @@ export const semanticColor = {
       card1: primitiveColor.background.wt,
     },
   },
-  button: {
+  bgBtn: {
     active: {
       primary: primitiveColor.blue.primary,
       secondary: primitiveColor.blue[50],
-      sub2: primitiveColor.gray[600],
+      error: primitiveColor.red[50],
+      wt: primitiveColor.background.wt,
+      bk: primitiveColor.background.bk,
+      sub1: primitiveColor.gray[600],
       sub3: primitiveColor.gray[300],
     },
     inactive: {

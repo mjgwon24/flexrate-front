@@ -54,44 +54,40 @@ const TextFieldBox = () => {
 const Label = ({
   children,
   helperText,
-  errorMessage,
 }: {
   children: React.ReactNode;
   helperText?: React.ReactNode;
-  errorMessage?: React.ReactNode;
 }) => {
-  const { value, isDisabled, isError } = useTextFieldContext();
-
-  const inputType = getInputType({ isError, isDisabled, value }) ?? 'INACTIVE';
-
-  const rightText = isError ? errorMessage : helperText;
-
   return (
     <S.LabelRow>
-      <S.Label $inputType={inputType} htmlFor="text-field">
-        {children}
-      </S.Label>
-      {helperText && (
-        <S.HelperText $isError={isError}>
-          {isError && <ErrorIcon />}
-          {rightText}
-        </S.HelperText>
-      )}
+      <S.Label htmlFor="text-field">{children}</S.Label>
+      {helperText && <S.HelperText>{helperText}</S.HelperText>}
     </S.LabelRow>
   );
 };
 
 const RightIcon = () => {
-  const { rightContent } = useTextFieldContext();
+  const { rightContent, onChange } = useTextFieldContext();
 
   if (!rightContent) return null;
 
   switch (rightContent.type) {
     case 'CHANGE':
-      return <S.ChangeBtn type="button">변경</S.ChangeBtn>;
+      return (
+        <S.ChangeBtn type="button" onClick={rightContent.onClick}>
+          변경
+        </S.ChangeBtn>
+      );
 
     case 'DELETE':
-      return <DeleteIcon />;
+      return (
+        <DeleteIcon
+          onClick={() => {
+            onChange('');
+            rightContent.onClick();
+          }}
+        />
+      );
 
     case 'TIMER':
       return <S.TimeText>01:23</S.TimeText>;
@@ -101,7 +97,23 @@ const RightIcon = () => {
   }
 };
 
+const ErrorText = ({ message }: { message: string }) => {
+  const { isError } = useTextFieldContext();
+
+  if (!isError) return null;
+
+  return (
+    <S.ErrorMessageWrapper>
+      <S.ErrorMessage>
+        <ErrorIcon />
+        {message}
+      </S.ErrorMessage>
+    </S.ErrorMessageWrapper>
+  );
+};
+
 TextField.TextFieldBox = TextFieldBox;
 TextField.Label = Label;
+TextField.ErrorText = ErrorText;
 
 export default TextField;
