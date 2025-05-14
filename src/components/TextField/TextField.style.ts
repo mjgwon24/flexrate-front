@@ -13,7 +13,7 @@ const getBorderColor = (type: InputType = 'ACTIVE') => {
     case 'INACTIVE':
       return 'transparent';
     default:
-      return semanticColor.button.active.sub3;
+      return semanticColor.border.active.sub3;
   }
 };
 
@@ -32,7 +32,7 @@ export const InputContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.5px;
+  gap: 2px;
 `;
 
 export const StyledInput = styled.input<{ $inputType: InputType }>`
@@ -54,7 +54,7 @@ export const StyledInput = styled.input<{ $inputType: InputType }>`
 
   &:focus {
     outline: none;
-    border: 1px solid ${semanticColor.button.active.sub3};
+    border: 1px solid ${semanticColor.border.active.sub3};
     color: ${semanticColor.text.normal.primary};
     background-color: ${semanticColor.bg.default};
   }
@@ -81,7 +81,7 @@ export const RightContent = styled.div`
   align-items: center;
 `;
 
-export const Label = styled.label<{ $inputType: InputType }>`
+export const Label = styled.label`
   ${typoStyleMap['body2_m']}
   padding-left: 6px;
   color: ${semanticColor.text.normal.primary};
@@ -98,14 +98,10 @@ export const LabelRow = styled.div`
   min-width: 0;
 `;
 
-export const HelperText = styled.div<{ $isError: boolean | undefined }>`
+export const HelperText = styled.div`
   ${typoStyleMap['caption1_m']}
   padding-right: 6px;
-  color: ${({ $isError }) =>
-    $isError ? semanticColor.text.state.textError : semanticColor.text.normal.sub3};
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  color: ${semanticColor.text.normal.sub3};
 `;
 
 export const ChangeBtn = styled.button`
@@ -123,4 +119,18 @@ export const ChangeBtn = styled.button`
 
 export const TimeText = styled.div`
   color: ${semanticColor.text.state.textError};
+`;
+
+export const ErrorMessageWrapper = styled.div`
+  display: flex;
+  flex-direction: row-reverse;
+`;
+
+export const ErrorMessage = styled.div`
+  ${typoStyleMap['caption1_m']}
+  padding-right: 10px;
+  color: ${semanticColor.text.state.textError};
+  display: flex;
+  align-items: center;
+  gap: 5px;
 `;
