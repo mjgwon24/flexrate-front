@@ -61,7 +61,7 @@ export const StyledInput = styled.input<{ $inputType: InputType }>`
 
   &:disabled {
     cursor: not-allowed;
-    border: tranparent;
+    border: transparent;
     color: ${semanticColor.text.normal.sub3};
     background-color: ${semanticColor.bg.subtle};
   }
