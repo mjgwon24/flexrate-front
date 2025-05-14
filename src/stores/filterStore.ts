@@ -1,36 +1,36 @@
 import { create } from 'zustand';
 
-import { GenderType, UserStatusType, LoanStatusType, FilterType } from '@/types/filter.type';
+import { SexType, MemberStatusType, HasLoanType, FilterType } from '@/types/filter.type';
 
 /**
  * 관리자 페이지 필터 정보 타입
  */
 export interface FilterState extends FilterType {
   setName: (name: string) => void;
-  setGender: (gender: GenderType) => void;
+  setSex: (sex: SexType) => void;
   setBirthRange: (range: [string, string] | null) => void;
-  setUserStatus: (status: UserStatusType) => void;
-  setJoinDateRange: (range: [string, string] | null) => void;
-  setLoanStatus: (status: LoanStatusType) => void;
+  setMemberStatus: (memberStatus: MemberStatusType) => void;
+  setCreatedDateRange: (range: [string, string] | null) => void;
+  setHasLoan: (memberStatus: HasLoanType) => void;
   setTransactionCountMin: (min: number | null) => void;
   setTransactionCountMax: (max: number | null) => void;
 }
 
 export const useFilterStore = create<FilterState>((set) => ({
   name: '',
-  gender: 'ALL',
-  birthRange: null,
-  userStatus: 'ALL',
-  joinDateRange: null,
-  loanStatus: 'ALL',
+  sex: 'ALL',
+  birthDateRange: null,
+  memberStatus: 'ALL',
+  createdDateRange: null,
+  hasLoan: 'ALL',
   transactionCountMin: null,
   transactionCountMax: null,
   setName: (name) => set({ name }),
-  setGender: (gender) => set({ gender }),
-  setBirthRange: (birthRange) => set({ birthRange }),
-  setUserStatus: (userStatus) => set({ userStatus }),
-  setJoinDateRange: (joinDateRange) => set({ joinDateRange }),
-  setLoanStatus: (loanStatus) => set({ loanStatus }),
+  setSex: (sex) => set({ sex }),
+  setBirthRange: (birthDateRange) => set({ birthDateRange }),
+  setMemberStatus: (memberStatus) => set({ memberStatus }),
+  setCreatedDateRange: (createdDateRange) => set({ createdDateRange }),
+  setHasLoan: (hasLoan) => set({ hasLoan }),
   setTransactionCountMin: (transactionCountMin) => set({ transactionCountMin }),
   setTransactionCountMax: (transactionCountMax) => set({ transactionCountMax }),
 }));

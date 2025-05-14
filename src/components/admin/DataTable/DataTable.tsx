@@ -27,6 +27,14 @@ interface ColumnMeta {
   key: string;
 }
 
+interface PaginationInfo {
+  currentPage: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  onChange: (page: number) => void;
+}
+
 interface DataTableProps<T extends { key: React.Key; isEmpty?: boolean; userId?: number }> {
   data: T[];
   loading: boolean;
@@ -34,6 +42,7 @@ interface DataTableProps<T extends { key: React.Key; isEmpty?: boolean; userId?:
   columnWidths: Record<string, number>;
   pageSize?: number;
   linkPrefix?: string;
+  paginationInfo?: PaginationInfo;
 }
 
 /**
@@ -42,9 +51,8 @@ interface DataTableProps<T extends { key: React.Key; isEmpty?: boolean; userId?:
  * @param loading - 로딩 상태
  * @param columnMetas - 컬럼 메타 정보 배열
  * @param columnWidths - 컬럼 너비 정보 객체
- * @param pageSize - 페이지 크기 (기본값: 8)
  * @param linkPrefix - 링크 접두사
- *
+ * @param paginationInfo - 페이지네이션 정보 객체
  * @since 2025.05.13
  * @author 권민지
  */
@@ -53,12 +61,20 @@ const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number
   loading,
   columnMetas,
   columnWidths,
-  pageSize = 8,
   linkPrefix,
+  paginationInfo,
 }: DataTableProps<T>) => {
   const router = useRouter();
   const [initialLoading, setInitialLoading] = useState(true);
   const [current, setCurrent] = useState(1);
+  const { currentPage, pageSize, totalElements, totalPages } = paginationInfo || {
+    currentPage: 1,
+    pageSize: 8,
+    totalElements: 0,
+    totalPages: 0,
+  };
+
+  console.log('paginationInfo', paginationInfo);
 
   const columns = columnMetas.map((meta) => {
     if (meta.key === 'userId') {
@@ -99,9 +115,12 @@ const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number
   }));
 
   // 데이터 페이지 처리 및 빈 row 처리
-  const pagedData = data.slice((current - 1) * pageSize, current * pageSize);
+  const pagedData = (Array.isArray(data) ? data : []).slice(
+    (current - 1) * pageSize,
+    current * pageSize
+  );
   let renderData: T[];
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     renderData = [];
   } else {
     const emptyRowsCount = pageSize - pagedData.length;
@@ -113,7 +132,7 @@ const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number
     renderData = [...pagedData, ...emptyRows];
   }
 
-  const showSkeleton = initialLoading && loading;
+  const showSkeleton = initialLoading;
   const showAntdLoading = !initialLoading && loading;
 
   useEffect(() => {
@@ -135,7 +154,7 @@ const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number
           dataSource={renderData}
           pagination={false}
           loading={showAntdLoading}
-          style={{ minHeight: '495px' }}
+          style={{ minHeight: '495px', minWidth: '1020px' }}
           scroll={{ x: 'max-content' }}
           rowClassName={(_, index) =>
             cx(
@@ -157,8 +176,8 @@ const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number
       <PaginationCenterWrapper>
         <Pagination
           pageSize={pageSize}
-          current={current}
-          total={data.length}
+          current={currentPage}
+          total={totalPages + 1}
           onChange={setCurrent}
           showSizeChanger={false}
         />
