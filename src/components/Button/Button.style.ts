@@ -32,7 +32,7 @@ export const ButtonContainer = styled.button<StyledButtonProps>`
 
   &:disabled {
     cursor: not-allowed;
-    background-color: ${semanticColor.button.inactive.default};
+    background-color: ${semanticColor.bgBtn.inactive.default};
     color: ${semanticColor.text.normal.sub3};
     border: none;
   }
