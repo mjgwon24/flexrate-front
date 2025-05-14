@@ -80,7 +80,14 @@ const RightIcon = () => {
       );
 
     case 'DELETE':
-      return <DeleteIcon onClick={rightContent.onClick ?? (() => onChange(''))} />;
+      return (
+        <DeleteIcon
+          onClick={() => {
+            onChange('');
+            rightContent.onClick();
+          }}
+        />
+      );
 
     case 'TIMER':
       return <S.TimeText>01:23</S.TimeText>;
