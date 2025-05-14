@@ -98,7 +98,7 @@ export const LabelRow = styled.div`
   min-width: 0;
 `;
 
-export const HelperText = styled.div<{ $isError: boolean }>`
+export const HelperText = styled.div<{ $isError: boolean | undefined }>`
   ${typoStyleMap['caption1_m']}
   padding-right: 6px;
   color: ${({ $isError }) =>

@@ -12,7 +12,7 @@ const TextField = ({
   children,
   value,
   onChange,
-  isError,
+  isError = false,
   isDisabled = false,
   rightContent,
 }: TextFieldProps) => {
@@ -32,7 +32,7 @@ const TextField = ({
 };
 
 const TextFieldBox = () => {
-  const { value, onChange, isError = false, isDisabled = false } = useTextFieldContext();
+  const { value, onChange, isError, isDisabled } = useTextFieldContext();
 
   const inputType = getInputType({ isError, isDisabled, value }) ?? 'INACTIVE';
 
@@ -43,6 +43,7 @@ const TextFieldBox = () => {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         $inputType={inputType}
+        disabled={isDisabled}
         placeholder="입력하세요"
       />
       <S.RightContent>{<RightIcon />}</S.RightContent>
@@ -59,7 +60,7 @@ const Label = ({
   helperText?: React.ReactNode;
   errorMessage?: React.ReactNode;
 }) => {
-  const { value, isDisabled = false, isError = false } = useTextFieldContext();
+  const { value, isDisabled, isError } = useTextFieldContext();
 
   const inputType = getInputType({ isError, isDisabled, value }) ?? 'INACTIVE';
 
