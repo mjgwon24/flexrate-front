@@ -54,6 +54,7 @@ export const semanticColor = {
   bg: {
     default: primitiveColor.background.wt,
     primary: primitiveColor.blue.primary,
+    subtle: primitiveColor.gray[50],
   },
   icon: {
     active: {
