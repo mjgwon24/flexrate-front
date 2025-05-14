@@ -117,7 +117,7 @@ const CustomerManagementPage = () => {
 
   useEffect(() => {
     if (!adminToken) {
-      router.replace('/no-access');
+      router.replace('/admin/not-found');
     }
   }, [adminToken, router]);
   const [page, setPage] = useState(1);
