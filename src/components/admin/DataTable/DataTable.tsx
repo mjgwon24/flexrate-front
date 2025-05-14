@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { css, cx } from '@emotion/css';
 import { Table, Pagination } from 'antd';
@@ -25,6 +25,7 @@ interface ColumnMeta {
   title: string;
   dataIndex: string;
   key: string;
+  width?: number;
 }
 
 interface PaginationInfo {
@@ -39,11 +40,14 @@ interface DataTableProps<T extends { key: React.Key; isEmpty?: boolean; userId?:
   data: T[];
   loading: boolean;
   columnMetas: ColumnMeta[];
-  columnWidths: Record<string, number>;
   pageSize?: number;
   linkPrefix?: string;
   paginationInfo?: PaginationInfo;
 }
+
+const PAGE_SIZE = 8;
+const TABLE_MIN_HEIGHT = 495;
+const TABLE_MIN_WIDTH = 1020;
 
 /**
  * 테이블 컴포넌트
@@ -60,85 +64,78 @@ const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number
   data,
   loading,
   columnMetas,
-  columnWidths,
   linkPrefix,
   paginationInfo,
 }: DataTableProps<T>) => {
   const router = useRouter();
   const [initialLoading, setInitialLoading] = useState(true);
-  const [current, setCurrent] = useState(1);
-  const { currentPage, pageSize, totalElements, totalPages } = paginationInfo || {
-    currentPage: 1,
-    pageSize: 8,
-    totalElements: 0,
-    totalPages: 0,
-  };
-
-  console.log('paginationInfo', paginationInfo);
-
-  const columns = columnMetas.map((meta) => {
-    if (meta.key === 'userId') {
-      return {
-        title: <TableTitleWrapper>{meta.title}</TableTitleWrapper>,
-        dataIndex: meta.dataIndex,
-        key: meta.key,
-        width: columnWidths[meta.key],
-        align: 'center' as const,
-        render: (_: unknown, record: T) =>
-          record.isEmpty ? null : (
-            <UserDetailButtonWrapper
-              aria-label="상세 페이지 이동"
-              onClick={() => {
-                if (record.userId) {
-                  router.push(`${linkPrefix}${record.userId}`);
-                }
-              }}
-            >
-              <UserDetailButton width={34} />
-            </UserDetailButtonWrapper>
-          ),
-      };
-    }
-    return {
-      title: <TableTitleWrapper>{meta.title}</TableTitleWrapper>,
-      dataIndex: meta.dataIndex,
-      key: meta.key,
-      width: columnWidths[meta.key],
-      align: 'center' as const,
-      render: (text: string, record: T) => (record.isEmpty ? null : text),
-    };
-  });
-
-  const skeletonColumns = columnMetas.map((meta) => ({
-    key: meta.key,
-    width: columnWidths[meta.key],
-  }));
-
-  // 데이터 페이지 처리 및 빈 row 처리
-  const pagedData = (Array.isArray(data) ? data : []).slice(
-    (current - 1) * pageSize,
-    current * pageSize
-  );
-  let renderData: T[];
-  if (!data || data.length === 0) {
-    renderData = [];
-  } else {
-    const emptyRowsCount = pageSize - pagedData.length;
-    const emptyRows = Array.from({ length: emptyRowsCount }, (_, idx) => ({
-      ...Object.fromEntries(columnMetas.map((meta) => [meta.dataIndex, ''])),
-      key: `empty-${idx}`,
-      isEmpty: true,
-    })) as T[];
-    renderData = [...pagedData, ...emptyRows];
-  }
-
+  const currentPage = paginationInfo?.currentPage ?? 0;
+  const pageSize = paginationInfo?.pageSize ?? PAGE_SIZE;
+  const totalElements = paginationInfo?.totalElements ?? 0;
   const showSkeleton = initialLoading;
   const showAntdLoading = !initialLoading && loading;
+  const skeletonColumns = useMemo(
+    () =>
+      columnMetas.map((meta) => ({
+        key: meta.key,
+        width: meta.width ?? 100,
+      })),
+    [columnMetas]
+  );
+
+  const columns = useMemo(
+    () =>
+      columnMetas.map((meta) => {
+        if (meta.key === 'userId') {
+          return {
+            title: <TableTitleWrapper>{meta.title}</TableTitleWrapper>,
+            dataIndex: meta.dataIndex,
+            key: meta.key,
+            width: meta.width,
+            align: 'center' as const,
+            render: (_: unknown, record: T) =>
+              record.isEmpty ? null : (
+                <UserDetailButtonWrapper
+                  aria-label="상세 페이지 이동"
+                  onClick={() => {
+                    if (record.userId) {
+                      router.push(`${linkPrefix}${record.userId}`);
+                    }
+                  }}
+                >
+                  <UserDetailButton width={34} />
+                </UserDetailButtonWrapper>
+              ),
+          };
+        }
+        return {
+          title: <TableTitleWrapper>{meta.title}</TableTitleWrapper>,
+          dataIndex: meta.dataIndex,
+          key: meta.key,
+          width: meta.width,
+          align: 'center' as const,
+          render: (text: string, record: T) => (record.isEmpty ? null : text),
+        };
+      }),
+    [columnMetas, linkPrefix, router]
+  );
+
+  // 데이터 페이지 처리 및 빈 row 처리
+  const renderData: T[] = useMemo(() => {
+    if (!data || data.length === 0) return [];
+    const emptyRowsCount = pageSize - data.length;
+    const emptyRows = Array.from({ length: emptyRowsCount }, (_, idx) => ({
+      ...Object.fromEntries(columnMetas.map((meta) => [meta.dataIndex, ''])),
+      key: `empty-${currentPage}-${idx}`,
+      isEmpty: true,
+    })) as T[];
+    return [...data, ...emptyRows];
+  }, [data, pageSize, columnMetas, currentPage]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setInitialLoading(false);
-    }, 1000);
+    }, 100);
     return () => clearTimeout(timer);
   }, []);
 
@@ -154,13 +151,13 @@ const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number
           dataSource={renderData}
           pagination={false}
           loading={showAntdLoading}
-          style={{ minHeight: '495px', minWidth: '1020px' }}
+          style={{ minHeight: TABLE_MIN_HEIGHT, minWidth: TABLE_MIN_WIDTH }}
           scroll={{ x: 'max-content' }}
           rowClassName={(_, index) =>
             cx(
               css(rowCellStyle),
               css(customRowHoverStyle),
-              renderData[index]?.isEmpty && css(emptyRowStyle),
+              renderData?.[index]?.isEmpty && css(emptyRowStyle),
               index === renderData.length - 1 && css(lastRowNoBorderStyle)
             )
           }
@@ -177,8 +174,12 @@ const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number
         <Pagination
           pageSize={pageSize}
           current={currentPage}
-          total={totalPages + 1}
-          onChange={setCurrent}
+          total={totalElements}
+          onChange={(page) => {
+            if (paginationInfo?.onChange) {
+              paginationInfo.onChange(page);
+            }
+          }}
           showSizeChanger={false}
         />
       </PaginationCenterWrapper>

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
@@ -6,7 +6,12 @@ import dayjs from 'dayjs';
 
 import { FilterType } from '@/types/filter.type';
 
-// API 응답 타입
+const PAGE_SIZE = 8;
+const API_URL = process.env.API_URL || 'http://localhost:8080';
+
+/**
+ * API 응답 타입
+ */
 interface RawMember {
   id: number;
   name: string;
@@ -33,9 +38,11 @@ interface ApiResponse {
   paginationInfo: PaginationInfo;
 }
 
-// 테이블에 넘길 데이터 타입
+/**
+ * 고객 테이블 행 데이터 타입
+ */
 export interface CustomerTableRow {
-  key: number;
+  key: React.Key;
   no: number;
   name: string;
   email: string;
@@ -51,6 +58,38 @@ export interface CustomerTableRow {
 }
 
 /**
+ * 회원 상태 변환 함수
+ * @param status 회원 상태
+ */
+function getMemberStatus(status: RawMember['memberStatus']) {
+  switch (status) {
+    case 'ACTIVE':
+      return '활성';
+    case 'WITHDRAWN':
+      return '탈퇴';
+    case 'SUSPENDED':
+      return '정지';
+    default:
+      return '-';
+  }
+}
+
+/**
+ * 성별 변환 함수
+ * @param sex 성별
+ */
+function getSex(sex: RawMember['sex']) {
+  switch (sex) {
+    case 'MALE':
+      return '남';
+    case 'FEMALE':
+      return '여';
+    default:
+      return '-';
+  }
+}
+
+/**
  * 관리자 회원 조회용 쿼리 파라미터 변환 훅
  * @param filters - 조회 조건 필터
  * @param page - 페이지 번호
@@ -59,7 +98,7 @@ export interface CustomerTableRow {
  * @since 2025.05.13
  * @author 권민지
  */
-function useCustomerQueryParams(filters: FilterType, page: number, size: number = 8) {
+function useCustomerQueryParams(filters: FilterType, page: number, size: number = PAGE_SIZE) {
   return useMemo(() => {
     const params: Record<string, string> = {};
 
@@ -80,7 +119,7 @@ function useCustomerQueryParams(filters: FilterType, page: number, size: number 
       params.transactionCountMin = String(filters.transactionCountMin);
     if (filters.transactionCountMax)
       params.transactionCountMax = String(filters.transactionCountMax);
-    params.page = String(page);
+    params.page = String(page - 1);
     params.size = String(size);
     return params;
   }, [filters, page, size]);
@@ -100,51 +139,44 @@ export const useCustomersQuery = (
   filters: FilterType,
   adminToken: string,
   page: number,
-  size: number = 8
+  size: number = PAGE_SIZE
 ) => {
   const params = useCustomerQueryParams(filters, page, size);
+  const queryKey = ['customers', JSON.stringify(params), adminToken];
 
   return useQuery({
-    queryKey: ['customers', params, adminToken],
+    queryKey,
     queryFn: async () => {
-      const { data } = await axios.get<ApiResponse>(
-        'http://localhost:8080/api/admin/members/search',
-        {
+      try {
+        const { data } = await axios.get<ApiResponse>(`${API_URL}/api/admin/members/search`, {
           params,
           headers: { Authorization: `Bearer ${adminToken}` },
-        }
-      );
+        });
 
-      const { members, paginationInfo } = data;
+        const { members, paginationInfo } = data;
+        const mappedMembers: CustomerTableRow[] = members.map((member, idx) => ({
+          key: member.id,
+          no: paginationInfo.currentPage * paginationInfo.pageSize + idx + 1,
+          name: member.name,
+          email: member.email,
+          sex: getSex(member.sex),
+          birthDate: member.birthDate,
+          userId: member.id,
+          hasLoan: member.hasLoan ? '대출중' : '대출중 아님',
+          memberStatus: getMemberStatus(member.memberStatus),
+          createdAt: dayjs(member.createdAt).format('YYYY-MM-DD'),
+          transactionCount: member.loanTransactionCount,
+          lastLoginAt: member.lastLoginAt,
+        }));
 
-      console.log('members', members);
-      console.log('paginationInfo', paginationInfo);
-
-      // 응답 데이터 테이블 형식으로 변환
-      const mappedMembers: CustomerTableRow[] = members.map((member, idx) => ({
-        key: member.id,
-        no: paginationInfo.currentPage * paginationInfo.pageSize + idx + 1,
-        name: member.name,
-        email: member.email,
-        sex: member.sex === 'MALE' ? '남' : member.sex === 'FEMALE' ? '여' : '-',
-        birthDate: member.birthDate,
-        userId: member.id,
-        hasLoan: member.hasLoan ? '대출중' : '대출중 아님',
-        memberStatus:
-          member.memberStatus === 'ACTIVE'
-            ? '활성'
-            : member.memberStatus === 'WITHDRAWN'
-              ? '탈퇴'
-              : '정지',
-        createdAt: dayjs(member.createdAt).format('YYYY-MM-DD'),
-        transactionCount: member.loanTransactionCount,
-        lastLoginAt: member.lastLoginAt,
-      }));
-
-      return {
-        members: mappedMembers,
-        paginationInfo,
-      };
+        return {
+          members: mappedMembers,
+          paginationInfo,
+        };
+      } catch (error: unknown) {
+        console.error('Error fetching customer data:', error);
+        throw new Error('Failed to fetch customer data');
+      }
     },
     enabled: !!adminToken,
     staleTime: 1000 * 30,
