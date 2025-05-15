@@ -1,46 +1,184 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import dayjs from 'dayjs';
 
 import { FilterType } from '@/types/filter.type';
 
-function useCustomerQueryParams(filters: FilterType) {
-  return useMemo(() => {
-    const params: Record<string, string> = {};
-    if (filters.name) params.name = filters.name;
-    if (filters.gender && filters.gender !== 'ALL') params.gender = filters.gender;
-    if (filters.birthRange && filters.birthRange[0] && filters.birthRange[1]) {
-      params.birthStart = filters.birthRange[0];
-      params.birthEnd = filters.birthRange[1];
-    }
-    if (filters.userStatus && filters.userStatus !== 'ALL') params.userStatus = filters.userStatus;
-    if (filters.joinDateRange && filters.joinDateRange[0] && filters.joinDateRange[1]) {
-      params.joinStart = filters.joinDateRange[0];
-      params.joinEnd = filters.joinDateRange[1];
-    }
-    if (filters.loanStatus && filters.loanStatus !== 'ALL') params.loanStatus = filters.loanStatus;
-    if (filters.transactionCountMin !== null && filters.transactionCountMin !== undefined) {
-      params.transactionCountMin = String(filters.transactionCountMin);
-    }
-    if (filters.transactionCountMax !== null && filters.transactionCountMax !== undefined) {
-      params.transactionCountMax = String(filters.transactionCountMax);
-    }
-    return params;
-  }, [filters]);
+const PAGE_SIZE = 8;
+const API_URL = process.env.API_URL || 'http://localhost:8080';
+
+/**
+ * API 응답 타입
+ */
+interface RawMember {
+  id: number;
+  name: string;
+  email: string;
+  sex: 'MALE' | 'FEMALE';
+  birthDate: string;
+  createdAt: string;
+  hasLoan: boolean;
+  lastLoginAt: string;
+  loanTransactionCount: number;
+  memberStatus: 'ACTIVE' | 'WITHDRAWN' | 'SUSPENDED';
+  [key: string]: unknown;
 }
 
-const fetchCustomers = async (paramsObj: Record<string, string>) => {
-  const params = new URLSearchParams(paramsObj).toString();
-  // 추후 실제 API 요청 추가 예정
-  const res = await fetch(`/api/customers?${params}`);
-  if (!res.ok) throw new Error('Failed to fetch');
-  return res.json();
-};
+interface PaginationInfo {
+  currentPage: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+}
 
-export const useCustomersQuery = (filters: FilterType) => {
-  const params = useCustomerQueryParams(filters);
+interface ApiResponse {
+  members: RawMember[];
+  paginationInfo: PaginationInfo;
+}
+
+/**
+ * 고객 테이블 행 데이터 타입
+ */
+export interface CustomerTableRow {
+  key: React.Key;
+  no: number;
+  name: string;
+  email: string;
+  sex: string;
+  birthDate: string;
+  userId: number;
+  hasLoan: string;
+  memberStatus: string;
+  createdAt: string;
+  transactionCount: number;
+  lastLoginAt: string;
+  [key: string]: unknown;
+}
+
+/**
+ * 회원 상태 변환 함수
+ * @param status 회원 상태
+ */
+function getMemberStatus(status: RawMember['memberStatus']) {
+  switch (status) {
+    case 'ACTIVE':
+      return '활성';
+    case 'WITHDRAWN':
+      return '탈퇴';
+    case 'SUSPENDED':
+      return '정지';
+    default:
+      return '-';
+  }
+}
+
+/**
+ * 성별 변환 함수
+ * @param sex 성별
+ */
+function getSex(sex: RawMember['sex']) {
+  switch (sex) {
+    case 'MALE':
+      return '남';
+    case 'FEMALE':
+      return '여';
+    default:
+      return '-';
+  }
+}
+
+/**
+ * 관리자 회원 조회용 쿼리 파라미터 변환 훅
+ * @param filters - 조회 조건 필터
+ * @param page - 페이지 번호
+ * @param size - 페이지 크기 (기본값: 8)
+ *
+ * @since 2025.05.13
+ * @author 권민지
+ */
+function useCustomerQueryParams(filters: FilterType, page: number, size: number = PAGE_SIZE) {
+  return useMemo(() => {
+    const params: Record<string, string> = {};
+
+    if (filters.name) params.name = filters.name;
+    if (filters.sex && filters.sex !== 'ALL') params.sex = filters.sex;
+    if (filters.birthDateRange && filters.birthDateRange[0] && filters.birthDateRange[1]) {
+      params.birthDateStart = filters.birthDateRange[0];
+      params.birthDateEnd = filters.birthDateRange[1];
+    }
+    if (filters.memberStatus && filters.memberStatus !== 'ALL')
+      params.memberStatus = filters.memberStatus;
+    if (filters.createdDateRange && filters.createdDateRange[0] && filters.createdDateRange[1]) {
+      params.startDate = filters.createdDateRange[0];
+      params.endDate = filters.createdDateRange[1];
+    }
+    if (filters.hasLoan && filters.hasLoan !== 'ALL') params.hasLoan = filters.hasLoan;
+    if (filters.transactionCountMin)
+      params.transactionCountMin = String(filters.transactionCountMin);
+    if (filters.transactionCountMax)
+      params.transactionCountMax = String(filters.transactionCountMax);
+    params.page = String(page - 1);
+    params.size = String(size);
+    return params;
+  }, [filters, page, size]);
+}
+
+/**
+ * 관리자 회원 목록 조회 API
+ * @param filters 조회 필터
+ * @param adminToken 관리자 인증 토큰
+ * @param page 페이지 번호
+ * @param size 페이지 크기 (기본값: 8)
+ *
+ * @since 2025.05.13
+ * @author 권민지
+ */
+export const useCustomersQuery = (
+  filters: FilterType,
+  adminToken: string,
+  page: number,
+  size: number = PAGE_SIZE
+) => {
+  const params = useCustomerQueryParams(filters, page, size);
+  const queryKey = ['customers', JSON.stringify(params), adminToken];
+
   return useQuery({
-    queryKey: ['customers', params],
-    queryFn: () => fetchCustomers(params),
+    queryKey,
+    queryFn: async () => {
+      try {
+        const { data } = await axios.get<ApiResponse>(`${API_URL}/api/admin/members/search`, {
+          params,
+          headers: { Authorization: `Bearer ${adminToken}` },
+        });
+
+        const { members, paginationInfo } = data;
+        const mappedMembers: CustomerTableRow[] = members.map((member, idx) => ({
+          key: member.id,
+          no: paginationInfo.currentPage * paginationInfo.pageSize + idx + 1,
+          name: member.name,
+          email: member.email,
+          sex: getSex(member.sex),
+          birthDate: member.birthDate,
+          userId: member.id,
+          hasLoan: member.hasLoan ? '대출중' : '대출중 아님',
+          memberStatus: getMemberStatus(member.memberStatus),
+          createdAt: dayjs(member.createdAt).format('YYYY-MM-DD'),
+          transactionCount: member.loanTransactionCount,
+          lastLoginAt: member.lastLoginAt,
+        }));
+
+        return {
+          members: mappedMembers,
+          paginationInfo,
+        };
+      } catch (error: unknown) {
+        console.error('Error fetching customer data:', error);
+        throw new Error('Failed to fetch customer data');
+      }
+    },
+    enabled: !!adminToken,
+    staleTime: 1000 * 30,
   });
 };

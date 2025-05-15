@@ -1,14 +1,17 @@
-export type GenderType = 'ALL' | 'FEMALE' | 'MALE';
-export type UserStatusType = 'ALL' | 'ACTIVE' | 'INACTIVE';
-export type LoanStatusType = 'ALL' | 'TRUE' | 'FALSE';
+export type SexType = 'ALL' | 'FEMALE' | 'MALE';
+export type MemberStatusType = 'ALL' | 'ACTIVE' | 'WITHDRAWN' | 'SUSPENDED';
+export type HasLoanType = 'ALL' | 'TRUE' | 'FALSE';
 
+/**
+ * 조회 조건(필터) 타입
+ */
 export type FilterType = {
   name: string;
-  gender: GenderType;
-  birthRange: [string, string] | null;
-  userStatus: UserStatusType;
-  joinDateRange: [string, string] | null;
-  loanStatus: LoanStatusType;
+  sex: SexType;
+  birthDateRange: [string, string] | null;
+  memberStatus: MemberStatusType;
+  createdDateRange: [string, string] | null;
+  hasLoan: HasLoanType;
   transactionCountMin: number | null;
   transactionCountMax: number | null;
 };
