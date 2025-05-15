@@ -46,8 +46,10 @@ export const HomePageButton = styled.button`
 `;
 
 export const EmailBox = styled.div`
+  display: flex;
+  align-items: center;
   width: fit-content;
-  height: 48px;
+  height: 40px;
   padding: 11px;
   border-radius: 7px;
   border: 1px solid #d9d9d9;

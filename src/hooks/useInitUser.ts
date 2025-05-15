@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { fetchMyPageUser } from '@/apis/auth';
+import { getMyPageUser } from '@/apis/auth';
 import { useUserStore } from '@/stores/userStore';
 
 /**
@@ -16,7 +16,7 @@ export function useInitUser() {
       return;
     }
 
-    fetchMyPageUser(token)
+    getMyPageUser(token)
       .then((data) => setUser(data))
       .catch(() => {
         setUser(null);
