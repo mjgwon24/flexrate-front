@@ -27,10 +27,10 @@ export const borderColorMap: Partial<Record<ButtonVarient, string>> = {
 };
 
 export const backgroundColorMap: Record<ButtonVarient, string> = {
-  PRIMARY: semanticColor.button.active.primary,
-  SECONDARY: semanticColor.button.active.secondary,
+  PRIMARY: semanticColor.bgBtn.active.primary,
+  SECONDARY: semanticColor.bgBtn.active.secondary,
   TERTIARY: semanticColor.bg.default,
-  S_SPECIAL: semanticColor.button.inactive.default,
+  S_SPECIAL: semanticColor.bgBtn.inactive.default,
 };
 
 export const textColorMap: Record<ButtonVarient, string> = {
