@@ -11,8 +11,8 @@ export const HeaderContainer = styled.div`
 `;
 
 export const NoneBox = styled.div<{ $user: boolean }>`
-  width: ${({ $user }) => ($user ? '77px' : ' 36px')};
-  height: ${({ $user }) => ($user ? '57px' : ' 36px')};
+  width: ${({ $user }) => ($user ? '77px' : '36px')};
+  height: ${({ $user }) => ($user ? '57px' : '36px')};
 `;
 
 export const HeaderTitle = styled.div`
