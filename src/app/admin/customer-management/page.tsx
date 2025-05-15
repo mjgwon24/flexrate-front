@@ -115,17 +115,17 @@ const CustomerManagementPage = () => {
     setPage(newPage);
   };
 
-  // adminToken 반환
-  const [adminToken, setAdminToken] = useState<string | null>(null);
+  // accessToken 반환
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   useEffect(() => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
+    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
     if (!token) {
       router.replace('/admin/not-found');
     } else {
-      setAdminToken(token);
+      setAccessToken(token);
     }
   }, [router]);
-  const { data, isLoading } = useCustomersQuery(filters, adminToken || '', page, PAGE_SIZE);
+  const { data, isLoading } = useCustomersQuery(filters, accessToken || '', page, PAGE_SIZE);
 
   return (
     <PageContainer>

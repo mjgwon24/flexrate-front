@@ -128,7 +128,7 @@ function useCustomerQueryParams(filters: FilterType, page: number, size: number 
 /**
  * 관리자 회원 목록 조회 API
  * @param filters 조회 필터
- * @param adminToken 관리자 인증 토큰
+ * @param accessToken 인증 토큰
  * @param page 페이지 번호
  * @param size 페이지 크기 (기본값: 8)
  *
@@ -137,12 +137,12 @@ function useCustomerQueryParams(filters: FilterType, page: number, size: number 
  */
 export const useCustomersQuery = (
   filters: FilterType,
-  adminToken: string,
+  accessToken: string,
   page: number,
   size: number = PAGE_SIZE
 ) => {
   const params = useCustomerQueryParams(filters, page, size);
-  const queryKey = ['customers', JSON.stringify(params), adminToken];
+  const queryKey = ['customers', JSON.stringify(params), accessToken];
 
   return useQuery({
     queryKey,
@@ -150,7 +150,7 @@ export const useCustomersQuery = (
       try {
         const { data } = await axios.get<ApiResponse>(`${API_URL}/api/admin/members/search`, {
           params,
-          headers: { Authorization: `Bearer ${adminToken}` },
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
 
         const { members, paginationInfo } = data;
@@ -178,7 +178,7 @@ export const useCustomersQuery = (
         throw new Error('Failed to fetch customer data');
       }
     },
-    enabled: !!adminToken,
+    enabled: !!accessToken,
     staleTime: 1000 * 30,
   });
 };
