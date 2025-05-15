@@ -43,6 +43,6 @@ export const AppContainer = styled.div`
 `;
 
 export const InnerContainer = styled.div`
-  padding: 57px 22px 0;
+  padding: 57px 0px;
   box-sizing: border-box;
 `;
