@@ -3,6 +3,7 @@
 import styled from '@emotion/styled';
 
 export const HeaderWrapper = styled.div`
+  min-width: 1315px;
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #d9d9d9;
