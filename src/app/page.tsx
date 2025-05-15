@@ -10,7 +10,7 @@ const Home = () => {
     <>
       <MainHeader user={user} />
       <TabBar />
-      <IntroduceHome user={user} />
+      {user ? <>회원 메인 화면</> : <IntroduceHome user={user} />}
     </>
   );
 };
