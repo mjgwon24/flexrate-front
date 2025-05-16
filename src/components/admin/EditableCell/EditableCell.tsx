@@ -4,33 +4,44 @@ import { Input, Select, DatePicker, Form } from 'antd';
 import type { SelectProps } from 'antd';
 
 type EditableCellProps = {
+  title: string;
   editing: boolean;
   dataIndex: string;
-  title: string;
   inputType: 'text' | 'select' | 'date';
   options?: SelectProps['options'];
   record: Record<string, unknown>;
   index: number;
   children: ReactNode;
+  handleChange: (value: string) => void;
 } & TdHTMLAttributes<HTMLTableCellElement>;
 
 const EditableCell = ({
+  title,
   editing,
   dataIndex,
-  title,
   inputType,
   options,
-  record,
-  index,
   children,
+  handleChange,
   ...restProps
 }: EditableCellProps) => {
   let inputNode;
-  if (inputType === 'text') inputNode = <Input />;
-  else if (inputType === 'select')
-    inputNode = <Select options={options as SelectProps['options']} />;
-  else if (inputType === 'date') inputNode = <DatePicker format="YYYY-MM-DD" />;
-  else inputNode = <Input />;
+  if (inputType === 'text') {
+    inputNode = <Input onChange={(e) => handleChange(e.target.value)} />;
+  } else if (inputType === 'select') {
+    inputNode = <Select options={options as SelectProps['options']} onChange={handleChange} />;
+  } else if (inputType === 'date') {
+    inputNode = (
+      <DatePicker
+        format="YYYY-MM-DD"
+        onChange={(date, dateString) =>
+          handleChange(Array.isArray(dateString) ? dateString.join(',') : dateString)
+        }
+      />
+    );
+  } else {
+    inputNode = <Input onChange={(e) => handleChange(e.target.value)} />;
+  }
 
   return (
     <td {...restProps}>

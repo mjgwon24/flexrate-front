@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 
-import { getCustomers, RawMember } from '@/apis/customers';
+import { getMembers, RawMember } from '@/apis/adminMembers';
 import { FilterType } from '@/types/filter.type';
 
 const PAGE_SIZE = 8;
@@ -68,7 +68,7 @@ function getSex(sex: RawMember['sex']) {
  * @since 2025.05.13
  * @author 권민지
  */
-function useCustomerQueryParams(filters: FilterType, page: number, size: number = PAGE_SIZE) {
+function useMembersQueryParams(filters: FilterType, page: number, size: number = PAGE_SIZE) {
   return useMemo(() => {
     const params: Record<string, string> = {};
 
@@ -105,20 +105,20 @@ function useCustomerQueryParams(filters: FilterType, page: number, size: number 
  * @since 2025.05.13
  * @author 권민지
  */
-export const useCustomersQuery = (
+export const useMembersQuery = (
   filters: FilterType,
   accessToken: string,
   page: number,
   size: number = PAGE_SIZE
 ) => {
-  const params = useCustomerQueryParams(filters, page, size);
+  const params = useMembersQueryParams(filters, page, size);
   const queryKey = ['customers', JSON.stringify(params), accessToken];
 
-  return useQuery({
+  const queryResult = useQuery({
     queryKey,
     queryFn: async () => {
       try {
-        const data = await getCustomers(params, accessToken);
+        const data = await getMembers(params, accessToken);
 
         const { members, paginationInfo } = data;
         const mappedMembers: CustomerTableRow[] = members.map((member, idx) => ({
@@ -148,4 +148,10 @@ export const useCustomersQuery = (
     enabled: !!accessToken,
     staleTime: 1000 * 30,
   });
+
+  return {
+    ...queryResult,
+    members: queryResult.data?.members ?? [],
+    paginationInfo: queryResult.data?.paginationInfo ?? {},
+  };
 };

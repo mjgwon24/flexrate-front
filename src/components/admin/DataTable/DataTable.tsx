@@ -41,7 +41,14 @@ interface PaginationInfo {
   onChange: (page: number) => void;
 }
 
-interface DataTableProps<T extends { key: React.Key; isEmpty?: boolean; userId?: number }> {
+interface DataTableProps<
+  T extends {
+    key: React.Key;
+    isEmpty?: boolean;
+    userId?: number;
+    handleChange?: (value: string) => void;
+  },
+> {
   data: T[];
   loading: boolean;
   columnMetas: ColumnMeta[];
@@ -66,7 +73,12 @@ const TABLE_MIN_WIDTH = 1020;
  * @author 권민지
  */
 const DataTable = <
-  T extends { key: React.Key; isEmpty?: boolean; userId: number } & Record<string, unknown>,
+  T extends {
+    key: React.Key;
+    isEmpty?: boolean;
+    userId: number;
+    handleChange?: (value: string) => void;
+  } & Record<string, unknown>,
 >({
   data,
   loading,
@@ -147,9 +159,11 @@ const DataTable = <
                     typeof record.key === 'bigint' ? record.key.toString() : record.key
                   );
                   setEditingColumn(meta.dataIndex);
-                  // 날짜 필드만 dayjs로 변환해서 form에 세팅
                   form.setFieldsValue(convertDateFields(record, columnMetas));
                 }
+              },
+              handleChange: (value: string) => {
+                record.handleChange?.(value, meta.dataIndex, record);
               },
             }),
             render: (text: string, record: T) => (record.isEmpty ? null : text),
@@ -168,7 +182,7 @@ const DataTable = <
   const save = async (record: T) => {
     try {
       const values = await form.validateFields();
-      // values로 API 호출 및 데이터 갱신 로직 추가
+      console.log(`value: ${JSON.stringify(values)}`);
       setEditingKey(null);
       setEditingColumn(null);
     } catch (errInfo) {

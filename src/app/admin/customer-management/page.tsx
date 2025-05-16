@@ -8,7 +8,8 @@ import { useRouter } from 'next/navigation';
 
 import Conditionbar from '@/components/admin/Conditionbar/Conditionbar';
 import DataTable from '@/components/admin/DataTable/DataTable';
-import { useCustomersQuery } from '@/hooks/useCustomersQuery';
+import { useMembersQuery } from '@/hooks/useMembersQuery';
+import { usePatchMember } from '@/hooks/usePatchMember';
 import { useFilterStore } from '@/stores/filterStore';
 import type { FilterType } from '@/types/filter.type';
 
@@ -35,8 +36,8 @@ const CUSTOMER_COLUMN_METAS = [
     editable: true,
     inputType: 'select',
     options: [
-      { label: '남', value: '남' },
-      { label: '여', value: '여' },
+      { value: 'FEMALE', label: '여' },
+      { value: 'MALE', label: '남' },
     ],
   },
   {
@@ -55,8 +56,9 @@ const CUSTOMER_COLUMN_METAS = [
     editable: true,
     inputType: 'select',
     options: [
-      { label: '남', value: '남' },
-      { label: '여', value: '여' },
+      { value: 'ACTIVE', label: '활성' },
+      { value: 'WITHDRAWN', label: '탈퇴' },
+      { value: 'SUSPENDED', label: '정지' },
     ],
   },
   { title: '가입일', dataIndex: 'createdAt', key: 'createdAt', width: 130, editable: false },
@@ -167,7 +169,18 @@ const CustomerManagementPage = () => {
       setAccessToken(token);
     }
   }, [router]);
-  const { data, isLoading } = useCustomersQuery(filters, accessToken || '', page, PAGE_SIZE);
+  const { data, isLoading, members, paginationInfo } = useMembersQuery(filters, accessToken || '', page, PAGE_SIZE);
+  const patchMemberMutation = usePatchMember(filters, accessToken, page, PAGE_SIZE);
+
+  const handleChange = (value: string, dataIndex: string, record: T) => {
+    if (!record.userId || !accessToken) return;
+
+    patchMemberMutation.mutate({
+      userId: record.userId,
+      payload: { [dataIndex]: value },
+      accessToken,
+    });
+  };
 
   return (
     <PageContainer>
@@ -280,7 +293,10 @@ const CustomerManagementPage = () => {
         </Conditionbar>
 
         <DataTable
-          data={data?.members || []}
+          data={(data?.members || []).map((member) => ({
+            ...member,
+            handleChange: handleChange,
+          }))}
           loading={isLoading}
           columnMetas={[...CUSTOMER_COLUMN_METAS]}
           linkPrefix="/admin/customer-management/"
