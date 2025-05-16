@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { css, cx } from '@emotion/css';
 import { Table, Pagination, Form } from 'antd';
@@ -46,7 +46,7 @@ interface DataTableProps<
     key: React.Key;
     isEmpty?: boolean;
     userId?: number;
-    handleChange?: (value: string) => void;
+    handleChange?: (value: string, dataIndex?: string, record?: T) => void;
   },
 > {
   data: T[];
@@ -58,7 +58,7 @@ interface DataTableProps<
 }
 
 const PAGE_SIZE = 8;
-const TABLE_MIN_HEIGHT = 495;
+const TABLE_MIN_HEIGHT = 200;
 const TABLE_MIN_WIDTH = 1020;
 
 /**
@@ -69,7 +69,9 @@ const TABLE_MIN_WIDTH = 1020;
  * @param columnWidths - 컬럼 너비 정보 객체
  * @param linkPrefix - 링크 접두사
  * @param paginationInfo - 페이지네이션 정보 객체
+ *
  * @since 2025.05.13
+ * @lastmodified 2025.05.16
  * @author 권민지
  */
 const DataTable = <
@@ -77,7 +79,7 @@ const DataTable = <
     key: React.Key;
     isEmpty?: boolean;
     userId: number;
-    handleChange?: (value: string) => void;
+    handleChange?: (value: string, dataIndex?: string, record?: T) => void;
   } & Record<string, unknown>,
 >({
   data,
@@ -87,26 +89,25 @@ const DataTable = <
   paginationInfo,
 }: DataTableProps<T>) => {
   const router = useRouter();
+  const [form] = Form.useForm();
   const [initialLoading, setInitialLoading] = useState(true);
+  const [editingKey, setEditingKey] = useState<string | number | null>(null);
+  const [editingColumn, setEditingColumn] = useState<string | null>(null);
+
+  // 페이지네이션
   const currentPage = paginationInfo?.currentPage ?? 0;
   const pageSize = paginationInfo?.pageSize ?? PAGE_SIZE;
   const totalElements = paginationInfo?.totalElements ?? 0;
+
+  // 스켈레톤/로딩
   const showSkeleton = initialLoading;
   const showAntdLoading = !initialLoading && loading;
-  const [editingKey, setEditingKey] = useState<string | number | null>(null);
-  const [editingColumn, setEditingColumn] = useState<string | null>(null);
-  const [form] = Form.useForm();
-  const isEditing = (record: T) => record.key === editingKey;
-  const skeletonColumns = useMemo(
-    () =>
-      columnMetas.map((meta) => ({
-        key: meta.key,
-        width: meta.width ?? 100,
-      })),
-    [columnMetas]
-  );
 
-  const convertDateFields = (record: T, columnMetas: ColumnMeta[]) => {
+  // 현재 row가 수정중인지 여부 판별
+  const isEditing = useCallback((record: T) => record.key === editingKey, [editingKey]);
+
+  // 날짜 필드 dayjs 객체로 변환
+  const convertDateFields = useCallback((record: T, columnMetas: ColumnMeta[]) => {
     const converted: Record<string, unknown> = { ...record };
     columnMetas.forEach((meta) => {
       if (meta.inputType === 'date' && record[meta.dataIndex]) {
@@ -114,11 +115,13 @@ const DataTable = <
       }
     });
     return converted;
-  };
+  }, []);
 
+  // 컬럼 정의 (수정/상세/일반 컬럼 분기)
   const columns = useMemo(
     () =>
       columnMetas.map((meta) => {
+        // 상세 페이지 이동 버튼 컬럼
         if (meta.key === 'userId') {
           return {
             title: <TableTitleWrapper>{meta.title}</TableTitleWrapper>,
@@ -142,6 +145,7 @@ const DataTable = <
           };
         }
 
+        // 수정 가능 컬럼
         if (meta.editable) {
           return {
             ...meta,
@@ -164,38 +168,32 @@ const DataTable = <
               },
               handleChange: (value: string) => {
                 record.handleChange?.(value, meta.dataIndex, record);
+
+                if (!record.isEmpty) {
+                  setEditingKey(
+                    typeof record.key === 'bigint' ? record.key.toString() : record.key
+                  );
+                  setEditingColumn(meta.dataIndex);
+                  (record as Record<string, unknown>)[meta.dataIndex] = value;
+                  form.setFieldsValue(convertDateFields(record, columnMetas));
+                }
               },
             }),
             render: (text: string, record: T) => (record.isEmpty ? null : text),
           };
         }
 
+        // 일반 컬럼
         return {
           ...meta,
           align: 'center' as const,
           render: (text: string, record: T) => (record.isEmpty ? null : text),
         };
       }),
-    [columnMetas, editingKey, editingColumn, form]
+    [columnMetas, router, linkPrefix, isEditing, editingColumn, form, convertDateFields]
   );
 
-  const save = async (record: T) => {
-    try {
-      const values = await form.validateFields();
-      console.log(`value: ${JSON.stringify(values)}`);
-      setEditingKey(null);
-      setEditingColumn(null);
-    } catch (errInfo) {
-      // validation 실패
-    }
-  };
-
-  const cancel = () => {
-    setEditingKey(null);
-    setEditingColumn(null);
-  };
-
-  // 데이터 페이지 처리 및 빈 row 처리
+  // 데이터 부족 시 빈 row 처리 (항상 pageSize 만큼 row 유지)
   const renderData: T[] = useMemo(() => {
     if (!data || data.length === 0) return [];
     const emptyRowsCount = pageSize - data.length;
@@ -207,6 +205,17 @@ const DataTable = <
     return [...data, ...emptyRows];
   }, [data, pageSize, columnMetas, currentPage]);
 
+  // 스켈레톤 컬럼
+  const skeletonColumns = useMemo(
+    () =>
+      columnMetas.map((meta) => ({
+        key: meta.key,
+        width: meta.width ?? 100,
+      })),
+    [columnMetas]
+  );
+
+  // 최초 마운트 시 짧은 스켈레톤 표시
   useEffect(() => {
     const timer = setTimeout(() => {
       setInitialLoading(false);
