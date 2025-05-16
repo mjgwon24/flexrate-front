@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { patchMember } from '@/apis/adminMembers';
 import { FilterType } from '@/types/filter.type';
+import { filtersToParams } from '@/utils/memberParams';
 
 function toRawSex(sex: string | undefined): 'MALE' | 'FEMALE' | undefined {
   switch (sex) {
@@ -60,31 +61,6 @@ export function usePatchMember(
 ) {
   const queryClient = useQueryClient();
 
-  // params 생성 로직을 useMembersQueryParams와 맞춰줌
-  function getParams() {
-    const params: Record<string, string> = {};
-    if (filters.name) params.name = filters.name;
-    if (filters.sex && filters.sex !== 'ALL') params.sex = filters.sex;
-    if (filters.birthDateRange && filters.birthDateRange[0] && filters.birthDateRange[1]) {
-      params.birthDateStart = filters.birthDateRange[0];
-      params.birthDateEnd = filters.birthDateRange[1];
-    }
-    if (filters.memberStatus && filters.memberStatus !== 'ALL')
-      params.memberStatus = filters.memberStatus;
-    if (filters.createdDateRange && filters.createdDateRange[0] && filters.createdDateRange[1]) {
-      params.startDate = filters.createdDateRange[0];
-      params.endDate = filters.createdDateRange[1];
-    }
-    if (filters.hasLoan && filters.hasLoan !== 'ALL') params.hasLoan = filters.hasLoan;
-    if (filters.transactionCountMin)
-      params.transactionCountMin = String(filters.transactionCountMin);
-    if (filters.transactionCountMax)
-      params.transactionCountMax = String(filters.transactionCountMax);
-    params.page = String(page - 1);
-    params.size = String(size);
-    return params;
-  }
-
   return useMutation({
     mutationFn: async ({ userId, payload, accessToken }: PatchMemberArgs) => {
       const rawPayload = {
@@ -96,10 +72,12 @@ export function usePatchMember(
       return patchMember(userId, cleanPayload, accessToken);
     },
     onSuccess: () => {
-      const params = getParams();
-      queryClient.invalidateQueries({
-        queryKey: ['customers', JSON.stringify(params), accessToken],
-      });
+      const params = filtersToParams(filters, page, size);
+      queryClient
+        .invalidateQueries({
+          queryKey: ['customers', JSON.stringify(params), accessToken],
+        })
+        .then((r) => console.log(r));
     },
   });
 }
