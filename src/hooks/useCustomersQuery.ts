@@ -1,42 +1,12 @@
 import React, { useMemo } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import dayjs from 'dayjs';
 
+import { getCustomers, RawMember } from '@/apis/customers';
 import { FilterType } from '@/types/filter.type';
 
 const PAGE_SIZE = 8;
-const API_URL = process.env.API_URL || 'http://localhost:8080';
-
-/**
- * API 응답 타입
- */
-interface RawMember {
-  id: number;
-  name: string;
-  email: string;
-  sex: 'MALE' | 'FEMALE';
-  birthDate: string;
-  createdAt: string;
-  hasLoan: boolean;
-  lastLoginAt: string;
-  loanTransactionCount: number;
-  memberStatus: 'ACTIVE' | 'WITHDRAWN' | 'SUSPENDED';
-  [key: string]: unknown;
-}
-
-interface PaginationInfo {
-  currentPage: number;
-  pageSize: number;
-  totalElements: number;
-  totalPages: number;
-}
-
-interface ApiResponse {
-  members: RawMember[];
-  paginationInfo: PaginationInfo;
-}
 
 /**
  * 고객 테이블 행 데이터 타입
@@ -148,10 +118,7 @@ export const useCustomersQuery = (
     queryKey,
     queryFn: async () => {
       try {
-        const { data } = await axios.get<ApiResponse>(`${API_URL}/api/admin/members/search`, {
-          params,
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
+        const data = await getCustomers(params, accessToken);
 
         const { members, paginationInfo } = data;
         const mappedMembers: CustomerTableRow[] = members.map((member, idx) => ({
