@@ -3,10 +3,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { css, cx } from '@emotion/css';
-import { Table, Pagination } from 'antd';
+import { Table, Pagination, Form } from 'antd';
+import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 
 import UserDetailButton from '@/assets/icons/userDetailButton.svg';
+import EditableCell from '@/components/admin/EditableCell/EditableCell';
 import TableSkeleton from '@/components/admin/skeleton/TableSkeleton/TableSkeleton';
 
 import {
@@ -26,6 +28,9 @@ interface ColumnMeta {
   dataIndex: string;
   key: string;
   width?: number;
+  editable?: boolean;
+  inputType?: 'text' | 'select' | 'date';
+  options?: ReadonlyArray<{ label: string; value: string }>;
 }
 
 interface PaginationInfo {
@@ -60,7 +65,9 @@ const TABLE_MIN_WIDTH = 1020;
  * @since 2025.05.13
  * @author 권민지
  */
-const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number }>({
+const DataTable = <
+  T extends { key: React.Key; isEmpty?: boolean; userId: number } & Record<string, unknown>,
+>({
   data,
   loading,
   columnMetas,
@@ -74,6 +81,10 @@ const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number
   const totalElements = paginationInfo?.totalElements ?? 0;
   const showSkeleton = initialLoading;
   const showAntdLoading = !initialLoading && loading;
+  const [editingKey, setEditingKey] = useState<string | number | null>(null);
+  const [editingColumn, setEditingColumn] = useState<string | null>(null);
+  const [form] = Form.useForm();
+  const isEditing = (record: T) => record.key === editingKey;
   const skeletonColumns = useMemo(
     () =>
       columnMetas.map((meta) => ({
@@ -82,6 +93,16 @@ const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number
       })),
     [columnMetas]
   );
+
+  const convertDateFields = (record: T, columnMetas: ColumnMeta[]) => {
+    const converted: Record<string, unknown> = { ...record };
+    columnMetas.forEach((meta) => {
+      if (meta.inputType === 'date' && record[meta.dataIndex]) {
+        converted[meta.dataIndex] = dayjs(record[meta.dataIndex] as string);
+      }
+    });
+    return converted;
+  };
 
   const columns = useMemo(
     () =>
@@ -108,17 +129,57 @@ const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number
               ),
           };
         }
+
+        if (meta.editable) {
+          return {
+            ...meta,
+            align: 'center' as const,
+            onCell: (record: T) => ({
+              record,
+              inputType: meta.inputType,
+              dataIndex: meta.dataIndex,
+              title: meta.title,
+              editing: isEditing(record) && editingColumn === meta.dataIndex,
+              options: meta.options,
+              onClick: () => {
+                if (!record.isEmpty) {
+                  setEditingKey(
+                    typeof record.key === 'bigint' ? record.key.toString() : record.key
+                  );
+                  setEditingColumn(meta.dataIndex);
+                  // 날짜 필드만 dayjs로 변환해서 form에 세팅
+                  form.setFieldsValue(convertDateFields(record, columnMetas));
+                }
+              },
+            }),
+            render: (text: string, record: T) => (record.isEmpty ? null : text),
+          };
+        }
+
         return {
-          title: <TableTitleWrapper>{meta.title}</TableTitleWrapper>,
-          dataIndex: meta.dataIndex,
-          key: meta.key,
-          width: meta.width,
+          ...meta,
           align: 'center' as const,
           render: (text: string, record: T) => (record.isEmpty ? null : text),
         };
       }),
-    [columnMetas, linkPrefix, router]
+    [columnMetas, editingKey, editingColumn, form]
   );
+
+  const save = async (record: T) => {
+    try {
+      const values = await form.validateFields();
+      // values로 API 호출 및 데이터 갱신 로직 추가
+      setEditingKey(null);
+      setEditingColumn(null);
+    } catch (errInfo) {
+      // validation 실패
+    }
+  };
+
+  const cancel = () => {
+    setEditingKey(null);
+    setEditingColumn(null);
+  };
 
   // 데이터 페이지 처리 및 빈 row 처리
   const renderData: T[] = useMemo(() => {
@@ -146,29 +207,36 @@ const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number
   return (
     <>
       <TableWrapper>
-        <Table
-          columns={columns}
-          dataSource={renderData}
-          pagination={false}
-          loading={showAntdLoading}
-          style={{ minHeight: TABLE_MIN_HEIGHT, minWidth: TABLE_MIN_WIDTH }}
-          scroll={{ x: 'max-content' }}
-          rowClassName={(_, index) =>
-            cx(
-              css(rowCellStyle),
-              css(customRowHoverStyle),
-              renderData?.[index]?.isEmpty && css(emptyRowStyle),
-              index === renderData.length - 1 && css(lastRowNoBorderStyle)
-            )
-          }
-          locale={{
-            emptyText: (
-              <EmptyTextWrapper>
-                <span>데이터가 없습니다.</span>
-              </EmptyTextWrapper>
-            ),
-          }}
-        />
+        <Form form={form} component={false}>
+          <Table
+            components={{
+              body: {
+                cell: EditableCell,
+              },
+            }}
+            columns={columns}
+            dataSource={renderData}
+            pagination={false}
+            loading={showAntdLoading}
+            style={{ minHeight: TABLE_MIN_HEIGHT, minWidth: TABLE_MIN_WIDTH }}
+            scroll={{ x: 'max-content' }}
+            rowClassName={(_, index) =>
+              cx(
+                css(rowCellStyle),
+                css(customRowHoverStyle),
+                renderData?.[index]?.isEmpty && css(emptyRowStyle),
+                index === renderData.length - 1 && css(lastRowNoBorderStyle)
+              )
+            }
+            locale={{
+              emptyText: (
+                <EmptyTextWrapper>
+                  <span>데이터가 없습니다.</span>
+                </EmptyTextWrapper>
+              ),
+            }}
+          />
+        </Form>
       </TableWrapper>
       <PaginationCenterWrapper>
         <Pagination

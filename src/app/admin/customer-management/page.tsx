@@ -17,16 +17,58 @@ import { PageContainer, ContentColumn, FilterRow, FilterLabel } from './page.sty
 const PAGE_SIZE = 8;
 
 const CUSTOMER_COLUMN_METAS = [
-  { title: 'No', dataIndex: 'no', key: 'no', width: 30 },
-  { title: '이름', dataIndex: 'name', key: 'name', width: 90 },
-  { title: '이메일', dataIndex: 'email', key: 'email', width: 150 },
-  { title: '성별', dataIndex: 'sex', key: 'sex', width: 80 },
-  { title: '생년월일', dataIndex: 'birthDate', key: 'birthDate', width: 120 },
-  { title: '상태', dataIndex: 'memberStatus', key: 'memberStatus', width: 80 },
-  { title: '가입일', dataIndex: 'createdAt', key: 'createdAt', width: 120 },
-  { title: '대출 횟수', dataIndex: 'transactionCount', key: 'transactionCount', width: 90 },
-  { title: '대출 상태', dataIndex: 'hasLoan', key: 'hasLoan', width: 100 },
-  { title: '', dataIndex: 'userId', key: 'userId', width: 60 },
+  { title: 'No', dataIndex: 'no', key: 'no', width: 50, editable: false },
+  { title: '이름', dataIndex: 'name', key: 'name', width: 90, editable: true, inputType: 'text' },
+  {
+    title: '이메일',
+    dataIndex: 'email',
+    key: 'email',
+    width: 180,
+    editable: true,
+    inputType: 'text',
+  },
+  {
+    title: '성별',
+    dataIndex: 'sex',
+    key: 'sex',
+    width: 80,
+    editable: true,
+    inputType: 'select',
+    options: [
+      { label: '남', value: '남' },
+      { label: '여', value: '여' },
+    ],
+  },
+  {
+    title: '생년월일',
+    dataIndex: 'birthDate',
+    key: 'birthDate',
+    width: 130,
+    editable: true,
+    inputType: 'date',
+  },
+  {
+    title: '상태',
+    dataIndex: 'memberStatus',
+    key: 'memberStatus',
+    width: 80,
+    editable: true,
+    inputType: 'select',
+    options: [
+      { label: '남', value: '남' },
+      { label: '여', value: '여' },
+    ],
+  },
+  { title: '가입일', dataIndex: 'createdAt', key: 'createdAt', width: 130, editable: false },
+  {
+    title: '대출 횟수',
+    dataIndex: 'transactionCount',
+    key: 'transactionCount',
+    width: 90,
+    editable: false,
+  },
+  { title: '대출 상태', dataIndex: 'hasLoan', key: 'hasLoan', width: 100, editable: false },
+  { title: '', dataIndex: 'userId', key: 'userId', width: 60, editable: false },
 ] as const;
 
 /**
