@@ -73,11 +73,9 @@ export function usePatchMember(
     },
     onSuccess: () => {
       const params = filtersToParams(filters, page, size);
-      queryClient
-        .invalidateQueries({
-          queryKey: ['customers', JSON.stringify(params), accessToken],
-        })
-        .then((r) => console.log(r));
+      queryClient.invalidateQueries({
+        queryKey: ['customers', JSON.stringify(params), accessToken],
+      });
     },
   });
 }
