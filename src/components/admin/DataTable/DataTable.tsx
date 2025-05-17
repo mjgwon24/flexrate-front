@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { css, cx } from '@emotion/css';
-import { Table, Pagination } from 'antd';
+import { Table, Pagination, Form } from 'antd';
+import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 
 import UserDetailButton from '@/assets/icons/userDetailButton.svg';
+import EditableCell from '@/components/admin/EditableCell/EditableCell';
 import TableSkeleton from '@/components/admin/skeleton/TableSkeleton/TableSkeleton';
 
 import {
@@ -26,6 +28,9 @@ interface ColumnMeta {
   dataIndex: string;
   key: string;
   width?: number;
+  editable?: boolean;
+  inputType?: 'text' | 'select' | 'date';
+  options?: ReadonlyArray<{ label: string; value: string }>;
 }
 
 interface PaginationInfo {
@@ -36,7 +41,14 @@ interface PaginationInfo {
   onChange: (page: number) => void;
 }
 
-interface DataTableProps<T extends { key: React.Key; isEmpty?: boolean; userId?: number }> {
+interface DataTableProps<
+  T extends {
+    key: React.Key;
+    isEmpty?: boolean;
+    userId?: number;
+    handleChange?: (value: string, dataIndex?: string, record?: T) => void;
+  },
+> {
   data: T[];
   loading: boolean;
   columnMetas: ColumnMeta[];
@@ -46,7 +58,7 @@ interface DataTableProps<T extends { key: React.Key; isEmpty?: boolean; userId?:
 }
 
 const PAGE_SIZE = 8;
-const TABLE_MIN_HEIGHT = 495;
+const TABLE_MIN_HEIGHT = 200;
 const TABLE_MIN_WIDTH = 1020;
 
 /**
@@ -57,10 +69,19 @@ const TABLE_MIN_WIDTH = 1020;
  * @param columnWidths - 컬럼 너비 정보 객체
  * @param linkPrefix - 링크 접두사
  * @param paginationInfo - 페이지네이션 정보 객체
+ *
  * @since 2025.05.13
+ * @lastmodified 2025.05.16
  * @author 권민지
  */
-const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number }>({
+const DataTable = <
+  T extends {
+    key: React.Key;
+    isEmpty?: boolean;
+    userId: number;
+    handleChange?: (value: string, dataIndex?: string, record?: T) => void;
+  } & Record<string, unknown>,
+>({
   data,
   loading,
   columnMetas,
@@ -68,24 +89,39 @@ const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number
   paginationInfo,
 }: DataTableProps<T>) => {
   const router = useRouter();
+  const [form] = Form.useForm();
   const [initialLoading, setInitialLoading] = useState(true);
+  const [editingKey, setEditingKey] = useState<string | number | null>(null);
+  const [editingColumn, setEditingColumn] = useState<string | null>(null);
+
+  // 페이지네이션
   const currentPage = paginationInfo?.currentPage ?? 0;
   const pageSize = paginationInfo?.pageSize ?? PAGE_SIZE;
   const totalElements = paginationInfo?.totalElements ?? 0;
+
+  // 스켈레톤/로딩
   const showSkeleton = initialLoading;
   const showAntdLoading = !initialLoading && loading;
-  const skeletonColumns = useMemo(
-    () =>
-      columnMetas.map((meta) => ({
-        key: meta.key,
-        width: meta.width ?? 100,
-      })),
-    [columnMetas]
-  );
 
+  // 현재 row가 수정중인지 여부 판별
+  const isEditing = useCallback((record: T) => record.key === editingKey, [editingKey]);
+
+  // 날짜 필드 dayjs 객체로 변환
+  const convertDateFields = useCallback((record: T, columnMetas: ColumnMeta[]) => {
+    const converted: Record<string, unknown> = { ...record };
+    columnMetas.forEach((meta) => {
+      if (meta.inputType === 'date' && record[meta.dataIndex]) {
+        converted[meta.dataIndex] = dayjs(record[meta.dataIndex] as string);
+      }
+    });
+    return converted;
+  }, []);
+
+  // 컬럼 정의 (수정/상세/일반 컬럼 분기)
   const columns = useMemo(
     () =>
       columnMetas.map((meta) => {
+        // 상세 페이지 이동 버튼 컬럼
         if (meta.key === 'userId') {
           return {
             title: <TableTitleWrapper>{meta.title}</TableTitleWrapper>,
@@ -108,19 +144,56 @@ const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number
               ),
           };
         }
+
+        // 수정 가능 컬럼
+        if (meta.editable) {
+          return {
+            ...meta,
+            align: 'center' as const,
+            onCell: (record: T) => ({
+              record,
+              inputType: meta.inputType,
+              dataIndex: meta.dataIndex,
+              title: meta.title,
+              editing: isEditing(record) && editingColumn === meta.dataIndex,
+              options: meta.options,
+              onClick: () => {
+                if (!record.isEmpty) {
+                  setEditingKey(
+                    typeof record.key === 'bigint' ? record.key.toString() : record.key
+                  );
+                  setEditingColumn(meta.dataIndex);
+                  form.setFieldsValue(convertDateFields(record, columnMetas));
+                }
+              },
+              handleChange: (value: string) => {
+                record.handleChange?.(value, meta.dataIndex, record);
+
+                if (!record.isEmpty) {
+                  setEditingKey(
+                    typeof record.key === 'bigint' ? record.key.toString() : record.key
+                  );
+                  setEditingColumn(meta.dataIndex);
+                  (record as Record<string, unknown>)[meta.dataIndex] = value;
+                  form.setFieldsValue(convertDateFields(record, columnMetas));
+                }
+              },
+            }),
+            render: (text: string, record: T) => (record.isEmpty ? null : text),
+          };
+        }
+
+        // 일반 컬럼
         return {
-          title: <TableTitleWrapper>{meta.title}</TableTitleWrapper>,
-          dataIndex: meta.dataIndex,
-          key: meta.key,
-          width: meta.width,
+          ...meta,
           align: 'center' as const,
           render: (text: string, record: T) => (record.isEmpty ? null : text),
         };
       }),
-    [columnMetas, linkPrefix, router]
+    [columnMetas, router, linkPrefix, isEditing, editingColumn, form, convertDateFields]
   );
 
-  // 데이터 페이지 처리 및 빈 row 처리
+  // 데이터 부족 시 빈 row 처리 (항상 pageSize 만큼 row 유지)
   const renderData: T[] = useMemo(() => {
     if (!data || data.length === 0) return [];
     const emptyRowsCount = pageSize - data.length;
@@ -132,6 +205,17 @@ const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number
     return [...data, ...emptyRows];
   }, [data, pageSize, columnMetas, currentPage]);
 
+  // 스켈레톤 컬럼
+  const skeletonColumns = useMemo(
+    () =>
+      columnMetas.map((meta) => ({
+        key: meta.key,
+        width: meta.width ?? 100,
+      })),
+    [columnMetas]
+  );
+
+  // 최초 마운트 시 짧은 스켈레톤 표시
   useEffect(() => {
     const timer = setTimeout(() => {
       setInitialLoading(false);
@@ -146,29 +230,36 @@ const DataTable = <T extends { key: React.Key; isEmpty?: boolean; userId: number
   return (
     <>
       <TableWrapper>
-        <Table
-          columns={columns}
-          dataSource={renderData}
-          pagination={false}
-          loading={showAntdLoading}
-          style={{ minHeight: TABLE_MIN_HEIGHT, minWidth: TABLE_MIN_WIDTH }}
-          scroll={{ x: 'max-content' }}
-          rowClassName={(_, index) =>
-            cx(
-              css(rowCellStyle),
-              css(customRowHoverStyle),
-              renderData?.[index]?.isEmpty && css(emptyRowStyle),
-              index === renderData.length - 1 && css(lastRowNoBorderStyle)
-            )
-          }
-          locale={{
-            emptyText: (
-              <EmptyTextWrapper>
-                <span>데이터가 없습니다.</span>
-              </EmptyTextWrapper>
-            ),
-          }}
-        />
+        <Form form={form} component={false}>
+          <Table
+            components={{
+              body: {
+                cell: EditableCell,
+              },
+            }}
+            columns={columns}
+            dataSource={renderData}
+            pagination={false}
+            loading={showAntdLoading}
+            style={{ minHeight: TABLE_MIN_HEIGHT, minWidth: TABLE_MIN_WIDTH }}
+            scroll={{ x: 'max-content' }}
+            rowClassName={(_, index) =>
+              cx(
+                css(rowCellStyle),
+                css(customRowHoverStyle),
+                renderData?.[index]?.isEmpty && css(emptyRowStyle),
+                index === renderData.length - 1 && css(lastRowNoBorderStyle)
+              )
+            }
+            locale={{
+              emptyText: (
+                <EmptyTextWrapper>
+                  <span>데이터가 없습니다.</span>
+                </EmptyTextWrapper>
+              ),
+            }}
+          />
+        </Form>
       </TableWrapper>
       <PaginationCenterWrapper>
         <Pagination
