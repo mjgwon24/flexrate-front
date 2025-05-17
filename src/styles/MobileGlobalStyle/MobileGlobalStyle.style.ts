@@ -43,6 +43,7 @@ export const AppContainer = styled.div`
 `;
 
 export const InnerContainer = styled.div`
+  position: relative;
   padding: 57px 0px;
   box-sizing: border-box;
 `;

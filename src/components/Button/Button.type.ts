@@ -9,14 +9,15 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   text: string;
   size?: ButtonSize;
   varient?: ButtonVarient;
+  selected?: boolean;
 }
 
 export const sizeWidthMapping: Record<ButtonSize, string> = {
-  XL: '332px',
+  XL: '100%',
   L: '218px',
-  M: '162px',
-  S: '106px',
-  XS: '77px',
+  M: 'calc(100%/2)',
+  S: 'calc(100%/3)',
+  XS: 'calc(100%/4)',
 };
 
 export const borderColorMap: Partial<Record<ButtonVarient, string>> = {
@@ -38,4 +39,14 @@ export const textColorMap: Record<ButtonVarient, string> = {
   SECONDARY: semanticColor.text.normal.accent,
   TERTIARY: semanticColor.text.normal.sub3,
   S_SPECIAL: semanticColor.text.normal.sub1,
+};
+
+export const getButtonStyle = (variant: ButtonVarient, isSelected: boolean = false) => {
+  const finalVariant = isSelected ? 'SECONDARY' : variant ?? 'PRIMARY';
+
+  return {
+    backgroundColor: backgroundColorMap[finalVariant],
+    borderColor: borderColorMap[finalVariant] ?? 'transparent',
+    textColor: textColorMap[finalVariant],
+  };
 };
