@@ -7,10 +7,17 @@ export const getInputType = ({
 }: {
   isError?: boolean;
   isDisabled?: boolean;
-  value: string;
+  value?: string | number;
 }): InputType => {
   if (isError) return 'ERROR';
   if (isDisabled) return 'INACTIVE';
-  if (value.length > 0) return 'ACTIVE';
+
+  if (
+    (typeof value === 'string' && value !== '0' && value.length > 0) ||
+    (typeof value === 'number' && value !== 0)
+  ) {
+    return 'ACTIVE';
+  }
+
   return 'INACTIVE';
 };
