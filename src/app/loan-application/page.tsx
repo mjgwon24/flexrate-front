@@ -5,8 +5,8 @@ const LoanApplicationFunnel = dynamic(
   { ssr: false }
 );
 
-const LoanApplicaton = () => {
+const LoanApplication = () => {
   return <LoanApplicationFunnel />;
 };
 
-export default LoanApplicaton;
+export default LoanApplication;
