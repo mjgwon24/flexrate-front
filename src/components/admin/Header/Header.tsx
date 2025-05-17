@@ -1,6 +1,8 @@
 import Image from 'next/image';
 
 import Logo from '@/assets/img/logo(green).png';
+import { useInitUser } from '@/hooks/useInitUser';
+import { useUserStore } from '@/stores/userStore';
 
 import {
   EmailBox,
@@ -12,6 +14,8 @@ import {
 } from './Header.style';
 
 const Header = () => {
+  useInitUser();
+  const user = useUserStore((state) => state.user);
   return (
     <HeaderWrapper>
       <LogoContainer>
@@ -20,7 +24,7 @@ const Header = () => {
       </LogoContainer>
       <HeaderRightContainer>
         <HomePageButton>FlexRate 홈페이지</HomePageButton>
-        <EmailBox>flexrate@fisa.com</EmailBox>
+        {user ? <EmailBox>{user?.email}</EmailBox> : <></>}
       </HeaderRightContainer>
     </HeaderWrapper>
   );

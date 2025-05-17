@@ -1,10 +1,9 @@
 'use client';
 
 import styled from '@emotion/styled';
-import Link from 'next/link';
 
 export const SidebarWrapper = styled.aside`
-  width: 250px;
+  min-width: 230px;
   min-height: calc(100vh - 73px);
   background-color: #f9fafc;
   padding: 24px 16px;
@@ -13,40 +12,83 @@ export const SidebarWrapper = styled.aside`
   flex-direction: column;
 `;
 
-export const Logo = styled.div`
+export const SidebarInner = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+`;
+
+export const ProfileBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+export const ProfileName = styled.span`
+  color: #008eff;
   font-weight: 700;
-  font-size: 20px;
-  margin-bottom: 24px;
-  span {
-    font-weight: 400;
-    font-size: 14px;
-    color: #9fa4b0;
-    margin-left: 4px;
-  }
+  font-size: 15px;
 `;
 
-export const Welcome = styled.div`
+export const ProfileGreeting = styled.p`
+  font-weight: 700;
+  font-size: 15px;
+  margin: 0;
+`;
+
+export const SidebarHr = styled.hr`
+  margin: 20px 0 25px 0;
+  border: 0.05rem solid #d9d9d9;
+  width: 100%;
+`;
+
+export const MenuSectionWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-left: 0.4rem;
+  width: 100%;
+`;
+
+export const MenuSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+`;
+
+export const MenuSectionTitle = styled.p`
+  color: #a6a6a6;
   font-size: 14px;
-  color: #414141;
-  margin-bottom: 32px;
+  margin: 0;
 `;
 
-export const NavSection = styled.div`
-  margin-bottom: 24px;
+export const MenuItemWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
 `;
 
-export const SectionTitle = styled.div`
-  font-size: 12px;
-  color: #999;
-  margin-bottom: 8px;
+export const SelectedBar = styled.div`
+  width: 6px;
+  height: calc(100% + 10px);
+  background: #008eff;
+  border-radius: 0 4px 4px 0;
+  position: absolute;
+  left: -22px;
+  top: -5px;
 `;
 
-export const NavLink = styled(Link)`
-  display: block;
-  padding: 8px 0;
-  color: #222;
+export const MenuItem = styled.p<{ selected?: boolean }>`
+  color: ${({ selected }) => (selected ? '#262626' : '#414141')};
+  font-weight: ${({ selected }) => (selected ? 800 : 600)};
   font-size: 14px;
-  font-weight: 500;
+  cursor: pointer;
+  margin: 0;
+  padding-left: 0.4rem;
+  z-index: 1;
 
   &:hover {
     color: #008eff;
