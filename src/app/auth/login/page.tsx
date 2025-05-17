@@ -1,62 +1,30 @@
-// src/app/auth/login/page.tsx
-// 로그인 Funnel 페이지 컴포넌트
-// @author 윤영찬
-// @since 2025-05-13
+'use client';
+import React, { useState } from 'react';
+import { Wrapper } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
+import Header from '@/components/Header/Header';
+import LoginSelector from '@/components/login/LoginSelector/LoginSelector';
+import LoginForm from '@/components/login/LoginForm/LoginForm';
 
-'use client'
-import React from 'react'
-import { useFunnel } from '@use-funnel/browser'
-import { LoginSelector } from './components/LoginSelector'
-import { LoginEmail } from './components/LoginEmail'
-import { LoginPassword } from './components/LoginPassword'
-import { LoginComplete } from './components/LoginComplete'
-
-type Steps = {
-  selector: {}
-  email: { email: string }
-  password: { email: string; password: string }
-  complete: { email: string }
-}
+type Step = 'selector' | 'form';
 
 export default function LoginPage() {
-  const funnel = useFunnel<Steps>({
-    id: 'login',
-    initial: { step: 'selector', context: {} }
-  })
+  const [step, setStep] = useState<Step>('selector');
 
   return (
-    <funnel.Render
-      selector={funnel.Render.with({
-        render: () => (
-          <LoginSelector
-            onSelectEmail={() => funnel.history.push('email', prev => ({ ...prev, email: '' }))}
-            onSelectFace={() => {/* Face ID flow */}}
-            onSelectPassword={() => funnel.history.push('password', prev => ({ ...prev, email: '' , password: '' }))}
-          />
-        )
-      })}
+    <Wrapper>
+      <Header />
 
-      email={funnel.Render.with({
-        render: ({ context }) => (
-          <LoginEmail
-            defaultEmail={context.email ?? ''}
-            onNext={(email) => funnel.history.push('password', prev => ({ ...prev, email, password: '' }))}
-          />
-        )
-      })}
-
-      password={funnel.Render.with({
-        render: ({ context }) => (
-          <LoginPassword
-            email={context.email}
-            onSubmit={(password) => funnel.history.push('complete', prev => ({ email: context.email }))}
-          />
-        )
-      })}
-
-      complete={({ context }) => (
-        <LoginComplete email={context.email} />
+      {step === 'selector' && (
+        <LoginSelector
+          onSelectEmail={() => setStep('form')}
+          onSelectFace={() => {
+            // Face ID 로직
+          }}
+          onSelectPassword={() => setStep('form')}
+        />
       )}
-    />
-  )
+
+      {step === 'form' && <LoginForm />}
+    </Wrapper>
+  );
 }
