@@ -1,5 +1,10 @@
+//  소비 성향 분석 결과를 보여주는 컴포넌트
+//  @author 윤영찬
+//  @since 2025-05-13
+
 'use client'
 import React from 'react'
+
 export const AnalysisResult: React.FC<{ onNext: () => void }> = ({ onNext }) => (
   <div className="p-4 flex flex-col items-center">
     <h2 className="text-2xl font-bold mb-4">분석 결과</h2>

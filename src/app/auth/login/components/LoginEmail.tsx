@@ -1,4 +1,3 @@
-// src/app/auth/login/components/LoginEmail.tsx
 // 로그인 - 이메일 입력 단계
 // @author 윤영찬
 // @since 2025.05.14

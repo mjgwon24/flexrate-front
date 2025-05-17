@@ -1,3 +1,7 @@
+// 회원가입 과정 중 소비 목표를 설정 컴포넌트
+// @author 윤영찬
+// @since 2025-05-13
+
 'use client'
 import React from 'react'
 export const UserGoal: React.FC<{ onNext: () => void }> = ({ onNext }) => (

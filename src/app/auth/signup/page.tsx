@@ -1,8 +1,7 @@
-// src/app/signup/page.tsx
 'use client';
 import React from 'react';
 import { useFunnel } from '@use-funnel/browser';
-import { SignupSteps, SignupContext } from './types/signup';
+import type { SignupSteps, SignupContextMap } from './types/signup';
 import SignupEmailRequest from './components/SignupEmailRequest';
 import SignupEmailVerify from './components/SignupEmailVerify';
 import SignupPassword from './components/SignupPassword';
@@ -15,35 +14,14 @@ import AnalysisResult from './components/AnalysisResult';
 import UserGoal from './components/UserGoal';
 import SignupComplete from './components/SignupComplete';
 
-// 정확한 타입 지정: 단계 이름과 context 속성 정의
-type StepKeys =
-  | 'emailRequest'
-  | 'emailVerify'
-  | 'password'
-  | 'method'
-  | 'gender'
-  | 'birthday'
-  | 'agreement'
-  | 'analysisLoading'
-  | 'analysisResult'
-  | 'usergoal'
-  | 'complete';
-
-// context 타입 정의 (단계별로 추가되는 값들을 포함)
-interface SignupContext {
-  email?: string;
-  password?: string;
-  method?: string;
-  gender?: string;
-  birthday?: string;
-  // 추가 context 필드들 필요시 선언
-}
+// 회원가입 단계별 흐름 관리페이지
+// @author 윤영찬
+// @since 2025-05-17
 
 export default function SignupPage() {
-  // useFunnel에 명확한 제네릭 타입 지정
-  const funnel = useFunnel<StepKeys, SignupContext>({
+  const funnel = useFunnel<SignupSteps, SignupContextMap>({
     id: 'signup',
-    initial: { step: 'emailRequest', context: {} }
+    initial: { step: 'emailRequest', context: {} as SignupContextMap['emailRequest'] }
   });
 
   return (
@@ -61,8 +39,8 @@ export default function SignupPage() {
       emailVerify={funnel.Render.with({
         render: ({ context }) => (
           <SignupEmailVerify
-            defaultEmail={context.email ?? ''}
-            onVerify={() => funnel.history.push('password', context)}
+            defaultEmail={context.email}
+            onVerify={() => funnel.history.push('password', { ...context })}
           />
         )
       })}
@@ -70,7 +48,7 @@ export default function SignupPage() {
       password={funnel.Render.with({
         render: ({ context }) => (
           <SignupPassword
-            email={context.email ?? ''}
+            email={context.email}
             onNext={(password: string) =>
               funnel.history.push('method', { ...context, password })
             }
@@ -115,15 +93,19 @@ export default function SignupPage() {
       })}
 
       analysisLoading={funnel.Render.with({
-        render: () => <AnalysisLoading />
+        render: ({ context }) => <AnalysisLoading />
       })}
 
       analysisResult={funnel.Render.with({
-        render: () => <AnalysisResult onNext={() => funnel.history.push('usergoal')} />
+        render: ({ context }) => (
+          <AnalysisResult onNext={() => funnel.history.push('usergoal', context)} />
+        )
       })}
 
       usergoal={funnel.Render.with({
-        render: () => <UserGoal onNext={() => funnel.history.push('complete')} />
+        render: ({ context }) => (
+          <UserGoal onNext={() => funnel.history.push('complete', context)} />
+        )
       })}
 
       complete={funnel.Render.with({

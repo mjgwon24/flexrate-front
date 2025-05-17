@@ -1,4 +1,3 @@
-// login/components/LoginCompleteStep.tsx
 // 로그인 완료 단계 - 안내 메시지 or 리디렉션 처리 위치
 // @author 윤영찬
 // @since 2025.05.17

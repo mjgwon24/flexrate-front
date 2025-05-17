@@ -1,3 +1,7 @@
+// 회원가입 완료 화면 컴포넌트
+// @author 윤영찬
+// @since 2025-05-13
+
 'use client'
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'

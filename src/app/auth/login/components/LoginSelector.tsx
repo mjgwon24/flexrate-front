@@ -1,5 +1,4 @@
-// src/app/auth/login/components/LoginSelector.tsx
-// 로그인 시작 단계 - 로그인 방식 선택 (BottomSheet 역할)
+// 로그인 시작 단계 - 로그인 방식 선택
 // @author 윤영찬
 // @since 2025.05.13
 

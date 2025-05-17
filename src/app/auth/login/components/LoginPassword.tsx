@@ -1,4 +1,3 @@
-// login/components/LoginPasswordStep.tsx
 // 로그인 - 비밀번호 입력 단계
 // @author 윤영찬
 // @since 2025.05.17

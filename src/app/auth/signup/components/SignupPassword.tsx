@@ -1,6 +1,10 @@
-// -- components/SignupPassword.tsx
+// 회원가입 비밀번호 설정 컴포넌트
+// @author 윤영찬
+// @since 2025-05-13
+
 'use client'
 import React from 'react'
+
 export const SignupPassword: React.FC<{ email: string; onNext: (pw: string) => void }> = ({ email, onNext }) => (
   <div className="p-4 flex flex-col items-center">
     <h2 className="text-2xl font-bold mb-4">비밀번호 설정</h2>
@@ -9,3 +13,5 @@ export const SignupPassword: React.FC<{ email: string; onNext: (pw: string) => v
     <button onClick={() => onNext('password')} className="w-full p-4 bg-blue-500 text-white rounded">다음으로</button>
   </div>
 )
+
+export default SignupPassword
