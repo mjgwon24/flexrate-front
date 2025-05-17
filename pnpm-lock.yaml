@@ -23,6 +23,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.74.7
         version: 5.75.7(react@18.3.1)
+      '@use-funnel/browser':
+        specifier: ^0.0.14
+        version: 0.0.14(react@18.3.1)
       antd:
         specifier: ^5.25.1
         version: 5.25.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -97,7 +100,7 @@ importers:
         specifier: ^2.31.0
         version: 2.31.0(@typescript-eslint/parser@8.32.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
       eslint-plugin-prettier:
-        specifier: ^5.2.6
+        specifier: ^5.4.0
         version: 5.4.0(eslint-config-prettier@10.1.5(eslint@8.57.1))(eslint@8.57.1)(prettier@3.5.3)
       eslint-plugin-react-refresh:
         specifier: ^0.4.20
@@ -1289,6 +1292,16 @@ packages:
     resolution: {integrity: sha512-friS8NEQfHaDbkThxopGk+LuE5v3iY0StruifjQEt7SLbA46OnfgMO15sOTkbpJkol6RB+1l1TYPXh0sCddpvA==}
     cpu: [x64]
     os: [win32]
+
+  '@use-funnel/browser@0.0.14':
+    resolution: {integrity: sha512-1aSj/F+yRCwDEcWG9JWVkXLSqio8UiLm4NMQMRLwpRT5GXuwY6/4SiP6DaDtABa1DGVOW8dbFcH1q2hfzByvlw==}
+    peerDependencies:
+      react: '>=16.8'
+
+  '@use-funnel/core@0.0.11':
+    resolution: {integrity: sha512-a0T4mWXeL+ouMXtmyZn8MbrPZd9JgvFP9iAGAiaiuCvU3tj1jEWCvRjWfLVup3otH/3BBpf4zyi/v28/eLR9PQ==}
+    peerDependencies:
+      react: '>=16.8'
 
   '@yr/monotone-cubic-spline@1.0.3':
     resolution: {integrity: sha512-FQXkOta0XBSUPHndIKON2Y9JeQz5ZeMqLYZVVK93FliNBFm7LNMIZmY6FrMEB9XPcDbE2bekMbZD6kzDkxwYjA==}
@@ -2961,8 +2974,8 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
 
-  synckit@0.11.4:
-    resolution: {integrity: sha512-Q/XQKRaJiLiFIBNN+mndW7S/RHxvwzuZS6ZwmRzUBqJBv/5QIKCEwkBC8GBf8EQJKYnaFs0wOZbKTXBPj8L9oQ==}
+  synckit@0.11.6:
+    resolution: {integrity: sha512-2pR2ubZSV64f/vqm9eLPz/KOvR9Dm+Co/5ChLgeHl0yEDRc6h5hXHoxEQH8Y5Ljycozd3p1k5TTSVdzYGkPvLw==}
     engines: {node: ^14.18.0 || >=16.0.0}
 
   text-table@0.2.0:
@@ -4557,6 +4570,15 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.7.2':
     optional: true
 
+  '@use-funnel/browser@0.0.14(react@18.3.1)':
+    dependencies:
+      '@use-funnel/core': 0.0.11(react@18.3.1)
+      react: 18.3.1
+
+  '@use-funnel/core@0.0.11(react@18.3.1)':
+    dependencies:
+      react: 18.3.1
+
   '@yr/monotone-cubic-spline@1.0.3': {}
 
   acorn-jsx@5.3.2(acorn@8.14.1):
@@ -5225,7 +5247,7 @@ snapshots:
       eslint: 8.57.1
       prettier: 3.5.3
       prettier-linter-helpers: 1.0.0
-      synckit: 0.11.4
+      synckit: 0.11.6
     optionalDependencies:
       eslint-config-prettier: 10.1.5(eslint@8.57.1)
 
@@ -6594,10 +6616,9 @@ snapshots:
       csso: 5.0.5
       picocolors: 1.1.1
 
-  synckit@0.11.4:
+  synckit@0.11.6:
     dependencies:
       '@pkgr/core': 0.2.4
-      tslib: 2.8.1
 
   text-table@0.2.0: {}
 

@@ -1,42 +1,12 @@
 import React, { useMemo } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import dayjs from 'dayjs';
 
+import { getMembers, RawMember } from '@/apis/adminMembers';
 import { FilterType } from '@/types/filter.type';
-
+import { filtersToParams } from '@/utils/memberParams';
 const PAGE_SIZE = 8;
-const API_URL = process.env.API_URL || 'http://localhost:8080';
-
-/**
- * API 응답 타입
- */
-interface RawMember {
-  id: number;
-  name: string;
-  email: string;
-  sex: 'MALE' | 'FEMALE';
-  birthDate: string;
-  createdAt: string;
-  hasLoan: boolean;
-  lastLoginAt: string;
-  loanTransactionCount: number;
-  memberStatus: 'ACTIVE' | 'WITHDRAWN' | 'SUSPENDED';
-  [key: string]: unknown;
-}
-
-interface PaginationInfo {
-  currentPage: number;
-  pageSize: number;
-  totalElements: number;
-  totalPages: number;
-}
-
-interface ApiResponse {
-  members: RawMember[];
-  paginationInfo: PaginationInfo;
-}
 
 /**
  * 고객 테이블 행 데이터 타입
@@ -98,60 +68,34 @@ function getSex(sex: RawMember['sex']) {
  * @since 2025.05.13
  * @author 권민지
  */
-function useCustomerQueryParams(filters: FilterType, page: number, size: number = PAGE_SIZE) {
-  return useMemo(() => {
-    const params: Record<string, string> = {};
-
-    if (filters.name) params.name = filters.name;
-    if (filters.sex && filters.sex !== 'ALL') params.sex = filters.sex;
-    if (filters.birthDateRange && filters.birthDateRange[0] && filters.birthDateRange[1]) {
-      params.birthDateStart = filters.birthDateRange[0];
-      params.birthDateEnd = filters.birthDateRange[1];
-    }
-    if (filters.memberStatus && filters.memberStatus !== 'ALL')
-      params.memberStatus = filters.memberStatus;
-    if (filters.createdDateRange && filters.createdDateRange[0] && filters.createdDateRange[1]) {
-      params.startDate = filters.createdDateRange[0];
-      params.endDate = filters.createdDateRange[1];
-    }
-    if (filters.hasLoan && filters.hasLoan !== 'ALL') params.hasLoan = filters.hasLoan;
-    if (filters.transactionCountMin)
-      params.transactionCountMin = String(filters.transactionCountMin);
-    if (filters.transactionCountMax)
-      params.transactionCountMax = String(filters.transactionCountMax);
-    params.page = String(page - 1);
-    params.size = String(size);
-    return params;
-  }, [filters, page, size]);
+function useMembersQueryParams(filters: FilterType, page: number, size: number = 8) {
+  return useMemo(() => filtersToParams(filters, page, size), [filters, page, size]);
 }
 
 /**
  * 관리자 회원 목록 조회 API
  * @param filters 조회 필터
- * @param adminToken 관리자 인증 토큰
+ * @param accessToken 인증 토큰
  * @param page 페이지 번호
  * @param size 페이지 크기 (기본값: 8)
  *
  * @since 2025.05.13
  * @author 권민지
  */
-export const useCustomersQuery = (
+export const useMembersQuery = (
   filters: FilterType,
-  adminToken: string,
+  accessToken: string,
   page: number,
   size: number = PAGE_SIZE
 ) => {
-  const params = useCustomerQueryParams(filters, page, size);
-  const queryKey = ['customers', JSON.stringify(params), adminToken];
+  const params = useMembersQueryParams(filters, page, size);
+  const queryKey = ['customers', JSON.stringify(params), accessToken];
 
-  return useQuery({
+  const queryResult = useQuery({
     queryKey,
     queryFn: async () => {
       try {
-        const { data } = await axios.get<ApiResponse>(`${API_URL}/api/admin/members/search`, {
-          params,
-          headers: { Authorization: `Bearer ${adminToken}` },
-        });
+        const data = await getMembers(params, accessToken);
 
         const { members, paginationInfo } = data;
         const mappedMembers: CustomerTableRow[] = members.map((member, idx) => ({
@@ -178,7 +122,13 @@ export const useCustomersQuery = (
         throw new Error('Failed to fetch customer data');
       }
     },
-    enabled: !!adminToken,
+    enabled: !!accessToken,
     staleTime: 1000 * 30,
   });
+
+  return {
+    ...queryResult,
+    members: queryResult.data?.members ?? [],
+    paginationInfo: queryResult.data?.paginationInfo ?? {},
+  };
 };
