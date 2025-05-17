@@ -11,8 +11,7 @@ import {
 } from './CreditStep.style';
 import { Container } from '../LoanApplicationFunnel.style';
 import TextField from '@/components/TextField/TextField';
-import { RESIDENT_TYPE, RESIDENT_TYPE_OPTIONS } from '@/constants/loan.constant';
-import { useState } from 'react';
+import { RESIDENT_TYPE_OPTIONS } from '@/constants/loan.constant';
 
 interface Props {
   value: FunnelContextMap['신용정보입력'];
@@ -34,14 +33,14 @@ export const CreditStep = ({ value, onChange, onNext }: Props) => {
             value={value.annualIncome}
             onChange={(updatedValue) => onChange({ ...value, annualIncome: updatedValue })}
           >
-            <TextField.Label>신용 점수</TextField.Label>
+            <TextField.Label>연소득</TextField.Label>
             <TextField.TextFieldBox />
           </TextField>
           <TextField
             value={value.creditGrade}
             onChange={(updatedValue) => onChange({ ...value, creditGrade: updatedValue })}
           >
-            <TextField.Label>연소득</TextField.Label>
+            <TextField.Label>신용 점수</TextField.Label>
             <TextField.TextFieldBox />
           </TextField>
         </FlexContainer>
