@@ -93,13 +93,13 @@ const ReviewResultAndLoanApplication = ({ value, onChange, onSubmit }: ReviewRes
           </SubDescriptionContainer>
           <MiniTitle>대출 상환 기간</MiniTitle>
           <SliderContainer>
-            <SliderTitle>{value.repatmentMonth}개월</SliderTitle>
+            <SliderTitle>{value.repaymentMonth}개월</SliderTitle>
             <Slider
               type="range"
               min={1}
               max={12}
-              value={value.repatmentMonth}
-              onChange={(e) => onChange({ ...value, repatmentMonth: Number(e.target.value) || 0 })}
+              value={value.repaymentMonth}
+              onChange={(e) => onChange({ ...value, repaymentMonth: Number(e.target.value) || 0 })}
             ></Slider>
           </SliderContainer>
         </LoanApplicationContainer>

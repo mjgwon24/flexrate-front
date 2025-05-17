@@ -21,7 +21,6 @@ import { useRouter } from 'next/navigation';
 export type FunnelContextMap = {
   직업정보입력: {
     employmentType: string;
-    hireDate: string;
   };
   신용정보입력: {
     annualIncome: string;
@@ -34,7 +33,7 @@ export type FunnelContextMap = {
   };
   대출신청접수: {
     loanAmount: number;
-    repatmentMonth: number;
+    repaymentMonth: number;
   };
 };
 
@@ -45,7 +44,6 @@ export default function LoanApplicationFunnel() {
       step: '직업정보입력',
       context: {
         employmentType: '',
-        hireDate: '',
       },
     },
   });
@@ -84,73 +82,64 @@ export default function LoanApplicationFunnel() {
       </JobFlexStartContainer>
       <Container>
         <funnel.Render
-          직업정보입력={({ context: stepContext, history, step }) => {
-            const context = stepContext;
-            const setContext = (ctx: FunnelContextMap['직업정보입력']) => {
-              history.replace(step, ctx);
-            };
-            const next = (nextStep: keyof FunnelContextMap) => {
-              history.push(nextStep);
-            };
-
-            return (
-              <JobStep value={context} onChange={setContext} onNext={() => next('신용정보입력')} />
-            );
-          }}
-          신용정보입력={({ context: stepContext, history, step }) => {
-            const context = stepContext;
-            const setContext = (ctx: FunnelContextMap['신용정보입력']) => {
-              history.replace(step, ctx);
-            };
-            const next = (nextStep: keyof FunnelContextMap) => {
-              history.push(nextStep);
-            };
-
-            return (
+          직업정보입력={funnel.Render.with({
+            render: ({ context }) => (
+              <JobStep
+                value={context}
+                onChange={(ctx) => funnel.history.replace('직업정보입력', ctx)}
+                onNext={() =>
+                  funnel.history.push('신용정보입력', (prev) => ({
+                    ...prev,
+                    annualIncome: '',
+                    creditGrade: '',
+                    residenceType: '',
+                    isBankrupt: false,
+                  }))
+                }
+              />
+            ),
+          })}
+          신용정보입력={funnel.Render.with({
+            render: ({ context }) => (
               <CreditStep
                 value={context}
-                onChange={setContext}
-                onNext={() => next('대출목적입력')}
+                onChange={(ctx) => funnel.history.replace('신용정보입력', ctx)}
+                onNext={() =>
+                  funnel.history.push('대출목적입력', (prev) => ({
+                    ...prev,
+                    loanPurpose: '',
+                  }))
+                }
               />
-            );
-          }}
-          대출목적입력={({ context: stepContext, history, step }) => {
-            const context = stepContext;
-            const setContext = (ctx: FunnelContextMap['대출목적입력']) => {
-              history.replace(step, ctx);
-            };
-
-            return (
+            ),
+          })}
+          대출목적입력={funnel.Render.with({
+            render: ({ context }) => (
               <PurposeStep
                 value={context}
-                onChange={setContext}
+                onChange={(ctx) => funnel.history.replace('대출목적입력', ctx)}
                 onSubmit={async () => {
-                  // TODO: 대출 심사 결과 요청 api 함수 호출
-                  history.push('대출신청접수', {
+                  // ✅ TODO: 대출 심사 결과 요청 api 함수 호출
+                  funnel.history.push('대출신청접수', {
                     loanAmount: 0,
-                    repatmentMonth: 0,
+                    repaymentMonth: 0,
                   });
                 }}
               />
-            );
-          }}
-          대출신청접수={({ context: stepContext, history, step }) => {
-            const context = stepContext;
-            const setContext = (ctx: FunnelContextMap['대출신청접수']) => {
-              history.replace(step, ctx);
-            };
-
-            return (
+            ),
+          })}
+          대출신청접수={funnel.Render.with({
+            render: ({ context }) => (
               <ReviewResultAndLoanApplication
                 value={context}
-                onChange={setContext}
+                onChange={(ctx) => funnel.history.replace('대출신청접수', ctx)}
                 onSubmit={() => {
                   console.log('최종 대출 신청 제출:', context);
                   router.push('/loan-result');
                 }}
               />
-            );
-          }}
+            ),
+          })}
         />
       </Container>
     </Wrapper>
