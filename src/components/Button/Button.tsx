@@ -1,11 +1,18 @@
 'use client';
-
 import { ButtonContainer } from './Button.style';
-import { ButtonProps } from './Button.type';
+import { ButtonProps, getButtonStyle } from './Button.type';
 
-const Button = ({ text, size, varient, ...props }: ButtonProps) => {
+const Button = ({ text, size, varient = 'PRIMARY', selected = false, ...props }: ButtonProps) => {
+  const { backgroundColor, borderColor, textColor } = getButtonStyle(varient, selected);
+
   return (
-    <ButtonContainer $size={size} $varient={varient} {...props}>
+    <ButtonContainer
+      $size={size}
+      $bg={backgroundColor}
+      $border={borderColor}
+      $color={textColor}
+      {...props}
+    >
       {text}
     </ButtonContainer>
   );
