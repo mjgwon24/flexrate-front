@@ -105,3 +105,7 @@ export const ContentSubTextContent = styled.div`
 export const Spacing = styled.div`
   height: 9px;
 `;
+
+export const ButtonContainer = styled.div`
+  width: calc(100% - 44px);
+`;
