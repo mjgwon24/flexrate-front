@@ -1,5 +1,9 @@
 'use client';
 
+import { useEffect } from "react";
+
+import { useRouter } from "next/navigation";
+
 import {
   MainContainer, SubContainer,
   SubTitle,
@@ -13,8 +17,23 @@ import {
   Container,
   Wrapper,
 } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
+import { useInitUser } from "@/hooks/useInitUser";
+import type { User } from "@/stores/userStore";
+import { useUserStore } from "@/stores/userStore";
 
 const MyPage = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+    if (!token) {
+      router.replace('/not-found');
+    }
+  }, [router]);
+
+  useInitUser();
+  const user: User | null = useUserStore((state) => state.user);
+
   return (
     <Wrapper>
       <Header type="마이페이지" backIcon={true} />
@@ -27,20 +46,20 @@ const MyPage = () => {
             <TableItem>
               <TableItemKey>이름</TableItemKey>
               <TableItemValue>
-                권민지
+                {user?.name}
               </TableItemValue>
             </TableItem>
             <TableItem>
               <TableItemKey>이메일</TableItemKey>
               <TableItemValue>
-                gmail.com
+                {user?.email}
               </TableItemValue>
             </TableItem>
           </SubContainer>
 
           <SubContainer>
             <SubTitle>소비 성향</SubTitle>
-            <Banner type={'SAVING'} />
+            <Banner type={user?.consumptionType} />
           </SubContainer>
         </MainContainer>
 

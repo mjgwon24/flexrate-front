@@ -29,6 +29,7 @@ export const TableItem = styled.span`
   flex-direction: row;
   justify-content: space-between;
   border-bottom: 1px solid ${semanticColor.border.inactive.default};
+  min-width: fit-content;
 
   &:last-child {
     border: none;
@@ -38,11 +39,13 @@ export const TableItem = styled.span`
 export const TableItemKey = styled.span`
   ${typoStyleMap['body2_m']};
   color: ${semanticColor.text.normal.sub2};
+  min-width: fit-content;
 `;
 
 export const TableItemValue = styled.span<{ $isStrong?: boolean }>`
   ${typoStyleMap['body2_b']};
   color: ${({ $isStrong }) =>
   $isStrong ? semanticColor.text.normal.accent : semanticColor.text.normal.sub2};
+  min-width: fit-content;
 `;
 
