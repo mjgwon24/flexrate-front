@@ -8,8 +8,11 @@ import { Button, Spin } from 'antd';
 import dayjs from 'dayjs';
 import { useParams, useRouter } from 'next/navigation';
 
+import { fetchCustomerDetail } from '@/apis/customer';
+import { fetchTransactionHistory } from '@/apis/transactions';
 import { TitleRow, Total } from '@/components/admin/Conditionbar/Conditionbar.style';
 import DataTable from '@/components/admin/DataTable/DataTable';
+import ErrorBlock from '@/components/admin/ErrorBlock/ErrorBlock';
 import InfoBlock from '@/components/admin/InfoBlock/InfoBlock';
 import {
   InfoContainer,
@@ -30,30 +33,23 @@ import {
 
 import { PageContainer, ContentColumn, HeaderContainer, Title } from './page.style';
 
-/**
- * 관리자 페이지 - 고객 상세 정보 조회 페이지
- * @since 2025.05.12
- * @author 허연규
- */
 const CustomerDetailPage = () => {
   const params = useParams();
   const router = useRouter();
   const memberId = params.userId as string;
   const [currentPage, setCurrentPage] = useState(0);
   const PAGE_SIZE = 4;
-
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-    if (!token) {
+    const accessToken = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+    if (!accessToken) {
       router.replace('/admin/not-found');
     } else {
-      setAccessToken(token);
+      setAccessToken(accessToken);
     }
   }, [router]);
 
-  // 고객 상세 정보 조회 API 호출
   const {
     data: customerData,
     isLoading: customerLoading,
@@ -64,26 +60,14 @@ const CustomerDetailPage = () => {
     enabled: !!accessToken,
   });
 
-  // 거래 내역 조회 API 호출
   const { data: transactionData, isLoading: transactionLoading } = useQuery({
     queryKey: ['transactionHistory', memberId, currentPage],
-    queryFn: async () => {
-      const url = `http://localhost:8080/api/admin/loans/members/${memberId}/transactions?page=${currentPage}&size=${PAGE_SIZE}`;
-
-      const res = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!res.ok) throw new Error('Failed to fetch transaction history');
-      return res.json();
-    },
+    queryFn: () => fetchTransactionHistory(memberId, accessToken, currentPage, PAGE_SIZE),
     enabled: !!accessToken,
     placeholderData: (previousData) => previousData,
     staleTime: 1000 * 60,
   });
 
-  // 뒤로가기 핸들러
   const handleGoBack = () => {
     router.back();
   };
@@ -148,21 +132,9 @@ const CustomerDetailPage = () => {
   if (customerError || !customerData) {
     return (
       <PageContainer>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '60vh',
-            gap: '16px',
-          }}
-        >
-          <div>고객 정보를 불러오는데 실패했습니다.</div>
-          <Button type="primary" onClick={handleGoBack}>
-            목록으로 돌아가기
-          </Button>
-        </div>
+        <ContentColumn>
+          <ErrorBlock message="고객 정보를 불러오는데 실패했습니다." onRetry={handleGoBack} />
+        </ContentColumn>
       </PageContainer>
     );
   }
@@ -206,7 +178,11 @@ const CustomerDetailPage = () => {
         </InfoBlock>
         <div style={{ display: 'flex', gap: '32px' }}>
           {/* 고객 소비 성향 정보 블록 */}
-          <div style={{ flex: '0 0 500px' }}>
+          <div
+            style={{
+              flex: customerData.hasLoan ? '0 0 500px' : '1',
+            }}
+          >
             <InfoBlock>
               <SectionTitle>고객 정보</SectionTitle>
               <InfoContainer>
@@ -223,7 +199,7 @@ const CustomerDetailPage = () => {
               </InfoContainer>
             </InfoBlock>
           </div>
-          {/* 대출 정보 블록 - 대출이 있는 경우에만 표시 */}
+          {/* 대출 정보 블록 */}
           {customerData.hasLoan && (
             <div style={{ flex: 1 }}>
               <InfoBlock>
@@ -280,25 +256,6 @@ const CustomerDetailPage = () => {
       </ContentColumn>
     </PageContainer>
   );
-};
-
-// 고객 상세 정보 조회 API 호출 함수
-const fetchCustomerDetail = async (memberId: string, adminToken: string | null) => {
-  const url = `http://localhost:8080/api/admin/members/${memberId}`;
-
-  const res = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${adminToken}`,
-    },
-  });
-
-  if (!res.ok) {
-    throw new Error('고객 정보 조회 실패');
-  }
-
-  return res.json();
 };
 
 export default CustomerDetailPage;
