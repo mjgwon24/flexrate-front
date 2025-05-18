@@ -11,9 +11,10 @@ import {
   SubTitle,
   TableItem,
   TableItemKey,
-  TableItemValue
+  TableItemValue, BtnContainer
 } from "@/app/mypage/page.style";
 import Banner from "@/components/Banner/Banner";
+import Button from '@/components/Button/Button';
 import Header from "@/components/Header/Header";
 import {
   Container,
@@ -24,6 +25,10 @@ import { useUserStore } from "@/stores/userStore";
 
 const MyPage = () => {
   const router = useRouter();
+
+  const handleClick = () => {
+    router.push('/mypage/edit');
+  };
 
   useEffect(() => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
@@ -63,6 +68,10 @@ const MyPage = () => {
             <Banner type={user?.consumptionType} />
           </SubContainer>
         </MainContainer>
+
+        <BtnContainer>
+          <Button text="정보 변경하기" onClick={handleClick} />
+        </BtnContainer>
 
       </Container>
     </Wrapper>
