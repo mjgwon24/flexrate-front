@@ -8,7 +8,7 @@ export type RightContent =
   | { type: 'TIMER'; text: string };
 
 export interface TextFieldContextProps {
-  value: string | number;
+  value?: string | number;
   onChange: (v: string) => void;
   isError?: boolean;
   isDisabled?: boolean;

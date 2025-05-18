@@ -13,7 +13,6 @@ export default function LoginPage() {
   return (
     <Wrapper>
       <Header />
-
       {step === 'selector' && (
         <LoginSelector
           onSelectEmail={() => setStep('form')}
@@ -23,7 +22,6 @@ export default function LoginPage() {
           onSelectPassword={() => setStep('form')}
         />
       )}
-
       {step === 'form' && <LoginForm />}
     </Wrapper>
   );
