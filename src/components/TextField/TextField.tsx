@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { TextFieldContext } from './TextFieldContext';
 import { TextFieldProps } from './TextField.type';
 import * as S from './TextField.style';
@@ -31,22 +31,26 @@ const TextField = ({
   );
 };
 
-const TextFieldBox = () => {
+const TextFieldBox = ({ placeholder }: { placeholder?: string }) => {
   const { value, onChange, isError, isDisabled } = useTextFieldContext();
+  const [focused, setFocused] = useState(false);
 
   const inputType = getInputType({ isError, isDisabled, value }) ?? 'INACTIVE';
+  const displayValue = value === '0' ? '' : value;
 
   return (
     <S.InputWrapper>
       <S.StyledInput
         id="text-field"
-        value={value}
+        value={displayValue}
         onChange={(e) => onChange(e.target.value)}
         $inputType={inputType}
         disabled={isDisabled}
-        placeholder="입력하세요"
+        placeholder={placeholder}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
       />
-      <S.RightContent>{<RightIcon />}</S.RightContent>
+      <S.RightContent>{<RightIcon focused={focused} />}</S.RightContent>
     </S.InputWrapper>
   );
 };
@@ -66,10 +70,12 @@ const Label = ({
   );
 };
 
-const RightIcon = () => {
-  const { rightContent, onChange } = useTextFieldContext();
+const RightIcon = ({ focused }: { focused: boolean }) => {
+  const { rightContent, value, onChange } = useTextFieldContext();
 
   if (!rightContent) return null;
+
+  const hasValue = !!value;
 
   switch (rightContent.type) {
     case 'CHANGE':
@@ -80,6 +86,7 @@ const RightIcon = () => {
       );
 
     case 'DELETE':
+      if (!focused || !hasValue) return null;
       return (
         <DeleteIcon
           onClick={() => {

@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import {
+  ButtonContainer,
   Content,
   ContentBox,
   ContentSubTextContainer,
@@ -60,7 +61,9 @@ const IntroduceHome = ({ user }: { user: boolean }) => {
         </ContentBox>
       </IntroduceContentContainer>
       <Spacing />
-      <Button size="XL" text="대출 신청하기" varient="PRIMARY" />
+      <ButtonContainer>
+        <Button size="XL" text="대출 신청하기" varient="PRIMARY" />
+      </ButtonContainer>
     </Wrapper>
   );
 };
