@@ -5,6 +5,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import TextField from '@/components/TextField/TextField';
 import Button from '@/components/Button/Button';
+import {
+  Container,
+  Title,
+  FormContainer,
+  BtnContainer,
+} from './../EmailForm/EmailForm.style'
 
 const schema = z.object({
   password: z
@@ -34,31 +40,34 @@ export default function PasswordForm({ onNext }: { onNext: (password: string) =>
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4">
-      <Controller
-        name="password"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            value={field.value}
-            onChange={field.onChange}
-            isError={!!errors.password}
-            rightContent={{
-              type: 'DELETE',
-              onClick: () => field.onChange(''),
-            }}
-            
-          >
-            <TextField.TextFieldBox 
-            type="password" 
-            placeholder="비밀번호 입력 (영문+숫자 포함 8자 이상)"
-            />
-            <TextField.ErrorText message={errors.password?.message ?? ''} />
-          </TextField>
-        )}
-      />
-
-      <Button type="submit" text="다음" disabled={!isValid} />
-    </form>
+    <Container>
+      <Title>비밀번호를 입력해주세요</Title>
+      <FormContainer onSubmit={handleSubmit(onSubmit)}>
+        <Controller
+          name="password"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              value={field.value}
+              onChange={field.onChange}
+              isError={!!errors.password}
+              rightContent={{
+                type: 'DELETE',
+                onClick: () => field.onChange(''),
+              }}
+            >
+              <TextField.TextFieldBox
+                type="password"
+                placeholder="비밀번호 입력 (영문+숫자 포함 8자 이상)"
+              />
+              <TextField.ErrorText message={errors.password?.message ?? ''} />
+            </TextField>
+          )}
+        />
+        <BtnContainer>
+          <Button type="submit" text="다음" disabled={!isValid} />
+        </BtnContainer>
+      </FormContainer>
+    </Container>
   );
 }
