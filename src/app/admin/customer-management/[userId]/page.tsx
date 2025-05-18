@@ -63,7 +63,7 @@ const CustomerDetailPage = () => {
   const { data: transactionData, isLoading: transactionLoading } = useQuery({
     queryKey: ['transactionHistory', memberId, currentPage],
     queryFn: () => fetchTransactionHistory(memberId, accessToken, currentPage, PAGE_SIZE),
-    enabled: !!accessToken,
+    enabled: !!accessToken && !!customerData?.hasLoan,
     placeholderData: (previousData) => previousData,
     staleTime: 1000 * 60,
   });
@@ -92,13 +92,14 @@ const CustomerDetailPage = () => {
     status: string;
   }
 
-  const transactionTableData =
-    transactionData?.transactionHistories?.map((transaction: Transaction) => ({
-      ...transaction,
-      key: transaction.transactionId,
-      userId: transaction.memberId,
-      formattedDate: dayjs(transaction.occurredAt).format('YYYY-MM-DD'),
-    })) || [];
+  const transactionTableData = customerData?.hasLoan
+    ? transactionData?.transactionHistories?.map((transaction: Transaction) => ({
+        ...transaction,
+        key: transaction.transactionId,
+        userId: transaction.memberId,
+        formattedDate: dayjs(transaction.occurredAt).format('YYYY-MM-DD'),
+      })) || []
+    : [];
 
   const showPagination = transactionTableData.length > 0 && transactionData?.paginationInfo;
 
