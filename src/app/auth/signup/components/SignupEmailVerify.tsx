@@ -2,18 +2,21 @@
 // @author 윤영찬
 // @since 2025-05-13
 
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
-export const SignupEmailVerify: React.FC<{ defaultEmail: string; onVerify: () => void }> = ({ defaultEmail, onVerify }) => {
-  const [verificationCode, setVerificationCode] = useState('');
+export const SignupEmailVerify: React.FC<{
+  defaultEmail: string
+  onVerify: (context: { email: string; verificationCode: string }) => void
+}> = ({ defaultEmail, onVerify }) => {
+  const [verificationCode, setVerificationCode] = useState('')
 
   const handleVerify = () => {
-    if (verificationCode.trim()) {
-      onVerify();
-    } else {
-      alert('인증번호를 입력해주세요.');
+    if (!verificationCode.trim()) {
+      alert('인증번호를 입력해주세요.')
+      return
     }
-  };
+    onVerify({ email: defaultEmail, verificationCode })
+  }
 
   return (
     <div className="p-4 flex flex-col items-center">
@@ -35,7 +38,7 @@ export const SignupEmailVerify: React.FC<{ defaultEmail: string; onVerify: () =>
         인증하기
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default SignupEmailVerify;
+export default SignupEmailVerify

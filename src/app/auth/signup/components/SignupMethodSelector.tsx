@@ -4,8 +4,9 @@
 
 'use client'
 import React from 'react'
+import { SignupContextMap } from '../types/signup'
 
-export const SignupMethodSelector: React.FC<{ onSelect: (method: string) => void }> = ({ onSelect }) => (
+export const SignupMethodSelector: React.FC<{ onSelect: (method: SignupContextMap['method']['method']) => void }> = ({ onSelect }) => (
   <div className="p-4 flex flex-col items-center">
     <h2 className="text-2xl font-bold mb-4">인증 방법 선택</h2>
     <button onClick={() => onSelect('passkey')} className="w-full p-3 bg-gray-200 rounded mb-2">Passkey</button>

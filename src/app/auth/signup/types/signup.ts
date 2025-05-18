@@ -1,30 +1,22 @@
-export type SignupSteps =
-  | 'emailRequest'
-  | 'emailVerify'
-  | 'password'
-  | 'method'
-  | 'gender'
-  | 'birthday'
-  | 'agreement'
-  | 'analysisLoading'
-  | 'analysisResult'
-  | 'usergoal'
-  | 'complete';
-
-export interface SignupContextMap {
-  emailRequest: {};
-  emailVerify: { email: string };
-  password: { email: string; password: string };  // password 필드 추가
-  method: { email: string; password: string };
-  gender: { email: string; password: string; method: string };
-  birthday: { email: string; password: string; method: string; gender: string };
-  agreement: { email: string; password: string; method: string; gender: string; birthday: string };
-  analysisLoading: { email: string; password: string; method: string; gender: string; birthday: string };
-  analysisResult: { email: string; password: string; method: string; gender: string; birthday: string };
-  usergoal: { email: string; password: string; method: string; gender: string; birthday: string };
-  complete: { email: string; password: string; method: string; gender: string; birthday: string };
+// 기본 데이터 타입 (최종 완성 형태)
+export interface SignupData {
+  email: string;
+  password: string;
+  method: 'passkey' | 'faceid' | 'pin';
+  gender: string;
+  birthday: string;
 }
 
-export type SignupContext = Partial<
-  SignupContextMap[keyof SignupContextMap]
->;
+export type SignupContextMap = {
+  emailRequest: Partial<Pick<SignupData, 'email'>>;
+  emailVerify: Required<Pick<SignupData, 'email'>>;
+  password: Required<Pick<SignupData, 'email' | 'password'>>;
+  method: Required<Pick<SignupData, 'email' | 'password' | 'method'>>;
+  gender: Required<Pick<SignupData, 'email' | 'password' | 'method' | 'gender'>>;
+  birthday: Required<Pick<SignupData, 'email' | 'password' | 'method' | 'gender' | 'birthday'>>;
+  agreement: SignupData;
+  analysisLoading: SignupData;
+  analysisResult: SignupData;
+  usergoal: SignupData;
+  complete: SignupData;
+};
