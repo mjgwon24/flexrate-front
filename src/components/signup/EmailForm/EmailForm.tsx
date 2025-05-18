@@ -48,6 +48,7 @@ export default function EmailForm({ onNext }: { onNext: (email: string) => void 
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
+      mode: 'cors', // 추가
     });
     console.log('Fetch response status:', res.status);
     if (!res.ok) throw new Error(`서버 응답 에러: ${res.status}`);
@@ -143,6 +144,7 @@ const handleVerify = async () => {
         <BtnContainer>
           {!codeSent ? (
             <Button
+              type="button"
               text="인증요청하기"
               onClick={handleRequestCode}
               disabled={!dirtyFields.email || !!errors.email}
