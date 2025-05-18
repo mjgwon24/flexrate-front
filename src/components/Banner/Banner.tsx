@@ -20,7 +20,7 @@ const Banner = ({ type }: BannerProps) => {
         </BannerLabel>
         <BannerDesc>{meta.description}</BannerDesc>
       </BannerContent>
-      <Image src={meta.icon} alt="webee_balance" width={50} height={50} />
+      <Image src={meta.icon} alt={`${meta.label} icon`} width={50} height={50} />
     </BannerContainer>
   );
 };
