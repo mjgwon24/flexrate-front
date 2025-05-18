@@ -19,7 +19,7 @@ interface HeaderProps {
   user?: boolean;
 }
 
-const Header = ({ type = '대출 신청', backIcon = false, user = false }: HeaderProps) => {
+const Header = ({ type, backIcon = false, user = false }: HeaderProps) => {
   const router = useRouter();
 
   const handleBack = () => {

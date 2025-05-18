@@ -8,7 +8,7 @@ import { getInputType } from '@/lib/getInputType';
 import ErrorIcon from '@/assets/icons/error_18.svg';
 import DeleteIcon from '@/assets/icons/delete_24.svg';
 
-const TextField = ({
+const TextFieldComponent = ({
   children,
   value,
   onChange,
@@ -31,7 +31,7 @@ const TextField = ({
   );
 };
 
-const TextFieldBox = ({ placeholder }: { placeholder?: string }) => {
+const TextFieldBox = ({ type, placeholder }: { type?: string; placeholder?: string }) => {
   const { value, onChange, isError, isDisabled } = useTextFieldContext();
   const [focused, setFocused] = useState(false);
 
@@ -42,6 +42,7 @@ const TextFieldBox = ({ placeholder }: { placeholder?: string }) => {
     <S.InputWrapper>
       <S.StyledInput
         id="text-field"
+        type={type}
         value={displayValue}
         onChange={(e) => onChange(e.target.value)}
         $inputType={inputType}
@@ -89,9 +90,10 @@ const RightIcon = ({ focused }: { focused: boolean }) => {
       if (!focused || !hasValue) return null;
       return (
         <DeleteIcon
-          onClick={() => {
+          onMouseDown={(e: MouseEvent) => {
+            e.preventDefault();
             onChange('');
-            rightContent.onClick();
+            rightContent.onClick?.();
           }}
         />
       );
@@ -119,8 +121,10 @@ const ErrorText = ({ message }: { message: string }) => {
   );
 };
 
-TextField.TextFieldBox = TextFieldBox;
-TextField.Label = Label;
-TextField.ErrorText = ErrorText;
+const TextField = Object.assign(TextFieldComponent, {
+  Label,
+  TextFieldBox,
+  ErrorText,
+});
 
 export default TextField;
