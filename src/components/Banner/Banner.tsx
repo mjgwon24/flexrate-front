@@ -6,7 +6,11 @@ import { BannerContainer, BannerContent, BannerLabel, BannerDesc } from './Banne
 import { BannerProps, bannerMetaMap } from './Banner.type';
 
 const Banner = ({ type }: BannerProps) => {
-  const meta = bannerMetaMap[type];
+  const meta = type ? bannerMetaMap[type] : undefined;
+
+  if (!meta) {
+    return <></>;
+  }
 
   return (
     <BannerContainer>

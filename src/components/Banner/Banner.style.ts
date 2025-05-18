@@ -10,7 +10,7 @@ export const BannerContainer = styled.div`
     border: 1px solid ${semanticColor.border.inactive.default};
     padding: 9px 21px;
     border-radius: 15px;
-    width: fit-content;
+    min-width: fit-content;
     background: ${semanticColor.bg.default};
 `;
 
@@ -19,6 +19,7 @@ export const BannerContent = styled.div`
     flex-direction: row;
     align-items: center;
     width: 255px;
+    min-width: fit-content;
 `;
 
 interface BannerLabelProps {
@@ -37,6 +38,7 @@ export const BannerLabel = styled.div<BannerLabelProps>`
   font-size: 14px;
   font-weight: 600;
   margin-right: 10px;
+  min-width: fit-content;
 `;
 
 export const BannerDesc = styled.p`
@@ -44,4 +46,5 @@ export const BannerDesc = styled.p`
     font-weight: 600;
     margin: 0;
     color: ${semanticColor.text.normal.primary};
+    min-width: fit-content;
 `;
