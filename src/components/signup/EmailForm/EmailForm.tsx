@@ -35,8 +35,22 @@ export default function EmailForm({ onNext }: { onNext: (email: string) => void 
   const handleRequestCode = async () => {
     const isEmailValid = await trigger('email');
     if (!isEmailValid) return;
-    setCodeSent(true);
+
+    try {
+      // API 호출: 인증메일 요청
+      await fetch('/api/auth/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      setCodeSent(true);
+    } catch (error) {
+      console.error(error);
+      alert('인증메일 발송에 실패했습니다.');
+    }
   };
+
 
   const handleVerify = async () => {
     const isCodeValid = await trigger('code');

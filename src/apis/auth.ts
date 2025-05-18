@@ -13,3 +13,24 @@ export async function getMyPageUser(token: string) {
 
   return data;
 }
+
+
+export interface SignupRequest {
+  email: string;
+  password: string;
+  sex: 'MALE' | 'FEMALE';
+  name: string;
+  birthDate: string;
+  consumptionType: string;
+  consumeGoal: string
+}
+
+export interface SignupResponse {
+  userId: number;
+  email: string;
+}
+
+export async function signupUser(data: SignupRequest): Promise<SignupResponse> {
+  const response = await axios.post(`${API_URL}/api/auth/signup/password`, data);
+  return response.data;
+}
