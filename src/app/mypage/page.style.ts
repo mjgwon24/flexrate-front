@@ -3,6 +3,11 @@ import styled from "@emotion/styled";
 import { semanticColor } from "@/styles/colors";
 import { typoStyleMap } from "@/styles/typos";
 
+export const Wrapper = styled.div`
+  height: 85vh;
+  overflow-y: auto;
+`;
+
 export const MainContainer = styled.div`
   position: relative;
   margin: 0 auto 40px auto;

@@ -5,7 +5,9 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import {
-  MainContainer, SubContainer,
+  Wrapper,
+  MainContainer,
+  SubContainer,
   SubTitle,
   TableItem,
   TableItemKey,
@@ -15,7 +17,6 @@ import Banner from "@/components/Banner/Banner";
 import Header from "@/components/Header/Header";
 import {
   Container,
-  Wrapper,
 } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
 import { useInitUser } from "@/hooks/useInitUser";
 import type { User } from "@/stores/userStore";
