@@ -12,6 +12,7 @@ import { primitiveColor, semanticColor } from '@/styles/colors';
 import { typoStyleMap } from '@/styles/typos';
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 const categoryMap: Record<string, string> = {
   FOOD: '식비',
@@ -67,6 +68,7 @@ const circleLayouts = [
 ];
 
 const ConsumptionReport = () => {
+  const router = useRouter();
   const topStats = getTopStats(dummyStats);
 
   return (
@@ -141,7 +143,7 @@ const ConsumptionReport = () => {
           </Description>
         </ReportContainer>
         <BtnContainer>
-          <Button size="XL" text="메인 페이지로 이동" />
+          <Button size="XL" text="메인 페이지로 이동" onClick={() => router.push('/')} />
         </BtnContainer>
       </Container>
     </Wrapper>
