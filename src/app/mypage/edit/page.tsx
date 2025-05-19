@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { useRouter } from "next/navigation";
 
+import { requestEmailChange } from "@/apis/auth";
 import { BtnContainer, MainContainer, SubContainer, Wrapper } from "@/app/mypage/page.style";
 import Button from "@/components/Button/Button";
 import Header from "@/components/Header/Header";
@@ -16,22 +17,23 @@ import { User, useUserStore } from "@/stores/userStore";
 const EditPage = () => {
   const router = useRouter();
 
-  useEffect(() => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-    if (!token) {
-      router.replace('/not-found');
-    }
-  }, [router]);
-
   useInitUser();
   const user: User | null = useUserStore((state) => state.user);
-  // const setUser = useUserStore((state) => state.setUser); // 또는 updateEmail 등
+  const setUser = useUserStore((state) => state.setUser);
+
   const [email, setEmail] = useState(() => {
     if (typeof window !== "undefined") {
       return sessionStorage.getItem("pendingEmail") || user?.email || "";
     }
     return user?.email || "";
   });
+
+  useEffect(() => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+    if (!token) {
+      router.replace('/not-found');
+    }
+  }, [router]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -45,20 +47,30 @@ const EditPage = () => {
   const handleBack = () => {router.back();};
   const handleEmailEdit = () => router.push('/mypage/edit-email');
   const handleSave = async () => {
-    // 이메일 저장 API 호출
-
-    if (typeof window !== "undefined") {
-      sessionStorage.removeItem("pendingEmail");
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      router.replace('/not-found');
+      return;
     }
-    // 성공시 userStore 업데이트
-    // const user = useUserStore.getState().user;
-    // setUser(user ? { ...user, email } : { name: '', email });
-    // router.push('/mypage');
+
+    requestEmailChange(token, email)
+      .then(() => {
+        const user = useUserStore.getState().user;
+        setUser(user ? { ...user, email } : null);
+      })
+      .catch((error) => {
+        console.error("Error updating email:", error);
+        alert("이메일 변경에 실패했습니다.");
+      })
+      .finally(() => {
+        if (typeof window !== "undefined") {
+          sessionStorage.removeItem("pendingEmail");
+          router.push('/mypage');
+        }
+      });
   };
 
   const isSaveEnabled = email && user?.email !== undefined && email !== user.email;
-
-  console.log(`email: ${email}, user.email: ${user?.email}`);
 
   return (
     <Wrapper>
