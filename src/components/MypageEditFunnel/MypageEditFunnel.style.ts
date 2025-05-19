@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
 
 export const MainContainer = styled.div`
     position: relative;
-    margin: 130px auto 40px auto;
+    margin: 10% auto 40px auto;
     width: 100%;
     display: flex;
     flex-direction: column;

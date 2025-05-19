@@ -16,7 +16,7 @@ export type MypageEditFunnelContextMap = {
   완료: {};
 };
 
-export default function MypageEditFunnel() {
+const MypageEditFunnel = () => {
   const funnel = useFunnel<MypageEditFunnelContextMap>({
     id: 'mypage-edit-email-funnel',
     initial: {
@@ -57,3 +57,5 @@ export default function MypageEditFunnel() {
     </Wrapper>
   );
 }
+
+export default MypageEditFunnel;
