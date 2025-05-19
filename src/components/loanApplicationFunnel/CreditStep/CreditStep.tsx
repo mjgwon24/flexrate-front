@@ -61,22 +61,20 @@ export const CreditStep = ({ value, onChange, onNext }: Props) => {
         <BtnFlexContainer>
           <BtnSectionTitle>개인 회생자 여부</BtnSectionTitle>
           <FlexContainer>
-            <>
-              <Button
-                size="M"
-                text="예"
-                varient="TERTIARY"
-                selected={value.isBankrupt === true}
-                onClick={() => onChange({ ...value, isBankrupt: true })}
-              />
-              <Button
-                size="M"
-                text="아니오"
-                varient="TERTIARY"
-                selected={value.isBankrupt === false}
-                onClick={() => onChange({ ...value, isBankrupt: false })}
-              />
-            </>
+            <Button
+              size="M"
+              text="예"
+              varient="TERTIARY"
+              selected={value.isBankrupt === true}
+              onClick={() => onChange({ ...value, isBankrupt: true })}
+            />
+            <Button
+              size="M"
+              text="아니오"
+              varient="TERTIARY"
+              selected={value.isBankrupt === false}
+              onClick={() => onChange({ ...value, isBankrupt: false })}
+            />
           </FlexContainer>
         </BtnFlexContainer>
       </MainContainer>

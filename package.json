@@ -15,6 +15,10 @@
     "@hookform/resolvers": "^5.0.1",
     "@tanstack/react-query": "^5.74.7",
     "@use-funnel/browser": "^0.0.14",
+    "@use-funnel/next": "^0.0.16",
+    "@use-funnel/react-navigation-native": "^0.0.13",
+    "@use-funnel/react-router": "^0.0.4",
+    "@use-funnel/react-router-dom": "^0.0.13",
     "antd": "^5.25.1",
     "apexcharts": "^4.7.0",
     "axios": "^1.9.0",
@@ -25,6 +29,7 @@
     "react-apexcharts": "^1.7.0",
     "react-dom": "^18",
     "react-hook-form": "^7.56.1",
+    "use-funnel": "^0.0.4",
     "zod": "^3.24.3",
     "zustand": "^5.0.3"
   },
