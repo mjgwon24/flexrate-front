@@ -6,7 +6,7 @@ export interface SignupPayload {
   name: string;
   birthDate: string;
   gender: 'male' | 'female';
-  goal: 'save' | 'spend' | 'track'; // 예시
+  goal: 'CONSERVATIVE' | 'PRACTICAL' | 'BALANCED' | 'CONSUMPTION_ORIENTED';
 }
 
 export const signup = async (data: SignupPayload) => {
