@@ -1,12 +1,16 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import CheckBox from '@/components/CheckBox/CheckBox';
 import styled from '@emotion/styled';
-import { authSchemas } from '@/schemas/auth.schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+
 import Button from '@/components/Button/Button';
+import CheckBox from '@/components/CheckBox/CheckBox';
+import { authSchemas } from '@/schemas/auth.schema';
+
+
+
 import { BtnContainer, Container, Title } from '../EmailForm/EmailForm.style';
 
 type FormData = z.infer<typeof authSchemas.agreement>;

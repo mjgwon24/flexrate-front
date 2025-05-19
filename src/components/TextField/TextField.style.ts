@@ -3,8 +3,9 @@
 import styled from '@emotion/styled';
 
 import { semanticColor } from '@/styles/colors';
-import { InputType } from './TextField.type';
 import { typoStyleMap } from '@/styles/typos';
+
+import { InputType } from './TextField.type';
 
 const getBorderColor = (type: InputType = 'ACTIVE') => {
   switch (type) {

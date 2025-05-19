@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+
 import { ProgressBarBackground, ProgressBarContainer, ProgressBarFill } from './ProgressBar.style';
 
 interface ProgressBarProps {

@@ -1,12 +1,14 @@
 'use client';
 import React, { useState } from 'react';
-import { TextFieldContext } from './TextFieldContext';
-import { TextFieldProps } from './TextField.type';
-import * as S from './TextField.style';
-import { useTextFieldContext } from './TextFieldContext';
-import { getInputType } from '@/lib/getInputType';
-import ErrorIcon from '@/assets/icons/error_18.svg';
+
 import DeleteIcon from '@/assets/icons/delete_24.svg';
+import ErrorIcon from '@/assets/icons/error_18.svg';
+import { getInputType } from '@/lib/getInputType';
+
+import * as S from './TextField.style';
+import { TextFieldProps } from './TextField.type';
+import { TextFieldContext , useTextFieldContext } from './TextFieldContext';
+
 
 const TextFieldComponent = ({
   children,

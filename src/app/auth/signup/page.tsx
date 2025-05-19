@@ -10,7 +10,7 @@ import Agreement from '@/components/signup/AgreeForConsumptionType/AgreeForConsu
 import ConsumptionGoal from '@/components/signup/ConsumptionGoal/ConsumptionGoal';
 import ConsumptionResult from '@/components/signup/ConsumptionResult/ConsumptionResult';
 import EmailForm from '@/components/signup/EmailForm/EmailForm';
-import { InfoForm } from '@/components/signup/InfoForm/InfoForm';
+import InfoForm from '@/components/signup/InfoForm/InfoForm';
 import PasswordForm from '@/components/signup/PasswordForm/PasswordForm';
 import { SignupSteps } from '@/types/funnel.type';
 
@@ -67,7 +67,7 @@ const SignupPage = (): React.JSX.Element => {
                   : undefined,
                 name: context.name,
               }}
-              onNext={({ gender, birthDate, name }) =>
+              onNext={({ gender, birthDate, name }: { gender: string; birthDate: number; name: string }) =>
                 funnel.history.push('소비성향체크', (prev) => ({
                   ...prev,
                   ...context,

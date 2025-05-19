@@ -70,3 +70,24 @@ export async function requestEmailChange(token: string, email: string) {
 
   return data;
 }
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  accessToken: string;
+  refreshToken?: string;
+  user: {
+    name: string;
+    email: string;
+    consumeGoal: string;
+    consumptionType: string;
+  };
+}
+
+export async function loginUser(data: LoginRequest): Promise<LoginResponse> {
+  const response = await apiClient.post('/api/auth/login/password', data);
+  return response.data;
+}
