@@ -1,6 +1,7 @@
+import styled from '@emotion/styled';
+
 import { semanticColor } from '@/styles/colors';
 import { typoStyleMap } from '@/styles/typos';
-import styled from '@emotion/styled';
 
 export const Wrapper = styled.label<{ disabled: boolean; size: string }>`
   display: inline-flex;
