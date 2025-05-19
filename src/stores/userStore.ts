@@ -4,11 +4,13 @@
  */
 import { create } from 'zustand';
 
+export type ConsumptionType = 'CONSERVATIVE' | 'BALANCED' | 'PRACTICAL' | 'CONSUMPTION_ORIENTED';
+
 export type User = {
   name: string;
   email: string;
   consumeGoal: string;
-  consumptionType: string;
+  consumptionType: ConsumptionType;
 };
 
 type UserStore = {
