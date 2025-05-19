@@ -37,13 +37,13 @@ const LoginSelector = ({ onSelectEmail, onSelectFace, onSelectPassword }: LoginS
           <SheetBtn onClick={onSelectFace}>
             <BtnContainer>
               <Image src={'/imgs/faceId.svg'} width={36} height={36} alt="FaceID" />
-              FACE ID
+              지문
             </BtnContainer>
           </SheetBtn>
           <SheetBtn onClick={onSelectPassword}>
             <BtnContainer>
               <Image src={'/imgs/pattern.svg'} width={36} height={36} alt="패턴" />
-              패턴
+              일반 로그인
             </BtnContainer>
           </SheetBtn>
         </BtnWrapper>
