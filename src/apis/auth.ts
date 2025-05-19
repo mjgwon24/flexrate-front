@@ -5,6 +5,16 @@ import axios from 'axios';
  */
 const API_URL = process.env.API_URL || 'http://localhost:8080';
 
+// axios 인스턴스 생성 (공통 설정 포함)
+const apiClient = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+
+
 // 로그인 유저 정보 반환
 export async function getMyPageUser(token: string) {
   const { data } = await axios.get(`${API_URL}/api/members/mypage`, {
@@ -36,7 +46,21 @@ export async function signupUser(data: SignupRequest): Promise<SignupResponse> {
 }
 
 // 이메일 인증 요청
+export interface SendEmailRequest {
+  email: string;
+}
+export async function sendEmailVerificationCode(data: SendEmailRequest): Promise<void> {
+  await apiClient.post('/api/auth/email/send', data);
+}
 
+// 이메일 인증번호 검증
+export interface VerifyEmailCodeRequest {
+  email: string;
+  code: string;
+}
+export async function verifyEmailCode(data: VerifyEmailCodeRequest): Promise<void> {
+  await apiClient.post('/api/auth/email/verification', data);
+}
 
 // 이메일 변경 요청
 export async function requestEmailChange(token: string, email: string) {
