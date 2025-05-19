@@ -36,7 +36,7 @@ const CheckBox = ({
           {label}
         </Label>
       </ImageLabelContainer>
-      {showMoreText && <ShowMore disabled={disabled}>{showMoreText}</ShowMore>}
+      {showMoreText && <ShowMore>{showMoreText}</ShowMore>}
     </Wrapper>
   );
 };

@@ -36,13 +36,13 @@ const LoginSelector = ({ onSelectEmail, onSelectFace, onSelectPassword }: LoginS
           </SheetBtn>
           <SheetBtn onClick={onSelectFace}>
             <BtnContainer>
-              <Image src={'/imgs/faceId.svg'} width={36} height={36} alt="FaceID" />
+              <Image src={'/imgs/faceId.svg'} width={36} height={36} alt="지문" />
               지문
             </BtnContainer>
           </SheetBtn>
           <SheetBtn onClick={onSelectPassword}>
             <BtnContainer>
-              <Image src={'/imgs/pattern.svg'} width={36} height={36} alt="패턴" />
+              <Image src={'/imgs/pattern.svg'} width={36} height={36} alt="일반 로그인" />
               일반 로그인
             </BtnContainer>
           </SheetBtn>

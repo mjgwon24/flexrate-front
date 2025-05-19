@@ -22,9 +22,8 @@ export const Label = styled.span<{ disabled: boolean; size: string }>`
   color: ${semanticColor.text.normal.sub1};
 `;
 
-export const ShowMore = styled.span<{ disabled: boolean }>`
-  color: ${({ disabled }) => (disabled ? '#ccc' : '#888')};
-  ${typoStyleMap['caption2_r']}
+export const ShowMore = styled.span`
   color: ${semanticColor.text.state.textInfo};
+  ${typoStyleMap['caption2_r']}
   margin-right: 10px;
 `;
