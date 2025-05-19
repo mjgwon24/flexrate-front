@@ -1,7 +1,6 @@
 export type SignupSteps = {
   이메일인증: { email?: string; verifyPassword?: number };
   비밀번호설정: { email: string; password?: string };
-  로그인수단설정: { email: string; password: string; method?: string };
   간편비밀번호설정: {
     email: string;
     password: string;
