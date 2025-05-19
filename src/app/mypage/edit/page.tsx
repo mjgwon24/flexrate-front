@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useRouter } from "next/navigation";
 
@@ -25,10 +25,40 @@ const EditPage = () => {
 
   useInitUser();
   const user: User | null = useUserStore((state) => state.user);
+  // const setUser = useUserStore((state) => state.setUser); // 또는 updateEmail 등
+  const [email, setEmail] = useState(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem("pendingEmail") || user?.email || "";
+    }
+    return user?.email || "";
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const pending = sessionStorage.getItem("pendingEmail");
+      setEmail(pending || user?.email || "");
+    } else {
+      setEmail(user?.email || "");
+    }
+  }, [user?.email]);
 
   const handleBack = () => {router.back();};
   const handleEmailEdit = () => router.push('/mypage/edit-email');
-  const handleSave = () => {};
+  const handleSave = async () => {
+    // 이메일 저장 API 호출
+
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("pendingEmail");
+    }
+    // 성공시 userStore 업데이트
+    // const user = useUserStore.getState().user;
+    // setUser(user ? { ...user, email } : { name: '', email });
+    // router.push('/mypage');
+  };
+
+  const isSaveEnabled = email && user?.email !== undefined && email !== user.email;
+
+  console.log(`email: ${email}, user.email: ${user?.email}`);
 
   return (
     <Wrapper>
@@ -49,8 +79,8 @@ const EditPage = () => {
 
           <SubContainer>
             <TextField
-              value={''}
-              onChange={() => {}}
+              value={email}
+              onChange={setEmail}
               isDisabled={true}
               rightContent={{type: 'CHANGE', onClick: handleEmailEdit}}
             >
@@ -70,9 +100,9 @@ const EditPage = () => {
             />
             <Button
               text="저장하기"
-              varient="S_SPECIAL"
+              varient="PRIMARY"
               onClick={handleSave}
-              disabled={true}
+              disabled={!isSaveEnabled}
             />
           </FlexContainer>
         </BtnContainer>

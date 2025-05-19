@@ -13,7 +13,7 @@ import { Wrapper } from "./MypageEditFunnel.style";
 export type MypageEditFunnelContextMap = {
   이메일입력: { email: string };
   인증코드입력: { email: string; code: string };
-  완료: {};
+  완료: { email: string };
 };
 
 const MypageEditFunnel = () => {
@@ -50,7 +50,7 @@ const MypageEditFunnel = () => {
             ),
           })}
           완료={funnel.Render.with({
-            render: () => <CompleteStep />,
+            render: ({ context }) => <CompleteStep email={context.email} />,
           })}
         />
       </Container>
