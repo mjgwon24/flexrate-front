@@ -22,6 +22,23 @@ export const authSchemas = {
     code: z.string().length(6, { message: '6자리 인증번호를 입력하세요.' }),
   }),
 
+  infoRegister: z.object({
+    gender: z.enum(['남성', '여성'], { required_error: '성별을 선택해주세요' }),
+    birthDate: z.coerce.number().refine((n) => n.toString().length === 8, {
+      message: '생년월일은 8자리로 입력해주세요',
+    }),
+    name: z.string().min(1, '이름을 입력해주세요'),
+  }),
+
+  agreement: z.object({
+    agreePrivacy: z.boolean().refine((val) => val === true, {
+      message: '개인정보 제공에 동의해주세요.',
+    }),
+    agreeService: z.boolean().refine((val) => val === true, {
+      message: '서비스 이용 약관에 동의해주세요.',
+    }),
+  }),
+
   signup: z
     .object({
       email: z
