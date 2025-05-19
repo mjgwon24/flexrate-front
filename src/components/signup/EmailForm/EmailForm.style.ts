@@ -7,6 +7,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
 export const Title = styled.div`
   padding: 12px 22px;
   ${typoStyleMap['head1']};

@@ -35,56 +35,68 @@ export default function EmailForm({ onNext }: { onNext: (email: string) => void 
   const email = watch('email');
   const code = watch('code');
 
-  // 인증메일 요청 핸들러
   const handleRequestCode = async () => {
-    console.log('handleRequestCode called, email:', email);
     const isEmailValid = await trigger('email');
-    if (!isEmailValid) {
-      console.log('Email validation failed');
-      return;
-    }
-    try {
-    const res = await fetch('http://localhost:8080/api/auth/email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
-      mode: 'cors', // 추가
-    });
-    console.log('Fetch response status:', res.status);
-    if (!res.ok) throw new Error(`서버 응답 에러: ${res.status}`);
+    if (!isEmailValid) return;
     setCodeSent(true);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error('Fetch error:', error.message);
-      } else {
-        console.error('Fetch error (non-Error):', error);
-      }
-      alert('인증메일 발송에 실패했습니다.');
-    }
   };
 
-const handleVerify = async () => {
-  const isCodeValid = await trigger('code');
-  if (!isCodeValid) return;
-
-  try {
-    const response = await fetch('http://localhost:8080/api/auth/email/verification', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, code }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`인증번호 검증 실패: ${response.status} - ${errorText}`);
-    }
-
+  const handleVerify = async () => {
+    const isCodeValid = await trigger('code');
+    if (!isCodeValid) return;
     onNext(email);
-  } catch (error) {
-    console.error(error);
-    alert('인증번호가 틀렸거나 만료되었습니다.');
-  }
-};
+  };
+
+  // // 인증메일 요청 핸들러
+  // const handleRequestCode = async () => {
+  //   console.log('handleRequestCode called, email:', email);
+  //   const isEmailValid = await trigger('email');
+  //   if (!isEmailValid) {
+  //     console.log('Email validation failed');
+  //     return;
+  //   }
+  //   try {
+  //   const res = await fetch('http://localhost:8080/api/auth/email', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ email }),
+  //     mode: 'cors', // 추가
+  //   });
+  //   console.log('Fetch response status:', res.status);
+  //   if (!res.ok) throw new Error(`서버 응답 에러: ${res.status}`);
+  //   setCodeSent(true);
+  //   } catch (error) {
+  //     if (error instanceof Error) {
+  //       console.error('Fetch error:', error.message);
+  //     } else {
+  //       console.error('Fetch error (non-Error):', error);
+  //     }
+  //     alert('인증메일 발송에 실패했습니다.');
+  //   }
+  // };
+
+  // const handleVerify = async () => {
+  //   const isCodeValid = await trigger('code');
+  //   if (!isCodeValid) return;
+
+  //   try {
+  //     const response = await fetch('http://localhost:8080/api/auth/email/verification', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ email, code }),
+  //     });
+
+  //     if (!response.ok) {
+  //       const errorText = await response.text();
+  //       throw new Error(`인증번호 검증 실패: ${response.status} - ${errorText}`);
+  //     }
+
+  //     onNext(email);
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert('인증번호가 틀렸거나 만료되었습니다.');
+  //   }
+  // };
 
   return (
     <Container>
