@@ -73,7 +73,9 @@ const ConsumptionReport = () => {
     <Wrapper>
       <Header backIcon={true} type="소비 습관 리포트" />
       <Container>
-        <Title>카테고리별 소비 통계</Title>
+        <Title>
+          <TitleStrong>1월</TitleStrong> 카테고리별 소비 통계
+        </Title>
         <Description>
           최근 소비 패턴을 분석해,
           <br />더 나은 금융 습관을 제안합니다
@@ -153,6 +155,10 @@ const Container = styled.div`
   padding: 12px 22px;
   display: flex;
   flex-direction: column;
+`;
+
+const TitleStrong = styled.span`
+  color: ${semanticColor.text.normal.accent};
 `;
 
 const CircleWrapper = styled.div`
