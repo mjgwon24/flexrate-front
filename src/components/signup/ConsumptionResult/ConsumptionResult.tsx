@@ -1,11 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import Button from '@/components/Button/Button';
-import { BtnContainer, Container, Title } from '../EmailForm/EmailForm.style';
-import { CharacterContainer, Description, ResultCard, Tag } from './ConsumptionResult.style';
+
 import { motion } from 'framer-motion';
+import Image from 'next/image';
+
+import Button from '@/components/Button/Button';
+
+import { BtnContainer, Container, Title } from '../EmailForm/EmailForm.style';
+
+import { CharacterContainer, Description, ResultCard, Tag } from './ConsumptionResult.style';
 
 const characterList = [
   {
@@ -26,7 +30,7 @@ interface ConsumptionResultProps {
   onNext: () => void;
 }
 
-export default function ConsumptionResult({ onNext }: ConsumptionResultProps) {
+const ConsumptionResult = ({ onNext }: ConsumptionResultProps) => {
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -80,4 +84,6 @@ export default function ConsumptionResult({ onNext }: ConsumptionResultProps) {
       </CharacterContainer>
     </Container>
   );
-}
+};
+
+export default ConsumptionResult;

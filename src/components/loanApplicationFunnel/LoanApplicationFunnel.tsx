@@ -1,11 +1,13 @@
 'use client';
 
 import { useFunnel } from '@use-funnel/browser';
-import { JobStep } from './JobStep/JobStep';
-import { CreditStep } from './CreditStep/CreditStep';
-import { PurposeStep } from './PurposeStep/PurposeStep';
+import { useRouter } from 'next/navigation';
+
+import Header from '../Header/Header';
 import ProgressBar from '../ProgressBar/ProgressBar';
-import ReviewResultAndLoanApplication from './ReviewResultAndLoanApplication/ReviewResultAndLoanApplication';
+
+import { CreditStep } from './CreditStep/CreditStep';
+import { JobStep } from './JobStep/JobStep';
 import {
   Container,
   Description,
@@ -15,8 +17,8 @@ import {
   Title,
   Wrapper,
 } from './LoanApplicationFunnel.style';
-import Header from '../Header/Header';
-import { useRouter } from 'next/navigation';
+import { PurposeStep } from './PurposeStep/PurposeStep';
+import ReviewResultAndLoanApplication from './ReviewResultAndLoanApplication/ReviewResultAndLoanApplication';
 
 export type FunnelContextMap = {
   직업정보입력: {
@@ -37,7 +39,7 @@ export type FunnelContextMap = {
   };
 };
 
-export default function LoanApplicationFunnel() {
+const LoanApplicationFunnel = () => {
   const funnel = useFunnel<FunnelContextMap>({
     id: 'loan-application-funnel',
     initial: {
@@ -144,4 +146,6 @@ export default function LoanApplicationFunnel() {
       </Container>
     </Wrapper>
   );
-}
+};
+
+export default LoanApplicationFunnel;

@@ -1,5 +1,10 @@
 'use client';
 import React from 'react';
+
+import Image from 'next/image';
+
+import BottomSheet from '@/components/BottomSheet/BottomSheet';
+
 import {
   BtnContainer,
   BtnWrapper,
@@ -8,8 +13,6 @@ import {
   SheetBtn,
   Title,
 } from './LoginSelector.style';
-import BottomSheet from '@/components/BottomSheet/BottomSheet';
-import Image from 'next/image';
 
 export type LoginSelectorProps = {
   onSelectPassword: () => void;

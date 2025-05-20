@@ -1,13 +1,14 @@
 'use client';
 import React, { useState } from 'react';
-import { Wrapper } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
+
 import Header from '@/components/Header/Header';
-import LoginSelector from '@/components/login/LoginSelector/LoginSelector';
+import { Wrapper } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
 import LoginForm from '@/components/login/LoginForm/LoginForm';
+import LoginSelector from '@/components/login/LoginSelector/LoginSelector';
 
 type Step = 'selector' | 'form';
 
-export default function LoginPage() {
+const LoginPage = () => {
   const [step, setStep] = useState<Step>('selector');
 
   return (
@@ -25,4 +26,6 @@ export default function LoginPage() {
       {step === 'form' && <LoginForm />}
     </Wrapper>
   );
-}
+};
+
+export default LoginPage;
