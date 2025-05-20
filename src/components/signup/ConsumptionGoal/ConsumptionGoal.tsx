@@ -18,7 +18,7 @@ import { BtnContainer, Container, Title } from '../EmailForm/EmailForm.style';
 import { GoalOptionButton, Options } from './ConsumptionGoal.style';
 
 interface ConsumptionGoalProps {
-  onComplete: () => void;
+  onComplete: (selectedGoal: string) => void;
 }
 
 const ConsumptionGoal = ({ onComplete }: ConsumptionGoalProps) => {
@@ -56,7 +56,7 @@ const ConsumptionGoal = ({ onComplete }: ConsumptionGoalProps) => {
             disabled={!selectedGoal}
             onClick={() => {
               if (selectedGoal) {
-                onComplete();
+                onComplete(selectedGoal);
               }
             }}
           />

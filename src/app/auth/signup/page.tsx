@@ -116,8 +116,31 @@ const SignupPage = (): React.JSX.Element => {
         소비목적결과={funnel.Render.with({
           render: ({ context }) => (
             <ConsumptionGoal
-              // 최종 완료 시 회원가입 완료 로그 출력
-              onComplete={() => console.log('회원가입 완료', context)}
+              onComplete={async (selectedGoal) => {
+                const signupData = {
+                  ...context,
+                  consumptionGoal: selectedGoal,
+                };
+
+                try {
+                  // 🔥 실제 서버 요청 예시 (적절한 API로 교체)
+                  const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(signupData),
+                  });
+
+                  if (!response.ok) throw new Error('회원가입 실패');
+
+                  console.log('회원가입 완료', signupData);
+                  // 예: 홈으로 이동 또는 완료 페이지
+                } catch (error) {
+                  console.error('회원가입 에러:', error);
+                  // 사용자에게 에러 메시지 보여주기 등
+                }
+              }}
             />
           ),
         })}
