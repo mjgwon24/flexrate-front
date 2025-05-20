@@ -117,6 +117,7 @@ const SignupPage = (): React.JSX.Element => {
         소비목적결과={funnel.Render.with({
           render: ({ context }) => (
             <ConsumptionGoal
+              consumptionType={context.consumptionType}
               onComplete={async (selectedGoal) => {
                 const signupData = {
                   email: context.email,
@@ -124,7 +125,7 @@ const SignupPage = (): React.JSX.Element => {
                   sex: context.gender,
                   name: context.name,
                   birthDate: context.birthDate,
-                  consumptionType: context.cosumptionType,
+                  consumptionType: context.consumptionType,
                   consumeGoal: selectedGoal,
                 };
 
@@ -133,10 +134,10 @@ const SignupPage = (): React.JSX.Element => {
                 try {
                   const response = await api.post('/api/auth/signup/password', signupData);
                   console.log('회원가입 완료', response.data);
-                  // 회원가입 성공 후 리다이렉트 또는 상태 업데이트
+                  // 성공 후 리다이렉트 혹은 상태 변경 로직 추가
                 } catch (error) {
                   console.error('회원가입 에러:', error);
-                  // 에러 처리 UI 로직
+                  // 에러 UI 처리 추가
                 }
               }}
             />
