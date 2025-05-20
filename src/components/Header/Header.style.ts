@@ -13,6 +13,7 @@ export const HeaderContainer = styled.div`
   align-items: center;
   align-self: stretch;
   background-color: ${semanticColor.bg.default};
+  z-index: 1000;
 `;
 
 export const HeaderRightContainer = styled.div`
