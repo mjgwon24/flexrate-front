@@ -119,8 +119,13 @@ const SignupPage = (): React.JSX.Element => {
             <ConsumptionGoal
               onComplete={async (selectedGoal) => {
                 const signupData = {
-                  ...context,
-                  consumptionGoal: selectedGoal,
+                  email: context.email,
+                  password: context.password,
+                  sex: context.gender,
+                  name: context.name,
+                  birthDate: context.birthDate,
+                  consumptionType: context.cosumptionType,
+                  consumeGoal: selectedGoal,
                 };
 
                 console.log('서버로 보내는 회원가입 데이터:', signupData);

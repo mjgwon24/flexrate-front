@@ -41,7 +41,7 @@ export type SignupSteps = {
     birthDate: string;
     name: string;
     agreement: boolean;
-    cosumptionType?: string;
+    consumptionType?: string;
     consumptionGoal?: string;
   };
 };
