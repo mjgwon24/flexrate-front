@@ -52,7 +52,7 @@ export function usePatchLoanStatus(
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({applicationId, payload, accessToken}: PatchLoanStatusArgs) => {
+        mutationFn: async ({applicationId, payload}: PatchLoanStatusArgs) => {
             const rawPayload = {
                 ...payload,
                 status: toRawStatus(payload.status),
@@ -64,7 +64,7 @@ export function usePatchLoanStatus(
         onSuccess: () => {
             const params = filtersToLoanApplicationParams(filters, page, size);
             queryClient.invalidateQueries({
-                queryKey: ['loanApplications', JSON.stringify(params), accessToken],
+                queryKey: ['loanApplications', params, accessToken],
             });
         },
     });

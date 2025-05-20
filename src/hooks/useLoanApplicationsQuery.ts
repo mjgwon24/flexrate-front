@@ -159,7 +159,7 @@ export const useLoanApplicationsQuery = (
                 };
             } catch (error: unknown) {
                 console.error('Error fetching loan application data:', error);
-                throw new Error('Failed to fetch loan application data');
+                throw new Error(`Failed to fetch loan application data: ${error}`);
             }
         },
         enabled: !!accessToken,
