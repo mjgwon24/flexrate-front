@@ -6,7 +6,7 @@ import Button from '@/components/Button/Button';
 import CheckBox from '@/components/CheckBox/CheckBox';
 import { Title } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
 import { BtnContainer } from '@/components/signup/EmailForm/EmailForm.style';
-import { authSchemas } from '@/schemas/auth.schema';
+import { creditSchemas } from '@/schemas/credit.schema';
 
 import {
   CheckBoxContainer,
@@ -15,7 +15,7 @@ import {
   TitleContainer,
 } from '../AgreementCredit.style';
 
-type FormData = z.infer<typeof authSchemas.creditAgreeement>;
+type FormData = z.infer<typeof creditSchemas.creditAgreeement>;
 
 interface AgreementCreditProps {
   onNext: () => void;
@@ -27,7 +27,7 @@ const AgreementCredit = ({ onNext }: AgreementCreditProps) => {
     setValue,
     formState: { isValid },
   } = useForm<FormData>({
-    resolver: zodResolver(authSchemas.agreement),
+    resolver: zodResolver(creditSchemas.creditAgreeement),
     mode: 'onChange',
     defaultValues: {
       agreePrivacy: false,
