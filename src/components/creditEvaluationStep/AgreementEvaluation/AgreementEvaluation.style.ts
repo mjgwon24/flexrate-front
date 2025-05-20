@@ -1,5 +1,10 @@
 import styled from '@emotion/styled';
 
+export const Wrapper = styled.div`
+  height: 85vh;
+  overflow-y: auto;
+`;
+
 export const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
