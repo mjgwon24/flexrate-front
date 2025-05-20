@@ -18,7 +18,7 @@ import { BtnContainer, Container, Title } from '../EmailForm/EmailForm.style';
 import { GoalOptionButton, Options } from './ConsumptionGoal.style';
 
 interface ConsumptionGoalProps {
-  consumptionType: ConsumptionType;
+  // consumptionType: ConsumptionType;
   onComplete: (selectedGoal: string) => void;
 }
 
