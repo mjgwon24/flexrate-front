@@ -1,17 +1,19 @@
 'use client';
 import React from 'react';
-import { useFunnel } from '@use-funnel/browser';
-import { Wrapper } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
-import Header from '@/components/Header/Header';
-import EmailForm from '@/components/signup/EmailForm/EmailForm';
-import PasswordForm from '@/components/signup/PasswordForm/PasswordForm';
-import { InfoForm } from '@/components/signup/InfoForm/InfoForm';
-import { SignupSteps } from '@/types/funnel.type';
-import Agreement from '@/components/signup/AgreeForConsumptionType/AgreeForConsumptionType';
-import ConsumptionResult from '@/components/signup/ConsumptionResult/ConsumptionResult';
-import ConsumptionGoal from '@/components/signup/ConsumptionGoal/ConsumptionGoal';
 
-export default function SignupPage() {
+import { useFunnel } from '@use-funnel/browser';
+
+import Header from '@/components/Header/Header';
+import { Wrapper } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
+import Agreement from '@/components/signup/AgreeForConsumptionType/AgreeForConsumptionType';
+import ConsumptionGoal from '@/components/signup/ConsumptionGoal/ConsumptionGoal';
+import ConsumptionResult from '@/components/signup/ConsumptionResult/ConsumptionResult';
+import EmailForm from '@/components/signup/EmailForm/EmailForm';
+import { InfoForm } from '@/components/signup/InfoForm/InfoForm';
+import PasswordForm from '@/components/signup/PasswordForm/PasswordForm';
+import { SignupSteps } from '@/types/funnel.type';
+
+const SignupPage = () => {
   const funnel = useFunnel<SignupSteps>({
     id: 'signup',
     initial: { step: '이메일인증', context: { email: '' } },
@@ -115,4 +117,6 @@ export default function SignupPage() {
       />
     </Wrapper>
   );
-}
+};
+
+export default SignupPage;

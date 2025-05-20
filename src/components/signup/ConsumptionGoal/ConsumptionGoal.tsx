@@ -1,23 +1,27 @@
 'use client';
 
+import { useState } from 'react';
+
 import Image from 'next/image';
+
 import Button from '@/components/Button/Button';
-import { BtnContainer, Container, Title } from '../EmailForm/EmailForm.style';
-import { GoalOptionButton, Options } from './ConsumptionGoal.style';
+import { consumptionGoalMap, ConsumptionType } from '@/constants/auth.constant';
+
 import {
   CharacterContainer,
   Description,
   ResultCard,
   Tag,
 } from '../ConsumptionResult/ConsumptionResult.style';
-import { consumptionGoalMap, ConsumptionType } from '@/constants/auth.constant';
-import { useState } from 'react';
+import { BtnContainer, Container, Title } from '../EmailForm/EmailForm.style';
+
+import { GoalOptionButton, Options } from './ConsumptionGoal.style';
 
 interface ConsumptionGoalProps {
   onComplete: () => void;
 }
 
-export default function ConsumptionGoal({ onComplete }: ConsumptionGoalProps) {
+const ConsumptionGoal = ({ onComplete }: ConsumptionGoalProps) => {
   const selectedType: ConsumptionType = '절약형';
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
 
@@ -60,4 +64,6 @@ export default function ConsumptionGoal({ onComplete }: ConsumptionGoalProps) {
       </CharacterContainer>
     </Container>
   );
-}
+};
+
+export default ConsumptionGoal;
