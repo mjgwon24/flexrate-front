@@ -79,13 +79,7 @@ const AgreementCredit = ({ onNext }: AgreementCreditProps) => {
         </SmallCheckBoxes>
 
         <BtnContainer>
-          <Button
-            type="submit"
-            size="XL"
-            text="동의하고 보기"
-            disabled={!isValid}
-            onClick={onNext}
-          />
+          <Button size="XL" text="동의하고 보기" disabled={!isValid} onClick={onNext} />
         </BtnContainer>
       </CheckBoxContainer>
     </Container>
