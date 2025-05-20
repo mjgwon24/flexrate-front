@@ -15,7 +15,7 @@ import {
   TitleContainer,
 } from '../AgreementCredit.style';
 
-type FormData = z.infer<typeof creditSchemas.creditAgreeement>;
+type FormData = z.infer<typeof creditSchemas.creditAgreement>;
 
 interface AgreementCreditProps {
   onNext: () => void;
@@ -27,7 +27,7 @@ const AgreementCredit = ({ onNext }: AgreementCreditProps) => {
     setValue,
     formState: { isValid },
   } = useForm<FormData>({
-    resolver: zodResolver(creditSchemas.creditAgreeement),
+    resolver: zodResolver(creditSchemas.creditAgreement),
     mode: 'onChange',
     defaultValues: {
       agreePrivacy: false,

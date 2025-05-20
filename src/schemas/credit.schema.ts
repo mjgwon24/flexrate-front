@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const creditSchemas = {
-  creditAgreeement: z.object({
+  creditAgreement: z.object({
     agreePrivacy: z.boolean().refine((val) => val === true, {
       message: '개인정보 제공에 동의해주세요.',
     }),
