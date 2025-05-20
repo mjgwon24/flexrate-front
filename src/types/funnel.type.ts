@@ -11,7 +11,7 @@ export type SignupSteps = {
     password: string;
     method: string;
     gender?: string;
-    birthDate?: number;
+    birthDate?: string;
     name?: string;
   };
 
@@ -20,7 +20,7 @@ export type SignupSteps = {
     password: string;
     method: string;
     gender: string;
-    birthDate: number;
+    birthDate: string;
     name: string;
     agreement?: boolean;
   };
@@ -29,7 +29,7 @@ export type SignupSteps = {
     password: string;
     method: string;
     gender: string;
-    birthDate: number;
+    birthDate: string;
     name: string;
     agreement: boolean;
   };
@@ -38,7 +38,7 @@ export type SignupSteps = {
     password: string;
     method: string;
     gender: string;
-    birthDate: number;
+    birthDate: string;
     name: string;
     agreement: boolean;
     cosumptionType?: string;

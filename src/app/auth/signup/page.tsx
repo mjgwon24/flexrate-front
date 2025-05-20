@@ -28,6 +28,7 @@ const SignupPage = (): React.JSX.Element => {
           render: () => (
             <EmailForm
               onNext={(email) =>
+                // 이메일 입력 후 비밀번호 설정 단계로 이동
                 funnel.history.push('비밀번호설정', (prev) => ({ ...prev, email }))
               }
             />
@@ -40,6 +41,7 @@ const SignupPage = (): React.JSX.Element => {
               onNext={({ password, method }) => {
                 const nextStep =
                   method === '간편비밀번호' ? '간편비밀번호설정' : '내정보입력';
+                // 비밀번호 설정 후 선택된 방법에 따라 다음 단계로 이동
                 funnel.history.push(nextStep, (prev) => ({
                   ...prev,
                   ...context,
@@ -62,12 +64,19 @@ const SignupPage = (): React.JSX.Element => {
             <InfoForm
               defaultValues={{
                 gender: context.gender as '남성' | '여성' | undefined,
-                birthDate: context.birthDate
-                  ? Number(context.birthDate)
-                  : undefined,
-                name: context.name,
+                // number 타입의 birthDate를 "YYYY-MM-DD" 문자열로 변환
+                birthDate:
+                  typeof context.birthDate === 'number'
+                    ? new Date(context.birthDate).toISOString().slice(0, 10)
+                    : context.birthDate ?? '',
+                name: context.name ?? '',
               }}
-              onNext={({ gender, birthDate, name }: { gender: string; birthDate: number; name: string }) =>
+              onNext={({
+                gender,
+                birthDate,
+                name,
+              }: { gender: string; birthDate: string; name: string }) =>
+                // 유저 정보 입력 후 소비 성향 체크 단계로 이동
                 funnel.history.push('소비성향체크', (prev) => ({
                   ...prev,
                   ...context,
@@ -83,6 +92,7 @@ const SignupPage = (): React.JSX.Element => {
           render: () => (
             <Agreement
               onNext={() =>
+                // 동의 완료 시 결과 단계로 이동
                 funnel.history.push('소비성향결과', (prev) => ({
                   ...prev,
                   agreement: true,
@@ -95,6 +105,7 @@ const SignupPage = (): React.JSX.Element => {
           render: () => (
             <ConsumptionResult
               onNext={() =>
+                // 결과 확인 후 소비 목적 단계로 이동
                 funnel.history.push('소비목적결과', (prev) => ({
                   ...prev,
                   consumptionGoal: '',
@@ -106,6 +117,7 @@ const SignupPage = (): React.JSX.Element => {
         소비목적결과={funnel.Render.with({
           render: ({ context }) => (
             <ConsumptionGoal
+              // 최종 완료 시 회원가입 완료 로그 출력
               onComplete={() => console.log('회원가입 완료', context)}
             />
           ),
