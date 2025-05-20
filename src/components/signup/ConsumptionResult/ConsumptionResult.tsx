@@ -28,9 +28,10 @@ const characterList = [
 
 interface ConsumptionResultProps {
   onNext: () => void;
+  userName: string;
 }
 
-const ConsumptionResult = ({ onNext }: ConsumptionResultProps) => {
+const ConsumptionResult = ({ onNext, userName }: ConsumptionResultProps) => {
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -52,7 +53,7 @@ const ConsumptionResult = ({ onNext }: ConsumptionResultProps) => {
 
   return (
     <Container>
-      <Title>서채연님의 소비 성향은...</Title>
+      <Title>{userName}님의 소비 성향은...</Title>
       <CharacterContainer>
         {loading ? (
           <ResultCard>

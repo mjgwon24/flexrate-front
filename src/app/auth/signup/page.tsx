@@ -63,7 +63,7 @@ const SignupPage = (): React.JSX.Element => {
           render: ({ context }) => (
             <InfoForm
               defaultValues={{
-                gender: context.gender as '남성' | '여성' | undefined,
+                gender: context.gender as 'MALE' | 'FEMALE',
                 // number 타입의 birthDate를 "YYYY-MM-DD" 문자열로 변환
                 birthDate:
                   typeof context.birthDate === 'number'
@@ -75,7 +75,7 @@ const SignupPage = (): React.JSX.Element => {
                 gender,
                 birthDate,
                 name,
-              }: { gender: string; birthDate: string; name: string }) =>
+              }: { gender: string; birthDate: string; name: string }) => void
                 // 유저 정보 입력 후 소비 성향 체크 단계로 이동
                 funnel.history.push('소비성향체크', (prev) => ({
                   ...prev,
@@ -92,9 +92,8 @@ const SignupPage = (): React.JSX.Element => {
           render: () => (
             <Agreement
               onNext={() =>
-                // 동의 완료 시 결과 단계로 이동
                 funnel.history.push('소비성향결과', (prev) => ({
-                  ...prev,
+                  ...(prev as SignupSteps['소비성향결과']), // 타입 단언 추가
                   agreement: true,
                 }))
               }
@@ -102,12 +101,12 @@ const SignupPage = (): React.JSX.Element => {
           ),
         })}
         소비성향결과={funnel.Render.with({
-          render: () => (
+          render: ( {context}) => (
             <ConsumptionResult
+              userName={context.name ?? '사용자'}
               onNext={() =>
-                // 결과 확인 후 소비 목적 단계로 이동
                 funnel.history.push('소비목적결과', (prev) => ({
-                  ...prev,
+                  ...(prev as SignupSteps['소비목적결과']), // 타입 단언 추가
                   consumptionGoal: '',
                 }))
               }

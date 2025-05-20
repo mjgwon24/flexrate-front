@@ -12,8 +12,14 @@ import TextField from '@/components/TextField/TextField'
 import { Container, Title, FormContainer, BtnContainer } from './InfoFrom.style'
 
 export type LoginSelectorProps = {
-  onNext: (info: { gender: string; birthDate: string; name: string }) => void
+  onNext: (info: { gender: string; birthDate: string; name: string }) => void | Promise<void>
+  defaultValues?: {
+    gender?: 'MALE' | 'FEMALE'
+    birthDate?: string
+    name?: string
+  }
 }
+
 
 const schema = z.object({
   name: z.string().min(1, '이름을 입력해주세요.'),
