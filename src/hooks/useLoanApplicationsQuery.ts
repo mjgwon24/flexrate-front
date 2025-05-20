@@ -3,7 +3,7 @@ import React, {useMemo} from 'react';
 import {useQuery} from '@tanstack/react-query';
 import dayjs from 'dayjs';
 
-import {getLoanApplications, RawLoanApplication} from '@/apis/loanApplication';
+import {getLoanApplications, RawLoanApplication} from '@/apis/AdminLoans';
 import {LoanFilterType} from '@/types/loan.filter.type';
 import {filtersToLoanApplicationParams} from '@/utils/loanApplicationParams';
 

@@ -1,6 +1,6 @@
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 
-import {patchLoanStatus} from '@/apis/loanApplication';
+import {patchLoanStatus} from '@/apis/AdminLoans';
 import {LoanFilterType} from '@/types/loan.filter.type';
 import {filtersToLoanApplicationParams} from '@/utils/loanApplicationParams';
 
