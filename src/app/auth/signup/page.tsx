@@ -12,6 +12,7 @@ import ConsumptionResult from '@/components/signup/ConsumptionResult/Consumption
 import EmailForm from '@/components/signup/EmailForm/EmailForm';
 import InfoForm from '@/components/signup/InfoForm/InfoForm';
 import PasswordForm from '@/components/signup/PasswordForm/PasswordForm';
+import { api } from '@/lib/axios';
 import { SignupSteps } from '@/types/funnel.type';
 
 const SignupPage = (): React.JSX.Element => {
@@ -122,23 +123,15 @@ const SignupPage = (): React.JSX.Element => {
                   consumptionGoal: selectedGoal,
                 };
 
+                console.log('서버로 보내는 회원가입 데이터:', signupData);
+
                 try {
-                  // 🔥 실제 서버 요청 예시 (적절한 API로 교체)
-                  const response = await fetch('/api/signup', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(signupData),
-                  });
-
-                  if (!response.ok) throw new Error('회원가입 실패');
-
-                  console.log('회원가입 완료', signupData);
-                  // 예: 홈으로 이동 또는 완료 페이지
+                  const response = await api.post('/api/auth/signup/password', signupData);
+                  console.log('회원가입 완료', response.data);
+                  // 회원가입 성공 후 리다이렉트 또는 상태 업데이트
                 } catch (error) {
                   console.error('회원가입 에러:', error);
-                  // 사용자에게 에러 메시지 보여주기 등
+                  // 에러 처리 UI 로직
                 }
               }}
             />
