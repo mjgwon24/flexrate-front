@@ -1,5 +1,3 @@
-// src/schemas/auth.schema.ts
-
 import { z } from 'zod';
 
 export const authSchemas = {
