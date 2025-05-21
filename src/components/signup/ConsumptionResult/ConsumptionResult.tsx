@@ -29,10 +29,10 @@ const characterList = [
 interface ConsumptionResultProps {
   onNext: (consumptionType: string) => void;
   userName: string;
-  finalConsumptionType: string;
+  finalConsumptionType?: string;
 }
 
-const ConsumptionResult = ({ onNext, userName, finalConsumptionType }: ConsumptionResultProps) => {
+const ConsumptionResult = ({ onNext, userName, finalConsumptionType = '균형형' }: ConsumptionResultProps) => {
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
