@@ -12,7 +12,7 @@ const getAllProducts = async () => {
 };
 
 /**
- * 대출 상품 목록 전체 조회 API
+ * 특정 대출 상품을 선택했을 시 LoanApplication 생성 API
  * @param productId 선택한 대출 상품 ID
  * @param token 사용자 인증을 위한 토큰
  */
