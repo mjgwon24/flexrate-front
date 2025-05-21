@@ -1,8 +1,11 @@
 'use client';
 
 import Image from 'next/image';
+
+import Button from '@/components/Button/Button';
+
 import {
-  ButtonContainer,
+  BtnContainer,
   Content,
   ContentBox,
   ContentSubTextContainer,
@@ -18,9 +21,8 @@ import {
   Title,
   Wrapper,
 } from './IntroduceHome.style';
-import Button from '@/components/Button/Button';
 
-const IntroduceHome = ({ user }: { user: boolean }) => {
+const IntroduceHome = () => {
   return (
     <Wrapper>
       <IntroduceContentContainer>
@@ -60,10 +62,9 @@ const IntroduceHome = ({ user }: { user: boolean }) => {
           </Content>
         </ContentBox>
       </IntroduceContentContainer>
-      <Spacing />
-      <ButtonContainer>
+      <BtnContainer>
         <Button size="XL" text="대출 신청하기" varient="PRIMARY" />
-      </ButtonContainer>
+      </BtnContainer>
     </Wrapper>
   );
 };
