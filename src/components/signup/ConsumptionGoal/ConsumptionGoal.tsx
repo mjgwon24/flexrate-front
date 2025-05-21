@@ -22,12 +22,12 @@ interface ConsumptionGoalProps {
   onComplete: (selectedGoal: string) => void;
 }
 
-const ConsumptionGoal = ({ consumptionType ,onComplete }: ConsumptionGoalProps) => {
-  // const selectedType: ConsumptionType = '절약형';
+const ConsumptionGoal = ({ onComplete }: ConsumptionGoalProps) => {
+  const selectedType: ConsumptionType = '절약형';
   // const selectedType = consumptionType;  // 하드코딩 제거, props 값 사용
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
 
-  const { options } = consumptionGoalMap[consumptionType];
+  const { options } = consumptionGoalMap[selectedType];
 
   return (
     <Container>

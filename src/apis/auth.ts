@@ -3,7 +3,9 @@ import axios from 'axios';
 /**
  * 인증 관련 API
  */
-const API_URL = process.env.API_URL || 'http://localhost:8080';
+const API_URL = 'http://localhost:8080';
+console.log('API_URL', API_URL);
+
 
 // 공통 설정 포함 axios 인스턴스 생성 (baseURL, JSON 헤더)
 const apiClient = axios.create({

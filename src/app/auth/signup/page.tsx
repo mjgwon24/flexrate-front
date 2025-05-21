@@ -4,6 +4,11 @@ import React from 'react';
 
 import { useFunnel } from '@use-funnel/browser';
 
+
+function reverseMap<T extends Record<string, string>>(map: T, value: string): keyof T | undefined {
+  return (Object.entries(map).find(([, v]) => v === value)?.[0]) as keyof T | undefined;
+}
+
 import Header from '@/components/Header/Header';
 import { Wrapper } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
 import Agreement from '@/components/signup/AgreeForConsumptionType/AgreeForConsumptionType';
@@ -13,6 +18,9 @@ import EmailForm from '@/components/signup/EmailForm/EmailForm';
 import InfoForm from '@/components/signup/InfoForm/InfoForm';
 import PasswordForm from '@/components/signup/PasswordForm/PasswordForm';
 import { ConsumptionType } from '@/constants/auth.constant';
+import {
+  CONSUME_GOAL_LABEL_MAP,
+} from '@/constants/customer.constant';
 import { api } from '@/lib/axios';
 import { SignupSteps } from '@/types/funnel.type';
 
@@ -119,7 +127,7 @@ const SignupPage = (): React.JSX.Element => {
         소비목적결과={funnel.Render.with({
           render: ({ context }) => (
             <ConsumptionGoal
-              consumptionType={context.consumptionType ?? '절약형'}
+              consumptionType={context.consumptionType ?? '균형형'}
               onComplete={async (selectedGoal) => {
                 const signupData = {
                   email: context.email,
@@ -127,8 +135,8 @@ const SignupPage = (): React.JSX.Element => {
                   sex: context.gender,
                   name: context.name,
                   birthDate: context.birthDate,
-                  consumptionType: context.consumptionType ?? '절약형',
-                  consumeGoal: selectedGoal,
+                  consumptionType: context.consumptionType ?? 'CONSERVATIVE',
+                  consumeGoal: reverseMap(CONSUME_GOAL_LABEL_MAP, selectedGoal),
                 };
 
                 console.log('서버로 보내는 회원가입 데이터:', signupData);
@@ -136,10 +144,10 @@ const SignupPage = (): React.JSX.Element => {
                 try {
                   const response = await api.post('/api/auth/signup/password', signupData);
                   console.log('회원가입 완료', response.data);
-                  // 성공 후 리다이렉트 혹은 상태 변경 로직 추가
+                  // 성공 처리 로직 추가
                 } catch (error) {
                   console.error('회원가입 에러:', error);
-                  // 에러 UI 처리 추가
+                  // 에러 UI 처리
                 }
               }}
             />
