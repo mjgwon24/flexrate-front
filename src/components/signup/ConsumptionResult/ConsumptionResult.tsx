@@ -27,9 +27,10 @@ const characterList = [
 ];
 
 interface ConsumptionResultProps {
-  onNext: (consumptionType: string) => void;
+  onNext: (consumptionType: string) => void; // 다음 단계 이동 핸들러
   userName: string;
-  finalConsumptionType?: string;
+  finalConsumptionType?: string; // 최종 소비 성향 (없으면 기본값 '균형형')
+  
 }
 
 const ConsumptionResult = ({ onNext, userName, finalConsumptionType = '균형형' }: ConsumptionResultProps) => {

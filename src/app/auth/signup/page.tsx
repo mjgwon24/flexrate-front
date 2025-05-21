@@ -15,7 +15,6 @@ import PasswordForm from '@/components/signup/PasswordForm/PasswordForm';
 import { ConsumptionType } from '@/constants/auth.constant';
 import {
   CONSUMPTION_TYPE_LABEL_MAP,
-  CONSUME_GOAL_LABEL_MAP,
 } from '@/constants/customer.constant';
 import { api } from '@/lib/axios';
 import { SignupSteps } from '@/types/funnel.type';
