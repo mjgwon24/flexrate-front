@@ -4,6 +4,8 @@ import React from 'react';
 
 import { useFunnel } from '@use-funnel/browser';
 
+
+
 function reverseMap<T extends Record<string, string>>(map: T, value: string): keyof T | undefined {
   return (Object.entries(map).find(([, v]) => v === value)?.[0]) as keyof T | undefined;
 }
@@ -17,8 +19,7 @@ import EmailForm from '@/components/signup/EmailForm/EmailForm';
 import InfoForm from '@/components/signup/InfoForm/InfoForm';
 import PasswordForm from '@/components/signup/PasswordForm/PasswordForm';
 import { ConsumptionType } from '@/constants/auth.constant';
-import {
-  CONSUMPTION_TYPE_LABEL_MAP,
+import { CONSUMPTION_TYPE_LABEL_MAP ,
   CONSUME_GOAL_LABEL_MAP,
 } from '@/constants/customer.constant';
 import { api } from '@/lib/axios';
@@ -38,6 +39,7 @@ const SignupPage = (): React.JSX.Element => {
           render: () => (
             <EmailForm
               onNext={(email) =>
+                // 이메일 입력 후 비밀번호 설정 단계로 이동
                 funnel.history.push('비밀번호설정', (prev) => ({ ...prev, email }))
               }
             />
@@ -50,6 +52,7 @@ const SignupPage = (): React.JSX.Element => {
               onNext={({ password, method }) => {
                 const nextStep =
                   method === '간편비밀번호' ? '간편비밀번호설정' : '내정보입력';
+                // 비밀번호 설정 후 선택된 방법에 따라 다음 단계로 이동
                 funnel.history.push(nextStep, (prev) => ({
                   ...prev,
                   ...context,
@@ -72,21 +75,27 @@ const SignupPage = (): React.JSX.Element => {
             <InfoForm
               defaultValues={{
                 gender: context.gender as 'MALE' | 'FEMALE',
+                // number 타입의 birthDate를 "YYYY-MM-DD" 문자열로 변환
                 birthDate:
                   typeof context.birthDate === 'number'
                     ? new Date(context.birthDate).toISOString().slice(0, 10)
                     : context.birthDate ?? '',
                 name: context.name ?? '',
               }}
-              onNext={({ gender, birthDate, name }) => {
-                funnel.history.push('소비성향체크', (prev) => ({
-                ...prev,
-                ...context,
+              onNext={({
                 gender,
                 birthDate,
                 name,
-              }));
-            }}
+              }: { gender: string; birthDate: string; name: string }) => void
+                // 유저 정보 입력 후 소비 성향 체크 단계로 이동
+                funnel.history.push('소비성향체크', (prev) => ({
+                  ...prev,
+                  ...context,
+                  gender,
+                  birthDate,
+                  name,
+                }))
+              }
             />
           ),
         })}
@@ -95,7 +104,7 @@ const SignupPage = (): React.JSX.Element => {
             <Agreement
               onNext={() =>
                 funnel.history.push('소비성향결과', (prev) => ({
-                  ...(prev as SignupSteps['소비성향결과']),
+                  ...(prev as SignupSteps['소비성향결과']), // 타입 단언 추가
                   agreement: true,
                 }))
               }
@@ -103,30 +112,24 @@ const SignupPage = (): React.JSX.Element => {
           ),
         })}
         소비성향결과={funnel.Render.with({
-          render: ({ context }) => (
+          render: ( {context}) => (
             <ConsumptionResult
-              userName={context.name ?? '사용자'}
-              finalConsumptionType={
-                context.consumptionType
-                  ? CONSUMPTION_TYPE_LABEL_MAP[
-                      context.consumptionType as keyof typeof CONSUMPTION_TYPE_LABEL_MAP
-                    ]
-                  : ''
-              }
-              onNext={(consumptionType) =>
-                funnel.history.push('소비목적결과', (prev) => ({
-                  ...(prev as SignupSteps['소비목적결과']),
-                  consumptionType: consumptionType as ConsumptionType,
-                  consumptionGoal: '',
-                }))
-              }
-            />
+  userName={context.name ?? '사용자'}
+  finalConsumptionType={context.consumptionType ?? '균형형'} // 분석 결과값 전달
+  onNext={(consumptionType) =>
+    funnel.history.push('소비목적결과', (prev) => ({
+      ...(prev as SignupSteps['소비목적결과']),
+      consumptionType: consumptionType as ConsumptionType,
+      consumptionGoal: '',
+    }))
+  }
+/>
           ),
         })}
         소비목적결과={funnel.Render.with({
           render: ({ context }) => (
             <ConsumptionGoal
-              consumptionType={(context.consumptionType ?? 'CONSERVATIVE') as ConsumptionType}
+              consumptionType={context.consumptionType ?? '균형형'}
               onComplete={async (selectedGoal) => {
                 const signupData = {
                   email: context.email,
