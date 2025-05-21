@@ -1,3 +1,5 @@
+import type { ConsumptionType } from '@/constants/auth.constant';
+
 export type SignupSteps = {
   이메일인증: { email?: string; verifyPassword?: number };
   비밀번호설정: { email: string; password?: string };
@@ -41,7 +43,7 @@ export type SignupSteps = {
     birthDate: string;
     name: string;
     agreement: boolean;
-    consumptionType?: string;
+    consumptionType?: ConsumptionType;
     consumptionGoal?: string;
   };
 };

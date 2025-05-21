@@ -18,16 +18,16 @@ import { BtnContainer, Container, Title } from '../EmailForm/EmailForm.style';
 import { GoalOptionButton, Options } from './ConsumptionGoal.style';
 
 interface ConsumptionGoalProps {
-  // consumptionType: ConsumptionType;
+  consumptionType: ConsumptionType;
   onComplete: (selectedGoal: string) => void;
 }
 
-const ConsumptionGoal = ({ onComplete }: ConsumptionGoalProps) => {
-  const selectedType: ConsumptionType = '절약형';
+const ConsumptionGoal = ({ consumptionType ,onComplete }: ConsumptionGoalProps) => {
+  // const selectedType: ConsumptionType = '절약형';
   // const selectedType = consumptionType;  // 하드코딩 제거, props 값 사용
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
 
-  const { options } = consumptionGoalMap[selectedType];
+  const { options } = consumptionGoalMap[consumptionType];
 
   return (
     <Container>

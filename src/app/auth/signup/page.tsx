@@ -12,6 +12,7 @@ import ConsumptionResult from '@/components/signup/ConsumptionResult/Consumption
 import EmailForm from '@/components/signup/EmailForm/EmailForm';
 import InfoForm from '@/components/signup/InfoForm/InfoForm';
 import PasswordForm from '@/components/signup/PasswordForm/PasswordForm';
+import { ConsumptionType } from '@/constants/auth.constant';
 import { api } from '@/lib/axios';
 import { SignupSteps } from '@/types/funnel.type';
 
@@ -105,9 +106,10 @@ const SignupPage = (): React.JSX.Element => {
           render: ( {context}) => (
             <ConsumptionResult
               userName={context.name ?? '사용자'}
-              onNext={() =>
+              onNext={(consumptionType) =>
                 funnel.history.push('소비목적결과', (prev) => ({
                   ...(prev as SignupSteps['소비목적결과']), // 타입 단언 추가
+                  consumptionType: consumptionType as ConsumptionType,
                   consumptionGoal: '',
                 }))
               }
@@ -117,7 +119,7 @@ const SignupPage = (): React.JSX.Element => {
         소비목적결과={funnel.Render.with({
           render: ({ context }) => (
             <ConsumptionGoal
-              consumptionType={context.consumptionType}
+              consumptionType={context.consumptionType ?? '절약형'}
               onComplete={async (selectedGoal) => {
                 const signupData = {
                   email: context.email,
@@ -125,7 +127,7 @@ const SignupPage = (): React.JSX.Element => {
                   sex: context.gender,
                   name: context.name,
                   birthDate: context.birthDate,
-                  consumptionType: context.consumptionType,
+                  consumptionType: context.consumptionType ?? '절약형',
                   consumeGoal: selectedGoal,
                 };
 

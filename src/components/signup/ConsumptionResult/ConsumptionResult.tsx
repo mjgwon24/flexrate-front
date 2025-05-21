@@ -27,7 +27,7 @@ const characterList = [
 ];
 
 interface ConsumptionResultProps {
-  onNext: () => void;
+  onNext: (consumptionType: string) => void;
   userName: string;
 }
 
@@ -79,7 +79,7 @@ const ConsumptionResult = ({ onNext, userName }: ConsumptionResultProps) => {
         )}
         {!loading && (
           <BtnContainer>
-            <Button text="다음으로" size="XL" onClick={onNext} />
+            <Button text="다음으로" size="XL" onClick={() => onNext(characterList[0].key)} />
           </BtnContainer>
         )}
       </CharacterContainer>
