@@ -44,6 +44,7 @@ const Agreement = ({ onNext }: AgreementProps) => {
   };
 
   const onSubmit = (data: FormData) => {
+    console.log('제출된 동의 정보:', data);
     onNext();
   };
 
@@ -67,6 +68,11 @@ const Agreement = ({ onNext }: AgreementProps) => {
               checked={agreePrivacy}
               onChange={(val) => setValue('agreePrivacy', val, { shouldValidate: true })}
             />
+
+            {errors.agreePrivacy && (
+              <ErrorMessage>{errors.agreePrivacy.message}</ErrorMessage>
+            )}
+
 
             <CheckBox
               size="small"
@@ -100,4 +106,11 @@ const CheckBoxContainer = styled.div`
   border-top: 1px solid #ddd;
   padding-top: 16px;
   gap: 22px;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+  margin-left: 8px;
 `;

@@ -29,11 +29,16 @@ const characterList = [
 interface ConsumptionResultProps {
   onNext: (consumptionType: string) => void;
   userName: string;
+  finalConsumptionType: string;
 }
 
-const ConsumptionResult = ({ onNext, userName }: ConsumptionResultProps) => {
+const ConsumptionResult = ({ onNext, userName, finalConsumptionType }: ConsumptionResultProps) => {
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // finalIndex를 상태로 관리하지 않고, loading이 false일 때 계산
+  const finalIndex =
+    characterList.findIndex((char) => char.key === finalConsumptionType) ?? 0;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -49,7 +54,7 @@ const ConsumptionResult = ({ onNext, userName }: ConsumptionResultProps) => {
       clearTimeout(timeout);
       clearInterval(interval);
     };
-  }, []);
+  }, [finalConsumptionType]);
 
   return (
     <Container>
@@ -71,15 +76,15 @@ const ConsumptionResult = ({ onNext, userName }: ConsumptionResultProps) => {
             transition={{ duration: 0.5 }}
           >
             <ResultCard>
-              <Image src={characterList[0].src} alt="최종 캐릭터" width={120} height={120} />
-              <Tag>{characterList[0].key}</Tag>
-              <Description>{characterList[0].description}</Description>
+              <Image src={characterList[finalIndex].src} alt="최종 캐릭터" width={120} height={120} />
+              <Tag>{characterList[finalIndex].key}</Tag>
+              <Description>{characterList[finalIndex].description}</Description>
             </ResultCard>
           </motion.div>
         )}
         {!loading && (
           <BtnContainer>
-            <Button text="다음으로" size="XL" onClick={() => onNext(characterList[0].key)} />
+            <Button text="다음으로" size="XL" onClick={() => onNext(characterList[finalIndex].key)} />
           </BtnContainer>
         )}
       </CharacterContainer>

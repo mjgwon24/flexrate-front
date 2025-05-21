@@ -1,4 +1,4 @@
-import type { ConsumptionType } from '@/constants/auth.constant';
+import { ConsumptionType } from '@/constants/auth.constant';
 
 export type SignupSteps = {
   이메일인증: { email?: string; verifyPassword?: number };
@@ -34,6 +34,7 @@ export type SignupSteps = {
     birthDate: string;
     name: string;
     agreement: boolean;
+    consumptionType?: ConsumptionType;
   };
   소비목적결과: {
     email: string;
