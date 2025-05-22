@@ -77,11 +77,10 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
+  userId: number;
+  email: string;
   accessToken: string;
   refreshToken?: string;
-  user: {
-    email: string;
-  };
 }
 
 // 로그인 API - 공통 인스턴스 사용

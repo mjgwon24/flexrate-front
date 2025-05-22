@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { loginUser } from '@/apis/auth';
 import Button from '@/components/Button/Button';
 import TextField from '@/components/TextField/TextField';
 import { authSchemas } from '@/schemas/auth.schema';
@@ -53,8 +54,28 @@ const LoginForm = () => {
     }
   }, [email, emailEntered, trigger]);
 
-  const onSubmit = (data: LoginFormValues) => {
-    console.log('로그인 시도:', data);
+  const onSubmit = async (data: LoginFormValues) => {
+    // console.log('로그인 시도:', data);
+    try {
+    const response = await loginUser(data);
+    console.log('로그인 성공:', response);
+
+    // accessToken, refreshToken 저장
+    localStorage.setItem('accessToken', response.accessToken);
+    if (response.refreshToken) {
+      localStorage.setItem('refreshToken', response.refreshToken);
+    }
+
+    // 홈으로 이동
+    router.push('/');
+    } catch (error: unknown) {
+      if(error instanceof Error){
+        console.error('로그인 실패:', error);
+        alert('이메일 또는 비밀번호가 올바르지 않습니다.');
+      } else {
+      console.error("알 수 없는 오류", error);
+      }
+    }
   };
 
   return (
@@ -106,7 +127,7 @@ const LoginForm = () => {
                 onClick: () => field.onChange(''),
               }}
             >
-              <TextField.TextFieldBox type="email" placeholder="이메일 입력" />
+              <TextField.TextFieldBox type="email" placeholder="이메일 주소 입력" />
               <TextField.ErrorText message={errors.email?.message ?? ''} />
             </TextField>
           )}
@@ -117,7 +138,6 @@ const LoginForm = () => {
             type="submit"
             text="로그인하기"
             disabled={emailEntered ? !isValid : !dirtyFields.email || !!errors.email}
-            onClick={() => router.push('/')}
           />
         </BtnContainer>
       </FormContainer>
