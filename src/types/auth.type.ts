@@ -1,3 +1,5 @@
+import { ConsumptionTypeKey } from '@/constants/auth.constant';
+
 export interface SignupRequest {
   email: string;
   password: string;
@@ -20,6 +22,10 @@ export interface SendEmailRequest {
 export interface VerifyEmailCodeRequest {
   email: string;
   code: string;
+}
+
+export interface ConsumptionTypeResponse {
+  consumptionType: ConsumptionTypeKey;
 }
 
 export interface LoginRequest {

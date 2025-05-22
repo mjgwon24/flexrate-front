@@ -1,4 +1,4 @@
-import { ConsumptionType } from '@/constants/auth.constant';
+import { ConsumptionTypeKey } from '@/constants/auth.constant';
 
 export type SignupSteps = {
   이메일인증: { email?: string; verifyPassword?: number };
@@ -12,7 +12,7 @@ export type SignupSteps = {
     email: string;
     password: string;
     method: string;
-    gender?: string;
+    sex?: string;
     birthDate?: string;
     name?: string;
   };
@@ -21,7 +21,7 @@ export type SignupSteps = {
     email: string;
     password: string;
     method: string;
-    gender: string;
+    sex: string;
     birthDate: string;
     name: string;
     agreement?: boolean;
@@ -30,21 +30,21 @@ export type SignupSteps = {
     email: string;
     password: string;
     method: string;
-    gender: string;
+    sex: string;
     birthDate: string;
     name: string;
     agreement: boolean;
-    consumptionType?: ConsumptionType;
+    consumptionType?: ConsumptionTypeKey;
   };
   소비목적결과: {
     email: string;
     password: string;
     method: string;
-    gender: string;
+    sex: string;
     birthDate: string;
     name: string;
     agreement: boolean;
-    consumptionType?: ConsumptionType;
+    consumptionType?: ConsumptionTypeKey;
     consumptionGoal?: string;
   };
 };
