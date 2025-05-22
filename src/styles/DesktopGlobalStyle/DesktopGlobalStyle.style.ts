@@ -27,4 +27,8 @@ export const desktopGlobalStyleCss = css`
     max-width: 100%;
     height: auto;
   }
+
+  .apexcharts-tooltip {
+    margin: 5px !important;
+  }
 `;

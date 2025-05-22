@@ -1,21 +1,24 @@
 'use client';
 
-import Button from '@/components/Button/Button';
-import { BtnContainer, Container, FormContainer, Title } from './EmailForm.style';
-import { authSchemas } from '@/schemas/auth.schema';
-import { z } from 'zod';
 import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
-import TextField from '@/components/TextField/TextField';
 import { motion } from 'framer-motion';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import Button from '@/components/Button/Button';
+import TextField from '@/components/TextField/TextField';
+import { authSchemas } from '@/schemas/auth.schema';
+
+import { BtnContainer, Container, FormContainer, Title } from './EmailForm.style';
 
 type FormData = z.infer<typeof authSchemas.emailWithCode>;
 
 // 백엔드 API 서버 주소 (포트 포함)
 const BASE_URL = 'http://localhost:8080';
 
-export default function EmailForm({ onNext }: { onNext: (email: string) => void }) {
+const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
   const [codeSent, setCodeSent] = useState(false);
   const {
     control,
@@ -173,4 +176,6 @@ export default function EmailForm({ onNext }: { onNext: (email: string) => void 
       </FormContainer>
     </Container>
   );
-}
+};
+
+export default EmailForm;
