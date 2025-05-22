@@ -134,5 +134,4 @@ const BtnContainer = styled.div`
   width: calc(100% - 44px);
   position: absolute;
   bottom: 0;
-  margin-bottom: 50px;
 `;

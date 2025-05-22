@@ -1,16 +1,18 @@
 'use client';
 
+import styled from '@emotion/styled';
+import { motion } from 'framer-motion';
+
 import { semanticColor } from '@/styles/colors';
 import { typoStyleMap } from '@/styles/typos';
-import styled from '@emotion/styled';
-
-import { motion } from 'framer-motion';
 
 export const Wrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-bottom: 150px;
+  background: linear-gradient(180deg, #fff 0%, #d2ebff 100%);
 `;
 
 export const IntroduceContentContainer = styled.div`
@@ -21,7 +23,6 @@ export const IntroduceContentContainer = styled.div`
   padding: 0px 22px;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(180deg, #fff 0%, #d2ebff 100%);
 `;
 export const IntroduceTextContainer = styled.div`
   display: flex;
@@ -44,6 +45,7 @@ export const SubTitle = styled.div`
 `;
 
 export const Icon3DContainer = styled.div`
+  position: relative;
   width: 169px;
   height: 169px;
 `;
@@ -54,13 +56,11 @@ export const MainImage3D = styled(motion.div)`
 
 export const ContentBox = styled(motion.div)`
   display: flex;
-  width: 323px;
+  width: calc(100% - 44px);
   margin-top: 12px;
-  margin-bottom: 30px;
   padding: 8px 10px;
   flex-direction: column;
   align-items: center;
-
   border-radius: 12px;
   background: ${semanticColor.bg.default};
   box-shadow: 0px 4px 12px 4px rgba(0, 82, 147, 0.2);
@@ -73,7 +73,6 @@ export const Content = styled.div`
   padding: 12px 8px;
   gap: 4px;
   align-items: center;
-
   border-bottom: 1px solid ${semanticColor.border.inactive.default};
 
   &:last-child {
@@ -106,6 +105,9 @@ export const Spacing = styled.div`
   height: 9px;
 `;
 
-export const ButtonContainer = styled.div`
+export const BtnContainer = styled.div`
   width: calc(100% - 44px);
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 50px;
 `;

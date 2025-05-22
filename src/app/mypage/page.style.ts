@@ -1,7 +1,7 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 
-import { semanticColor } from "@/styles/colors";
-import { typoStyleMap } from "@/styles/typos";
+import { semanticColor } from '@/styles/colors';
+import { typoStyleMap } from '@/styles/typos';
 
 export const Wrapper = styled.div`
   height: 85vh;
@@ -50,7 +50,7 @@ export const TableItemKey = styled.span`
 export const TableItemValue = styled.span<{ $isStrong?: boolean }>`
   ${typoStyleMap['body2_b']};
   color: ${({ $isStrong }) =>
-  $isStrong ? semanticColor.text.normal.accent : semanticColor.text.normal.sub2};
+    $isStrong ? semanticColor.text.normal.accent : semanticColor.text.normal.sub2};
   min-width: fit-content;
 `;
 
@@ -58,6 +58,4 @@ export const BtnContainer = styled.div`
   width: calc(100% - 44px);
   position: absolute;
   bottom: 0;
-  margin-bottom: 50px;
 `;
-

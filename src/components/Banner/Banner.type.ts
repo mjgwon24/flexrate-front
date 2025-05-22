@@ -1,10 +1,11 @@
 'use client';
 
-import { ConsumptionType } from "@/stores/userStore";
+import { ConsumptionType } from '@/stores/userStore';
 import { semanticColor } from '@/styles/colors';
 
 export interface BannerProps {
   type?: ConsumptionType;
+  borderNone?: boolean;
 }
 
 interface BannerMeta {
