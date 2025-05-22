@@ -7,20 +7,16 @@ import { useFunnel } from '@use-funnel/browser';
 import Header from '@/components/Header/Header';
 import { Wrapper } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
 import Agreement from '@/components/signup/AgreeForConsumptionType/AgreeForConsumptionType';
-import ConsumptionGoal from '@/components/signup/ConsumptionGoal/ConsumptionGoal';
 import ConsumptionResult from '@/components/signup/ConsumptionResult/ConsumptionResult';
 import EmailForm from '@/components/signup/EmailForm/EmailForm';
-import InfoForm from '@/components/signup/InfoForm/InfoForm';
 import PasswordForm from '@/components/signup/PasswordForm/PasswordForm';
-import { ConsumptionType } from '@/constants/auth.constant';
-import {
-  CONSUMPTION_TYPE_LABEL_MAP,
-} from '@/constants/customer.constant';
-import { api } from '@/lib/axios';
 import { SignupSteps } from '@/types/funnel.type';
-import reverseMap from '@/utils/reverseMap';
+import { InfoForm } from '@/components/signup/InfoForm/InfoForm';
+import { characterMap } from '@/utils/signup.util';
+import { ConsumptionTypeKey } from '@/constants/auth.constant';
+import ConsumptionGoalStep from '@/components/signup/ConsumptionGoalStep/ConsumptionGoalStep';
 
-const SignupPage = (): React.JSX.Element => {
+const SignupPage = () => {
   const funnel = useFunnel<SignupSteps>({
     id: 'signup',
     initial: { step: '이메일인증', context: { email: '' } },
@@ -44,8 +40,7 @@ const SignupPage = (): React.JSX.Element => {
             <PasswordForm
               email={context.email}
               onNext={({ password, method }) => {
-                const nextStep =
-                  method === '간편비밀번호' ? '간편비밀번호설정' : '내정보입력';
+                const nextStep = method === '간편비밀번호' ? '간편비밀번호설정' : '내정보입력';
                 funnel.history.push(nextStep, (prev) => ({
                   ...prev,
                   ...context,
@@ -66,20 +61,20 @@ const SignupPage = (): React.JSX.Element => {
         내정보입력={funnel.Render.with({
           render: ({ context }) => (
             <InfoForm
-              defaultValues={{
-                gender: context.gender as 'MALE' | 'FEMALE',
-                birthDate:
-                  typeof context.birthDate === 'number'
-                    ? new Date(context.birthDate).toISOString().slice(0, 10)
-                    : context.birthDate ?? '',
-                name: context.name ?? '',
-              }}
-              onNext={({ gender, birthDate, name }) => {
+              onNext={({
+                sex,
+                birthDate,
+                name,
+              }: {
+                sex: string;
+                birthDate: string;
+                name: string;
+              }) => {
                 // 유저 정보 입력 후 소비 성향 체크 단계로 이동
                 void funnel.history.push('소비성향체크', (prev) => ({
                   ...prev,
                   ...context,
-                  gender,
+                  sex,
                   birthDate,
                   name,
                 }));
@@ -100,48 +95,27 @@ const SignupPage = (): React.JSX.Element => {
           ),
         })}
         소비성향결과={funnel.Render.with({
-          render: ({ context }) => (
-            <ConsumptionResult
-              userName={context.name ?? '사용자'}
-              finalConsumptionType={context.consumptionType ?? '균형형'}
-              onNext={(consumptionType) =>
-                funnel.history.push('소비목적결과', (prev) => ({
-                  ...(prev as SignupSteps['소비목적결과']),
-                  consumptionType: consumptionType as ConsumptionType,
-                  consumptionGoal: '',
-                }))
-              }
-            />
-          ),
+          render: ({ context }) => {
+            return (
+              <ConsumptionResult
+                userName={context.name ?? '사용자'}
+                onNext={(consumptionTypeKey) =>
+                  funnel.history.push('소비목적결과', (prev) => ({
+                    ...(prev as SignupSteps['소비목적결과']),
+                    consumptionType: consumptionTypeKey as ConsumptionTypeKey,
+                    consumptionGoal: '',
+                  }))
+                }
+              />
+            );
+          },
         })}
         소비목적결과={funnel.Render.with({
-          render: ({ context }) => (
-            <ConsumptionGoal
-              consumptionType={context.consumptionType ?? '균형형'}
-              onComplete={async (selectedGoal) => {
-                const signupData = {
-                  email: context.email,
-                  password: context.password,
-                  sex: context.gender,
-                  name: context.name,
-                  birthDate: context.birthDate,
-                  consumptionType: reverseMap(CONSUMPTION_TYPE_LABEL_MAP, context.consumptionType ?? '절약형'),
-                  consumeGoal: selectedGoal,
-                };
+          render: ({ context }) => {
+            const character = characterMap[context.consumptionType as ConsumptionTypeKey];
 
-                console.log('서버로 보내는 회원가입 데이터:', signupData);
-
-                try {
-                  const response = await api.post('/api/auth/signup/password', signupData);
-                  console.log('회원가입 완료', response.data);
-                  // TODO: 성공 시 다음 액션 처리 (e.g. 페이지 이동)
-                } catch (error) {
-                  console.error('회원가입 에러:', error);
-                  // TODO: 에러 처리 UI
-                }
-              }}
-            />
-          ),
+            return <ConsumptionGoalStep context={context} character={character} />;
+          },
         })}
       />
     </Wrapper>
