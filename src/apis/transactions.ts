@@ -1,9 +1,8 @@
-import axios from 'axios';
+import { apiClient } from './client';
 
 /**
  * 상환 내역 조회
  */
-const API_URL = process.env.API_URL || 'http://localhost:8080';
 
 export const fetchTransactionHistory = async (
   memberId: string,
@@ -12,15 +11,12 @@ export const fetchTransactionHistory = async (
   size: number
 ) => {
   try {
-    const { data } = await axios.get(
-      `${API_URL}/api/admin/loans/members/${memberId}/transactions`,
-      {
-        params: { page, size },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const { data } = await apiClient.get(`/api/admin/loans/members/${memberId}/transactions`, {
+      params: { page, size },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     return data;
   } catch (error) {
