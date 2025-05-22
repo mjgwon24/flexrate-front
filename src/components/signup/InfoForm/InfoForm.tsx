@@ -1,145 +1,174 @@
-'use client'
+'use client';
 
-import React from 'react'
+import Button from '@/components/Button/Button';
+import TextField from '@/components/TextField/TextField';
+import { BtnContainer, Container, Title } from '../EmailForm/EmailForm.style';
+import styled from '@emotion/styled';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { motion } from 'framer-motion';
+import { authSchemas } from '@/schemas/auth.schema';
+import { formatBirthDateIfPossible } from '@/utils/signup.util';
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Controller, useForm } from 'react-hook-form'
-import { z } from 'zod'
+type FormData = z.infer<typeof authSchemas.infoRegister>;
 
-import Button from '@/components/Button/Button'
-import TextField from '@/components/TextField/TextField'
-
-import { Container, Title, FormContainer, BtnContainer } from './InfoFrom.style'
-
-export type LoginSelectorProps = {
-  onNext: (info: { gender: string; birthDate: string; name: string }) => void | Promise<void>
-  defaultValues?: {
-    gender?: 'MALE' | 'FEMALE'
-    birthDate?: string
-    name?: string
-  }
+interface InfoFormProps {
+  onNext: (data: FormData) => void;
 }
 
-
-const schema = z.object({
-  name: z.string().min(1, '이름을 입력해주세요.'),
-  gender: z.enum(['MALE', 'FEMALE'], { required_error: '성별을 선택해주세요.' }),
-  birthDate: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, '생년월일 형식이 올바르지 않습니다.'),
-})
-
-type FormData = z.infer<typeof schema>
-
-const InfoForm = ({ onNext }: LoginSelectorProps) => {
+export const InfoForm = ({ onNext }: InfoFormProps) => {
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors, isValid },
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(authSchemas.infoRegister),
     mode: 'onChange',
     defaultValues: {
       name: '',
-      gender: 'FEMALE',
+      sex: undefined,
       birthDate: '',
     },
-  })
+  });
 
-  const onSubmit = (data: FormData) => {
-    onNext(data)
-  }
+  const sex = watch('sex');
+  const birthDate = watch('birthDate');
+
+  const currentStep: 'sex' | 'birthDate' | 'name' = !sex
+    ? 'sex'
+    : !birthDate || birthDate.toString().length !== 10
+    ? 'birthDate'
+    : 'name';
+
+  const getTitle = () => {
+    switch (currentStep) {
+      case 'sex':
+        return '성별을 알려주세요';
+      case 'birthDate':
+        return '생년월일을 알려주세요';
+      case 'name':
+        return '이름을 알려주세요';
+    }
+  };
 
   return (
     <Container>
-      <Title>
-        반가워요!
-        <br />
-        개인 정보를 입력해 주세요
-      </Title>
-
-      <FormContainer onSubmit={handleSubmit(onSubmit)}>
-        {/* 이름 입력 */}
-        <Controller
-          name="name"
-          control={control}
-          render={({ field }) => (
-            <TextField value={field.value} onChange={field.onChange} isError={!!errors.name}>
-              <TextField.TextFieldBox placeholder="이름 입력" />
-              <TextField.ErrorText message={errors.name?.message ?? ''} />
-            </TextField>
-          )}
-        />
-
-        {/* 성별 선택 버튼 */}
-        <Controller
-          name="gender"
-          control={control}
-          render={({ field }) => (
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button
-                type="button"
-                onClick={() => field.onChange('FEMALE')}
-                style={{
-                  flex: 1,
-                  padding: '12px 0',
-                  borderRadius: 8,
-                  border: '1.5px solid',
-                  fontSize: 14,
-                  fontWeight: 500,
-                  backgroundColor: field.value === 'FEMALE' ? '#3B82F6' : '#FFF',
-                  color: field.value === 'FEMALE' ? '#FFF' : '#222',
-                  borderColor: field.value === 'FEMALE' ? '#3B82F6' : '#D1D5DB',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease-in-out',
-                }}
-              >
-                여성
-              </button>
-              <button
-                type="button"
-                onClick={() => field.onChange('MALE')}
-                style={{
-                  flex: 1,
-                  padding: '12px 0',
-                  borderRadius: 8,
-                  border: '1.5px solid',
-                  fontSize: 14,
-                  fontWeight: 500,
-                  backgroundColor: field.value === 'MALE' ? '#3B82F6' : '#FFF',
-                  color: field.value === 'MALE' ? '#FFF' : '#222',
-                  borderColor: field.value === 'MALE' ? '#3B82F6' : '#D1D5DB',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease-in-out',
-                }}
-              >
-                남성
-              </button>
-            </div>
-          )}
-        />
-        {errors.gender && (
-          <p style={{ color: '#EF4444', fontSize: 12, marginTop: 4 }}>{errors.gender.message}</p>
+      <Title>{getTitle()}</Title>
+      <Wrapper>
+        {currentStep === 'name' && (
+          <motion.div
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  value={field.value}
+                  onChange={field.onChange}
+                  isError={!!errors.name}
+                  rightContent={{ type: 'DELETE', onClick: () => field.onChange('') }}
+                >
+                  <TextField.TextFieldBox type="text" placeholder="이름 입력" />
+                  <TextField.ErrorText message={errors.name?.message ?? ''} />
+                </TextField>
+              )}
+            />
+          </motion.div>
         )}
 
-        {/* 생년월일 입력 */}
-        <Controller
-          name="birthDate"
-          control={control}
-          render={({ field }) => (
-            <TextField value={field.value} onChange={field.onChange} isError={!!errors.birthDate}>
-              <TextField.TextFieldBox type="date" placeholder="생년월일 (YYYY-MM-DD)" />
-              <TextField.ErrorText message={errors.birthDate?.message ?? ''} />
-            </TextField>
-          )}
-        />
+        {sex && (
+          <motion.div
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Controller
+              name="birthDate"
+              control={control}
+              render={({ field }) => {
+                const raw = field.value.replace(/\D/g, '');
+                const formatted = raw.length === 8 ? formatBirthDateIfPossible(raw) : raw;
+
+                return (
+                  <TextField
+                    value={formatted}
+                    onChange={(input) => {
+                      const raw = input.replace(/\D/g, '').slice(0, 8);
+
+                      if (raw.length === 8) {
+                        const formatted = formatBirthDateIfPossible(raw);
+                        field.onChange(formatted);
+                      } else {
+                        field.onChange(raw);
+                      }
+                    }}
+                    isError={!!errors.birthDate}
+                    rightContent={{
+                      type: 'DELETE',
+                      onClick: () => field.onChange(''),
+                    }}
+                  >
+                    <TextField.TextFieldBox type="text" placeholder="생년월일 (예: 19990101)" />
+                    <TextField.ErrorText message={errors.birthDate?.message ?? ''} />
+                  </TextField>
+                );
+              }}
+            />
+          </motion.div>
+        )}
+
+        <FlexContainer>
+          <Controller
+            name="sex"
+            control={control}
+            render={({ field }) => (
+              <>
+                <Button
+                  size="M"
+                  text="여성"
+                  varient="TERTIARY"
+                  selected={field.value === 'FEMALE'}
+                  onClick={() => field.onChange('FEMALE')}
+                />
+                <Button
+                  size="M"
+                  text="남성"
+                  varient="TERTIARY"
+                  selected={field.value === 'MALE'}
+                  onClick={() => field.onChange('MALE')}
+                />
+              </>
+            )}
+          />
+        </FlexContainer>
 
         <BtnContainer>
-          <Button type="submit" text="다음" disabled={!isValid} />
+          <Button
+            type="submit"
+            text="다음으로"
+            disabled={!isValid}
+            onClick={handleSubmit(onNext)}
+          />
         </BtnContainer>
-      </FormContainer>
+      </Wrapper>
     </Container>
-  )
-}
+  );
+};
 
-export default InfoForm
+const Wrapper = styled.div`
+  padding: 0px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+const FlexContainer = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 8px;
+`;
