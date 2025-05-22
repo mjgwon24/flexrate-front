@@ -22,7 +22,7 @@ const Agreement = ({ onNext }: AgreementProps) => {
     watch,
     setValue,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { isValid },
   } = useForm<FormData>({
     resolver: zodResolver(authSchemas.agreement),
     mode: 'onChange',
@@ -98,4 +98,11 @@ const CheckBoxContainer = styled.div`
   border-top: 1px solid #ddd;
   padding-top: 16px;
   gap: 22px;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+  margin-left: 8px;
 `;

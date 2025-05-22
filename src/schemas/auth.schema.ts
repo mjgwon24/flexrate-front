@@ -21,10 +21,8 @@ export const authSchemas = {
   }),
 
   infoRegister: z.object({
-    gender: z.enum(['남성', '여성'], { required_error: '성별을 선택해주세요' }),
-    birthDate: z.coerce.number().refine((n) => n.toString().length === 8, {
-      message: '생년월일은 8자리로 입력해주세요',
-    }),
+    sex: z.enum(['MALE', 'FEMALE'], { required_error: '성별을 선택해주세요' }),
+    birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, '생년월일 형식이 올바르지 않습니다.'),
     name: z.string().min(1, '이름을 입력해주세요'),
   }),
 
@@ -56,22 +54,28 @@ export const authSchemas = {
         .nonempty({ message: '이름을 입력하세요.' })
         .min(2, { message: '이름은 최소 2자 이상이어야 합니다.' }),
 
-      gender: z.enum(['남성', '여성'], {
+      sex: z.enum(['남성', '여성'], {
         required_error: '성별을 선택하세요.',
       }),
 
-      birthday: z
+      birthDate: z
         .string()
-        .nonempty({ message: '생년월일을 입력하세요.' })
-        .regex(/^\d{4}-\d{2}-\d{2}$/, { message: '생년월일은 YYYY-MM-DD 형식이어야 합니다.' })
+        .regex(/^\d{4}-\d{2}-\d{2}$/, '생년월일 형식이 올바르지 않습니다.')
         .refine(
-          (value) => {
-            const today = new Date();
-            const birthDate = new Date(value);
-            const age = today.getFullYear() - birthDate.getFullYear();
-            return age >= 18 && age <= 120;
+          (val) => {
+            const [y, m, d] = val.split('-').map(Number);
+            const date = new Date(y, m - 1, d);
+            const isValid =
+              date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d;
+
+            const minYear = 1900;
+            const maxYear = new Date().getFullYear();
+
+            return isValid && y >= minYear && y <= maxYear;
           },
-          { message: '유효한 생년월일을 입력하세요.' }
+          {
+            message: '유효하지 않은 생년월일입니다. (1900년 이후만 가능)',
+          }
         ),
 
       agreement: z

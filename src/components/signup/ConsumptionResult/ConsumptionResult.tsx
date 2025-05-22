@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
@@ -10,29 +10,22 @@ import Button from '@/components/Button/Button';
 import { BtnContainer, Container, Title } from '../EmailForm/EmailForm.style';
 
 import { CharacterContainer, Description, ResultCard, Tag } from './ConsumptionResult.style';
-
-const characterList = [
-  {
-    key: '균형형',
-    src: '/icons/webeeBalance_120.svg',
-    description: '필요한 것만 소비하는 편이에요',
-  },
-  { key: '소비형', src: '/icons/webeeConsumption_120.svg', description: '계획적으로 소비해요' },
-  {
-    key: '실용형',
-    src: '/icons/webeePracticality_120.svg',
-    description: '필요한 건 아끼지 않고 써요',
-  },
-  { key: '절약형', src: '/icons/webeeSaving_120.svg', description: '하고 싶은 건 하는 편이에요' },
-];
+import { characterList, ConsumptionTypeKey } from '@/constants/auth.constant';
+import { useConsumptionType } from '@/hooks/useConsumptionType';
+import { characterMap } from '@/utils/signup.util';
 
 interface ConsumptionResultProps {
-  onNext: () => void;
+  onNext: (consumptionType: string) => void;
+  userName: string;
 }
 
-const ConsumptionResult = ({ onNext }: ConsumptionResultProps) => {
-  const [loading, setLoading] = useState(true);
+const ConsumptionResult = ({ onNext, userName }: ConsumptionResultProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [animationDone, setAnimationDone] = useState(false);
+  const { data, isLoading } = useConsumptionType();
+
+  const finalKey = data as ConsumptionTypeKey | undefined;
+  const finalCharacter = finalKey ? characterMap[finalKey] : undefined;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -40,7 +33,7 @@ const ConsumptionResult = ({ onNext }: ConsumptionResultProps) => {
     }, 300);
 
     const timeout = setTimeout(() => {
-      setLoading(false);
+      setAnimationDone(true);
       clearInterval(interval);
     }, 3000);
 
@@ -50,11 +43,13 @@ const ConsumptionResult = ({ onNext }: ConsumptionResultProps) => {
     };
   }, []);
 
+  const showResult = animationDone && !isLoading && !!finalCharacter;
+
   return (
     <Container>
-      <Title>서채연님의 소비 성향은...</Title>
+      <Title>{userName}님의 소비 성향은...</Title>
       <CharacterContainer>
-        {loading ? (
+        {!showResult ? (
           <ResultCard>
             <Image
               src={characterList[currentIndex].src}
@@ -70,15 +65,15 @@ const ConsumptionResult = ({ onNext }: ConsumptionResultProps) => {
             transition={{ duration: 0.5 }}
           >
             <ResultCard>
-              <Image src={characterList[0].src} alt="최종 캐릭터" width={120} height={120} />
-              <Tag>{characterList[0].key}</Tag>
-              <Description>{characterList[0].description}</Description>
+              <Image src={finalCharacter.src} alt="최종 캐릭터" width={120} height={120} />
+              <Tag>{finalCharacter.name}</Tag>
+              <Description>{finalCharacter.description}</Description>
             </ResultCard>
           </motion.div>
         )}
-        {!loading && (
+        {showResult && (
           <BtnContainer>
-            <Button text="다음으로" size="XL" onClick={onNext} />
+            <Button text="다음으로" size="XL" onClick={() => onNext(finalCharacter.key)} />
           </BtnContainer>
         )}
       </CharacterContainer>

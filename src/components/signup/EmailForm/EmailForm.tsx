@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
@@ -12,17 +12,17 @@ import TextField from '@/components/TextField/TextField';
 import { authSchemas } from '@/schemas/auth.schema';
 
 import { BtnContainer, Container, FormContainer, Title } from './EmailForm.style';
+import { useEmailVerification } from '@/hooks/useEmailVerification';
+import { useVerifyEmailCode } from '@/hooks/useVerifyEmailCode';
 
 type FormData = z.infer<typeof authSchemas.emailWithCode>;
 
-// 백엔드 API 서버 주소 (포트 포함)
-const BASE_URL = 'http://localhost:8080';
-
 const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
-  const [codeSent, setCodeSent] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+
   const {
     control,
-    handleSubmit,
     watch,
     trigger,
     formState: { errors, dirtyFields },
@@ -38,68 +38,46 @@ const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
   const email = watch('email');
   const code = watch('code');
 
-  const handleRequestCode = async () => {
-    const isEmailValid = await trigger('email');
-    if (!isEmailValid) return;
-    setCodeSent(true);
-  };
+  const { requestCode, codeSent, setCodeSent } = useEmailVerification();
+  const verifyMutation = useVerifyEmailCode(onNext);
 
   const handleVerify = async () => {
     const isCodeValid = await trigger('code');
     if (!isCodeValid) return;
-    onNext(email);
+
+    verifyMutation.mutate({ email, code });
   };
 
-  // // 인증메일 요청 핸들러
-  // const handleRequestCode = async () => {
-  //   console.log('handleRequestCode called, email:', email);
-  //   const isEmailValid = await trigger('email');
-  //   if (!isEmailValid) {
-  //     console.log('Email validation failed');
-  //     return;
-  //   }
-  //   try {
-  //   const res = await fetch('http://localhost:8080/api/auth/email', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ email }),
-  //     mode: 'cors', // 추가
-  //   });
-  //   console.log('Fetch response status:', res.status);
-  //   if (!res.ok) throw new Error(`서버 응답 에러: ${res.status}`);
-  //   setCodeSent(true);
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       console.error('Fetch error:', error.message);
-  //     } else {
-  //       console.error('Fetch error (non-Error):', error);
-  //     }
-  //     alert('인증메일 발송에 실패했습니다.');
-  //   }
-  // };
+  useEffect(() => {
+    if (timer === 0 && intervalId) {
+      clearInterval(intervalId);
+      setIntervalId(null);
+      alert('시간이 만료되었습니다. 재전송 버튼을 눌러 다시 인증을 진행해주세요.');
+    }
 
-  // const handleVerify = async () => {
-  //   const isCodeValid = await trigger('code');
-  //   if (!isCodeValid) return;
+    if (timer > 0 && !intervalId) {
+      const id = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+      setIntervalId(id);
+    }
+  }, [timer]);
 
-  //   try {
-  //     const response = await fetch('http://localhost:8080/api/auth/email/verification', {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ email, code }),
-  //     });
+  const formatTime = (sec: number) => {
+    const m = String(Math.floor(sec / 60)).padStart(2, '0');
+    const s = String(sec % 60).padStart(2, '0');
+    return `${m}:${s}`;
+  };
 
-  //     if (!response.ok) {
-  //       const errorText = await response.text();
-  //       throw new Error(`인증번호 검증 실패: ${response.status} - ${errorText}`);
-  //     }
+  const handleRequestCode = async () => {
+    setCodeSent(true);
 
-  //     onNext(email);
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert('인증번호가 틀렸거나 만료되었습니다.');
-  //   }
-  // };
+    const isValid = await trigger('email');
+    if (isValid) {
+      requestCode(email);
+      setTimer(300);
+    }
+  };
 
   return (
     <Container>
@@ -110,6 +88,7 @@ const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
       </Title>
 
       <FormContainer>
+        {/* 인증번호 입력 영역 (코드 요청 후 노출) */}
         {codeSent && (
           <motion.div
             initial={{ y: -40, opacity: 0 }}
@@ -124,10 +103,7 @@ const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
                   value={field.value}
                   onChange={field.onChange}
                   isError={!!errors.code}
-                  rightContent={{
-                    type: 'DELETE',
-                    onClick: () => field.onChange(''),
-                  }}
+                  rightContent={timer > 0 ? { type: 'TIMER', time: formatTime(timer) } : undefined}
                 >
                   <TextField.TextFieldBox type="text" placeholder="인증번호 입력" />
                   <TextField.ErrorText message={errors.code?.message ?? ''} />
@@ -137,6 +113,7 @@ const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
           </motion.div>
         )}
 
+        {/* 이메일 입력 필드 */}
         <Controller
           name="email"
           control={control}
@@ -145,10 +122,11 @@ const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
               value={field.value}
               onChange={field.onChange}
               isError={!!errors.email}
-              rightContent={{
-                type: 'DELETE',
-                onClick: () => field.onChange(''),
-              }}
+              rightContent={
+                codeSent
+                  ? { type: 'RESEND', onClick: handleRequestCode }
+                  : { type: 'DELETE', onClick: () => field.onChange('') }
+              }
             >
               <TextField.TextFieldBox type="email" placeholder="이메일 주소 입력" />
               <TextField.ErrorText message={errors.email?.message ?? ''} />
@@ -157,6 +135,7 @@ const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
         />
 
         <BtnContainer>
+          {/* 인증 요청/확인 버튼 */}
           {!codeSent ? (
             <Button
               type="button"
