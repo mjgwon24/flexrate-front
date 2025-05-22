@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+
 import { useFunnel } from '@use-funnel/browser';
 
 import Header from '@/components/Header/Header';
@@ -11,7 +12,6 @@ import ConsumptionResult from '@/components/signup/ConsumptionResult/Consumption
 import EmailForm from '@/components/signup/EmailForm/EmailForm';
 import InfoForm from '@/components/signup/InfoForm/InfoForm';
 import PasswordForm from '@/components/signup/PasswordForm/PasswordForm';
-
 import { ConsumptionType } from '@/constants/auth.constant';
 import {
   CONSUMPTION_TYPE_LABEL_MAP,
