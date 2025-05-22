@@ -1,6 +1,7 @@
+import styled from '@emotion/styled';
+
 import { semanticColor } from '@/styles/colors';
 import { typoStyleMap } from '@/styles/typos';
-import styled from '@emotion/styled';
 
 export const CharacterContainer = styled.div`
   margin-top: 20px;

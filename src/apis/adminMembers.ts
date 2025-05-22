@@ -1,35 +1,5 @@
-import axios from 'axios';
-
-const API_URL = process.env.API_URL || 'http://localhost:8080';
-
-/**
- * API 응답 타입
- */
-export interface RawMember {
-  id: number;
-  name: string;
-  email: string;
-  sex: 'MALE' | 'FEMALE';
-  birthDate: string;
-  createdAt: string;
-  hasLoan: boolean;
-  lastLoginAt: string;
-  loanTransactionCount: number;
-  memberStatus: 'ACTIVE' | 'WITHDRAWN' | 'SUSPENDED';
-  [key: string]: unknown;
-}
-
-export interface PaginationInfo {
-  currentPage: number;
-  pageSize: number;
-  totalElements: number;
-  totalPages: number;
-}
-
-export interface ApiResponse {
-  members: RawMember[];
-  paginationInfo: PaginationInfo;
-}
+import { GetAdminMembersResponse, PatchMemberPayload } from '@/types/admin.type';
+import { apiClient } from './client';
 
 /**
  * 관리자 회원 목록 조회 API
@@ -39,8 +9,8 @@ export interface ApiResponse {
 export async function getMembers(
   params: Record<string, string>,
   accessToken: string
-): Promise<ApiResponse> {
-  const { data } = await axios.get<ApiResponse>(`${API_URL}/api/admin/members/search`, {
+): Promise<GetAdminMembersResponse> {
+  const { data } = await apiClient.get<GetAdminMembersResponse>(`/api/admin/members/search`, {
     params,
     headers: { Authorization: `Bearer ${accessToken}` },
   });
@@ -56,18 +26,11 @@ export async function getMembers(
  */
 export async function patchMember(
   userId: number,
-  payload: {
-    name?: string;
-    email?: string;
-    sex?: string;
-    birthDate?: string;
-    memberStatus?: string;
-  },
+  payload: PatchMemberPayload,
   accessToken: string
 ): Promise<void> {
-  await axios.patch(`${API_URL}/api/admin/members/${userId}`, payload, {
+  await apiClient.patch(`/api/admin/members/${userId}`, payload, {
     headers: {
-      'Content-Type': 'application/json',
       Authorization: `Bearer ${accessToken}`,
     },
   });

@@ -1,33 +1,5 @@
-import axios from 'axios';
-
-const API_URL = process.env.API_URL || 'http://localhost:8080';
-
-/**
- * API 응답 타입
- */
-export interface PaginationInfo {
-    page: number;
-    size: number;
-    totalElements: number;
-    totalPages: number;
-}
-
-export interface RawLoanApplication {
-    id: number;
-    status: 'PRE_APPLIED' | 'PENDING' | 'REJECTED' | 'EXECUTED' | 'COMPLETED';
-    appliedAt: string;
-    applicant: string;
-    applicantId: number;
-    availableLimit: number;
-    initialRate: number;
-    prevLoanCount: number;
-    type: 'NEW' | 'EXTENSION' | 'REDEVELOPMENT';
-}
-
-export interface LoanApiResponse {
-    paginationInfo: PaginationInfo;
-    loans: RawLoanApplication[];
-}
+import { LoanApiResponse, PatchLoanStatusPayload } from '@/types/admin.type';
+import { apiClient } from './client';
 
 /**
  * 관리자 대출 신청 목록 조회 API
@@ -38,15 +10,15 @@ export interface LoanApiResponse {
  * @author 허연규
  */
 export async function getLoanApplications(
-    params: Record<string, unknown>,
-    accessToken: string
+  params: Record<string, unknown>,
+  accessToken: string
 ): Promise<LoanApiResponse> {
-    const {data} = await axios.get<LoanApiResponse>(`${API_URL}/api/admin/loans`, {
-        params,
-        headers: {Authorization: `Bearer ${accessToken}`},
-    });
+  const { data } = await apiClient.get<LoanApiResponse>(`/api/admin/loans`, {
+    params,
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
 
-    return data;
+  return data;
 }
 
 /**
@@ -57,14 +29,13 @@ export async function getLoanApplications(
  * @returns void
  */
 export async function patchLoanStatus(
-    applicationId: number,
-    payload: { status?: string, reason?: string },
-    accessToken: string
+  applicationId: number,
+  payload: PatchLoanStatusPayload,
+  accessToken: string
 ): Promise<void> {
-    await axios.patch(`${API_URL}/api/admin/loans/${applicationId}/status`, payload, {
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-        },
-    });
+  await apiClient.patch(`/api/admin/loans/${applicationId}/status`, payload, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
 }

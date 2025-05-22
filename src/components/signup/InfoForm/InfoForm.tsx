@@ -9,15 +9,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
 import { authSchemas } from '@/schemas/auth.schema';
+import { formatBirthDateIfPossible } from '@/utils/signup.util';
 
 type FormData = z.infer<typeof authSchemas.infoRegister>;
 
 interface InfoFormProps {
-  defaultValues?: Partial<FormData>;
   onNext: (data: FormData) => void;
 }
 
-export const InfoForm = ({ defaultValues, onNext }: InfoFormProps) => {
+export const InfoForm = ({ onNext }: InfoFormProps) => {
   const {
     control,
     handleSubmit,
@@ -27,25 +27,24 @@ export const InfoForm = ({ defaultValues, onNext }: InfoFormProps) => {
     resolver: zodResolver(authSchemas.infoRegister),
     mode: 'onChange',
     defaultValues: {
-      gender: defaultValues?.gender ?? undefined,
-      birthDate: defaultValues?.birthDate,
-      name: defaultValues?.name,
+      name: '',
+      sex: undefined,
+      birthDate: '',
     },
   });
 
-  const gender = watch('gender');
+  const sex = watch('sex');
   const birthDate = watch('birthDate');
 
-  const currentStep: 'gender' | 'birthDate' | 'name' = !gender
-    ? 'gender'
-    : !birthDate || birthDate.toString().length !== 8
+  const currentStep: 'sex' | 'birthDate' | 'name' = !sex
+    ? 'sex'
+    : !birthDate || birthDate.toString().length !== 10
     ? 'birthDate'
     : 'name';
 
   const getTitle = () => {
-    console.log(currentStep);
     switch (currentStep) {
-      case 'gender':
+      case 'sex':
         return '성별을 알려주세요';
       case 'birthDate':
         return '생년월일을 알려주세요';
@@ -82,7 +81,7 @@ export const InfoForm = ({ defaultValues, onNext }: InfoFormProps) => {
           </motion.div>
         )}
 
-        {gender && (
+        {sex && (
           <motion.div
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -91,24 +90,41 @@ export const InfoForm = ({ defaultValues, onNext }: InfoFormProps) => {
             <Controller
               name="birthDate"
               control={control}
-              render={({ field }) => (
-                <TextField
-                  value={field.value}
-                  onChange={field.onChange}
-                  isError={!!errors.birthDate}
-                  rightContent={{ type: 'DELETE', onClick: () => field.onChange('') }}
-                >
-                  <TextField.TextFieldBox type="number" placeholder="생년월일 (예: 19990101)" />
-                  <TextField.ErrorText message={errors.birthDate?.message ?? ''} />
-                </TextField>
-              )}
+              render={({ field }) => {
+                const raw = field.value.replace(/\D/g, '');
+                const formatted = raw.length === 8 ? formatBirthDateIfPossible(raw) : raw;
+
+                return (
+                  <TextField
+                    value={formatted}
+                    onChange={(input) => {
+                      const raw = input.replace(/\D/g, '').slice(0, 8);
+
+                      if (raw.length === 8) {
+                        const formatted = formatBirthDateIfPossible(raw);
+                        field.onChange(formatted);
+                      } else {
+                        field.onChange(raw);
+                      }
+                    }}
+                    isError={!!errors.birthDate}
+                    rightContent={{
+                      type: 'DELETE',
+                      onClick: () => field.onChange(''),
+                    }}
+                  >
+                    <TextField.TextFieldBox type="text" placeholder="생년월일 (예: 19990101)" />
+                    <TextField.ErrorText message={errors.birthDate?.message ?? ''} />
+                  </TextField>
+                );
+              }}
             />
           </motion.div>
         )}
 
         <FlexContainer>
           <Controller
-            name="gender"
+            name="sex"
             control={control}
             render={({ field }) => (
               <>
@@ -116,15 +132,15 @@ export const InfoForm = ({ defaultValues, onNext }: InfoFormProps) => {
                   size="M"
                   text="여성"
                   varient="TERTIARY"
-                  selected={field.value === '여성'}
-                  onClick={() => field.onChange('여성')}
+                  selected={field.value === 'FEMALE'}
+                  onClick={() => field.onChange('FEMALE')}
                 />
                 <Button
                   size="M"
                   text="남성"
                   varient="TERTIARY"
-                  selected={field.value === '남성'}
-                  onClick={() => field.onChange('남성')}
+                  selected={field.value === 'MALE'}
+                  onClick={() => field.onChange('MALE')}
                 />
               </>
             )}

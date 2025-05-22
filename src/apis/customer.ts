@@ -1,15 +1,13 @@
-import axios from 'axios';
+import { apiClient } from './client';
 
 /**
  * 고객 상세 정보 조회
  */
-const API_URL = process.env.API_URL || 'http://localhost:8080';
 
 export const fetchCustomerDetail = async (memberId: string, token: string | null) => {
   try {
-    const { data } = await axios.get(`${API_URL}/api/admin/members/${memberId}`, {
+    const { data } = await apiClient.get(`/api/admin/members/${memberId}`, {
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
     });
