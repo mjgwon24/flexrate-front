@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 
 export const ProgressBarContainer = styled.div<{ type?: string }>`
-  padding: ${({ type }) => (type === 'MAIN' ? '' : '8px 24px')};
+  padding: ${({ type }) => (type === 'MAIN' ? '0' : '8px 24px')};
 `;
 
 export const ProgressBarBackground = styled.div<{ type?: string }>`
