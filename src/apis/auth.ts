@@ -1,4 +1,5 @@
 import {
+  ConsumptionTypeResponse,
   LoginRequest,
   LoginResponse,
   SendEmailRequest,
@@ -7,6 +8,7 @@ import {
   VerifyEmailCodeRequest,
 } from '@/types/auth.type';
 import { apiClient } from './client';
+import { ConsumptionTypeKey } from '@/constants/auth.constant';
 
 /**
  * 인증 관련 API
@@ -22,23 +24,23 @@ export const getMyPageUser = async (token: string) => {
 };
 
 // 회원가입 API는 공통 인스턴스 사용
-export const signupUser = async (data: SignupRequest): Promise<SignupResponse> => {
+export const postSignupUser = async (data: SignupRequest): Promise<SignupResponse> => {
   const response = await apiClient.post('/api/auth/signup/password', data);
   return response.data;
 };
 
 // 이메일 인증 요청
-export const sendEmailVerificationCode = async (data: SendEmailRequest): Promise<void> => {
+export const postSendEmailVerificationCode = async (data: SendEmailRequest): Promise<void> => {
   await apiClient.post('/api/auth/email/send', data);
 };
 
 // 이메일 인증번호 검증
-export const verifyEmailCode = async (data: VerifyEmailCodeRequest): Promise<void> => {
+export const postVerifyEmailCode = async (data: VerifyEmailCodeRequest): Promise<void> => {
   await apiClient.post('/api/auth/email/verification', data);
 };
 
 // 이메일 변경 요청 - 토큰 헤더 필요해서 직접 호출
-export const requestEmailChange = async (token: string, email: string) => {
+export const patchEmailChange = async (token: string, email: string) => {
   const { data } = await apiClient.patch(
     `/api/members/mypage`,
     { email },
@@ -48,6 +50,11 @@ export const requestEmailChange = async (token: string, email: string) => {
   );
 
   return data;
+};
+
+export const getConsumptionType = async (): Promise<ConsumptionTypeKey> => {
+  const response = await apiClient.get<ConsumptionTypeResponse>('/api/auth/consumption-type');
+  return response.data.consumptionType;
 };
 
 // 로그인 API
