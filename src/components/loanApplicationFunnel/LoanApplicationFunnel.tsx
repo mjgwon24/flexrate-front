@@ -136,7 +136,6 @@ const LoanApplicationFunnel = () => {
                 value={context}
                 onChange={(ctx) => funnel.history.replace('대출신청접수', ctx)}
                 onSubmit={() => {
-                  console.log('최종 대출 신청 제출:', context);
                   router.push('/loan-result');
                 }}
               />

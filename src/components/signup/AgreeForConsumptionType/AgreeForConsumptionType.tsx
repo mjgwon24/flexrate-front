@@ -22,7 +22,7 @@ const Agreement = ({ onNext }: AgreementProps) => {
     watch,
     setValue,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { isValid },
   } = useForm<FormData>({
     resolver: zodResolver(authSchemas.agreement),
     mode: 'onChange',
@@ -42,7 +42,6 @@ const Agreement = ({ onNext }: AgreementProps) => {
   };
 
   const onSubmit = (data: FormData) => {
-    console.log('제출된 동의 정보:', data);
     onNext();
   };
 
@@ -66,11 +65,6 @@ const Agreement = ({ onNext }: AgreementProps) => {
               checked={agreePrivacy}
               onChange={(val) => setValue('agreePrivacy', val, { shouldValidate: true })}
             />
-
-            {errors.agreePrivacy && (
-              <ErrorMessage>{errors.agreePrivacy.message}</ErrorMessage>
-            )}
-
 
             <CheckBox
               size="small"
