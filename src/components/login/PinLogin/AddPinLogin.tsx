@@ -11,7 +11,6 @@ const PinRegisterPage = (): JSX.Element => {
   return (
     <Container>
       <Title>아직 간편 비밀번호가 없어요</Title>
-
       <BtnContainer>
         <Button
           text='등록하기'
