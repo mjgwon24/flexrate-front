@@ -1,11 +1,11 @@
-import React, {useMemo} from 'react';
+import React, { useMemo } from 'react';
 
-import {useQuery} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 
-import {getLoanApplications, RawLoanApplication} from '@/apis/AdminLoans';
-import {LoanFilterType} from '@/types/loan.filter.type';
-import {filtersToLoanApplicationParams} from '@/utils/loanApplicationParams';
+import { getLoanApplications, RawLoanApplication } from '@/apis/AdminLoans';
+import { LoanFilterType } from '@/types/loan.filter.type';
+import { filtersToLoanApplicationParams } from '@/utils/loanApplicationParams';
 
 const PAGE_SIZE = 8;
 
@@ -13,20 +13,20 @@ const PAGE_SIZE = 8;
  * 대출 신청 테이블 행 데이터 타입
  */
 export interface LoanApplicationTableRow {
-    key: React.Key;
-    no: number;
-    status: string;
-    applicationDate: string;
-    applicantName: string;
-    loanLimit: string;
-    initialInterestRate: string;
-    previousLoanCount: number;
-    loanType: string;
-    applicationId: number;
-    userId: number;
-    handleChange?: (newValue: string, dataIndex?: string, record?: LoanApplicationTableRow) => void;
+  key: React.Key;
+  no: number;
+  status: string;
+  applicationDate: string;
+  applicantName: string;
+  loanLimit: string;
+  initialInterestRate: string;
+  previousLoanCount: number;
+  loanType: string;
+  applicationId: number;
+  userId: number;
+  handleChange?: (newValue: string, dataIndex?: string, record?: LoanApplicationTableRow) => void;
 
-    [key: string]: unknown;
+  [key: string]: unknown;
 }
 
 /**
@@ -34,20 +34,20 @@ export interface LoanApplicationTableRow {
  * @param status 대출 신청 상태
  */
 function getLoanStatus(status: RawLoanApplication['status']) {
-    switch (status) {
-        case 'PRE_APPLIED':
-            return '신청 접수';
-        case 'PENDING':
-            return '심사중';
-        case 'REJECTED':
-            return '거절됨';
-        case 'EXECUTED':
-            return '실행됨';
-        case 'COMPLETED':
-            return '상환 완료';
-        default:
-            return '-';
-    }
+  switch (status) {
+    case 'PRE_APPLIED':
+      return '신청 접수';
+    case 'PENDING':
+      return '심사중';
+    case 'REJECTED':
+      return '거절됨';
+    case 'EXECUTED':
+      return '실행됨';
+    case 'COMPLETED':
+      return '상환 완료';
+    default:
+      return '-';
+  }
 }
 
 /**
@@ -55,16 +55,16 @@ function getLoanStatus(status: RawLoanApplication['status']) {
  * @param type 대출 유형
  */
 function getLoanType(type: RawLoanApplication['type']) {
-    switch (type) {
-        case 'NEW':
-            return '신규';
-        case 'EXTENSION':
-            return '연장';
-        case 'REDEVELOPMENT':
-            return '재가입';
-        default:
-            return '-';
-    }
+  switch (type) {
+    case 'NEW':
+      return '신규';
+    case 'EXTENSION':
+      return '연장';
+    case 'REDEVELOPMENT':
+      return '재가입';
+    default:
+      return '-';
+  }
 }
 
 /**
@@ -72,11 +72,11 @@ function getLoanType(type: RawLoanApplication['type']) {
  * @param amount 금액
  */
 function formatCurrency(amount: number) {
-    return new Intl.NumberFormat('ko-KR', {
-        style: 'currency',
-        currency: 'KRW',
-        maximumFractionDigits: 0,
-    }).format(amount);
+  return new Intl.NumberFormat('ko-KR', {
+    style: 'currency',
+    currency: 'KRW',
+    maximumFractionDigits: 0,
+  }).format(amount);
 }
 
 /**
@@ -84,7 +84,7 @@ function formatCurrency(amount: number) {
  * @param rate 이자율
  */
 function formatInterestRate(rate: number) {
-    return `${rate.toFixed(2)}%`;
+  return `${rate.toFixed(2)}%`;
 }
 
 /**
@@ -97,7 +97,7 @@ function formatInterestRate(rate: number) {
  * @author 허연규
  */
 function useLoanApplicationQueryParams(filters: LoanFilterType, page: number, size: number = 8) {
-    return useMemo(() => filtersToLoanApplicationParams(filters, page, size), [filters, page, size]);
+  return useMemo(() => filtersToLoanApplicationParams(filters, page, size), [filters, page, size]);
 }
 
 /**
@@ -111,69 +111,69 @@ function useLoanApplicationQueryParams(filters: LoanFilterType, page: number, si
  * @author 허연규
  */
 export const useLoanApplicationsQuery = (
-    filters: LoanFilterType,
-    accessToken: string,
-    page: number,
-    size: number = PAGE_SIZE
+  filters: LoanFilterType,
+  accessToken: string,
+  page: number,
+  size: number = PAGE_SIZE
 ) => {
-    const params = useLoanApplicationQueryParams(filters, page, size);
-    const queryKey = ['loanApplications', JSON.stringify(params), accessToken];
+  const params = useLoanApplicationQueryParams(filters, page, size);
+  const queryKey = ['loanApplications', JSON.stringify(params), accessToken];
 
-    const queryResult = useQuery({
-        queryKey,
-        queryFn: async () => {
-            try {
-                const data = await getLoanApplications(params, accessToken);
-                const {paginationInfo, loans} = data;
+  const queryResult = useQuery({
+    queryKey,
+    queryFn: async () => {
+      try {
+        const data = await getLoanApplications(params, accessToken);
+        const { paginationInfo, loans } = data;
 
-                const currentPage = Number(paginationInfo.page) || 0;
-                const pageSize = Number(paginationInfo.size) || size;
-                const totalElements = Number(paginationInfo.totalElements) || 0;
-                const totalPages = Number(paginationInfo.totalPages) || 0;
+        const currentPage = Number(paginationInfo.currentPage) || 0;
+        const pageSize = Number(paginationInfo.pageSize) || size;
+        const totalElements = Number(paginationInfo.totalElements) || 0;
+        const totalPages = Number(paginationInfo.totalPages) || 0;
 
-                const frontendPage = currentPage + 1;
-                const startIndex = currentPage * pageSize;
+        const frontendPage = currentPage + 1;
+        const startIndex = currentPage * pageSize;
 
-                const mappedLoanApplications: LoanApplicationTableRow[] = loans.map((loan, idx) => ({
-                    key: loan.id,
-                    no: startIndex + idx + 1,
-                    status: getLoanStatus(loan.status),
-                    applicationDate: dayjs(loan.appliedAt).format('YYYY-MM-DD'),
-                    applicantName: loan.applicant,
-                    loanLimit: formatCurrency(loan.availableLimit),
-                    initialInterestRate: formatInterestRate(loan.initialRate),
-                    previousLoanCount: loan.prevLoanCount,
-                    loanType: getLoanType(loan.type),
-                    applicationId: loan.id,
-                    userId: loan.applicantId,
-                }));
+        const mappedLoanApplications: LoanApplicationTableRow[] = loans.map((loan, idx) => ({
+          key: loan.id,
+          no: startIndex + idx + 1,
+          status: getLoanStatus(loan.status),
+          applicationDate: dayjs(loan.appliedAt).format('YYYY-MM-DD'),
+          applicantName: loan.applicant,
+          loanLimit: formatCurrency(loan.availableLimit),
+          initialInterestRate: formatInterestRate(loan.initialRate),
+          previousLoanCount: loan.prevLoanCount,
+          loanType: getLoanType(loan.type),
+          applicationId: loan.id,
+          userId: loan.applicantId,
+        }));
 
-                return {
-                    loanApplications: mappedLoanApplications,
-                    paginationInfo: {
-                        currentPage: frontendPage,
-                        pageSize,
-                        totalElements,
-                        totalPages,
-                    },
-                };
-            } catch (error: unknown) {
-                console.error('Error fetching loan application data:', error);
-                throw new Error(`Failed to fetch loan application data: ${error}`);
-            }
-        },
-        enabled: !!accessToken,
-        staleTime: 1000 * 30,
-    });
+        return {
+          loanApplications: mappedLoanApplications,
+          paginationInfo: {
+            currentPage: frontendPage,
+            pageSize,
+            totalElements,
+            totalPages,
+          },
+        };
+      } catch (error: unknown) {
+        console.error('Error fetching loan application data:', error);
+        throw new Error(`Failed to fetch loan application data: ${error}`);
+      }
+    },
+    enabled: !!accessToken,
+    staleTime: 1000 * 30,
+  });
 
-    return {
-        ...queryResult,
-        loanApplications: queryResult.data?.loanApplications ?? [],
-        paginationInfo: queryResult.data?.paginationInfo ?? {
-            currentPage: 1,
-            pageSize: size,
-            totalElements: 0,
-            totalPages: 0
-        },
-    };
+  return {
+    ...queryResult,
+    loanApplications: queryResult.data?.loanApplications ?? [],
+    paginationInfo: queryResult.data?.paginationInfo ?? {
+      currentPage: 1,
+      pageSize: size,
+      totalElements: 0,
+      totalPages: 0,
+    },
+  };
 };

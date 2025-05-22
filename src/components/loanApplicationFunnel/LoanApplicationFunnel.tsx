@@ -18,8 +18,7 @@ import {
 } from './LoanApplicationFunnel.style';
 import { PurposeStep } from './PurposeStep/PurposeStep';
 import ReviewResultAndLoanApplication from './ReviewResultAndLoanApplication/ReviewResultAndLoanApplication';
-
-
+import { useRouter } from 'next/navigation';
 
 export type FunnelContextMap = {
   직업정보입력: {
