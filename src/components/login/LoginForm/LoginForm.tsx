@@ -1,15 +1,21 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
-import { authSchemas } from '@/schemas/auth.schema';
-import { Container, Title } from '../LoginSelector/LoginSelector.style';
-import TextField from '@/components/TextField/TextField';
-import Button from '@/components/Button/Button';
-import { BtnContainer, FormContainer } from './LoginForm.style';
 import { motion } from 'framer-motion';
-import { z } from 'zod';
 import { useRouter } from 'next/navigation';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import Button from '@/components/Button/Button';
+import TextField from '@/components/TextField/TextField';
+import { authSchemas } from '@/schemas/auth.schema';
+
+import { Container, Title } from '../LoginSelector/LoginSelector.style';
+
+
+import { BtnContainer, FormContainer } from './LoginForm.style';
+
 
 type LoginFormValues = z.infer<typeof authSchemas.login>;
 
@@ -100,7 +106,7 @@ const LoginForm = () => {
                 onClick: () => field.onChange(''),
               }}
             >
-              <TextField.TextFieldBox type="email" placeholder="example@fisa.com" />
+              <TextField.TextFieldBox type="email" placeholder="이메일 입력" />
               <TextField.ErrorText message={errors.email?.message ?? ''} />
             </TextField>
           )}
