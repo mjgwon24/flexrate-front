@@ -41,7 +41,7 @@ export type FunnelContextMap = {
   };
 };
 
-export default function LoanApplicationFunnel() {
+const LoanApplicationFunnel = () => {
   const funnel = useFunnel<FunnelContextMap>({
     id: 'loan-application-funnel',
     initial: {
@@ -148,4 +148,6 @@ export default function LoanApplicationFunnel() {
       </Container>
     </Wrapper>
   );
-}
+};
+
+export default LoanApplicationFunnel;

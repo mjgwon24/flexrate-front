@@ -1,11 +1,17 @@
-import { semanticColor } from '@/styles/colors';
-import { typoStyleMap } from '@/styles/typos';
 import styled from '@emotion/styled';
 
+import { semanticColor } from '@/styles/colors';
+import { typoStyleMap } from '@/styles/typos';
+
 export const TabContainer = styled.div`
+  position: sticky;
+  overflow-y: auto;
+  top: 56px;
   height: 44px;
   display: flex;
   border-bottom: 1px solid ${semanticColor.text.normal.sub4};
+  background-color: ${semanticColor.bg.default};
+  z-index: 1;
 `;
 
 export const TabMenu = styled.div<{ $isActive: boolean }>`

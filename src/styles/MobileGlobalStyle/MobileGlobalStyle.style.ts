@@ -27,6 +27,10 @@ export const mobileGlobalStyleCss = css`
     max-width: 100%;
     height: auto;
   }
+
+  .apexcharts-tooltip {
+    margin-top: 5px !important;
+  }
 `;
 
 export const AppContainer = styled.div`
@@ -44,6 +48,6 @@ export const AppContainer = styled.div`
 
 export const InnerContainer = styled.div`
   position: relative;
-  padding: 57px 0px;
+  padding: 57px 0px 0px 0px;
   box-sizing: border-box;
 `;

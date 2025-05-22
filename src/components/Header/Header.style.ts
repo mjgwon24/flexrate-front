@@ -1,6 +1,7 @@
+import styled from '@emotion/styled';
+
 import { semanticColor } from '@/styles/colors';
 import { typoStyleMap } from '@/styles/typos';
-import styled from '@emotion/styled';
 
 export const HeaderContainer = styled.div`
   position: sticky;
@@ -13,6 +14,7 @@ export const HeaderContainer = styled.div`
   align-items: center;
   align-self: stretch;
   background-color: ${semanticColor.bg.default};
+  z-index: 1000;
 `;
 
 export const HeaderRightContainer = styled.div`
@@ -22,7 +24,7 @@ export const HeaderRightContainer = styled.div`
 `;
 
 export const None = styled.div`
-  width: 36px;
+  width: 77px;
   height: 36px;
 `;
 

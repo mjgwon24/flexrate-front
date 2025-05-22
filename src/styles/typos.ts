@@ -1,4 +1,10 @@
 export const typoStyleMap = {
+  display: `
+    font-size: 32px;
+    font-weight: 600;
+    line-height: normal;
+    letter-spacing: 0px;
+  `,
   head1: `
     font-size: 24px;
     font-weight: 700;
@@ -59,6 +65,12 @@ export const typoStyleMap = {
     line-height: 150%;
     letter-spacing: 0px;
   `,
+  body2_eb: `
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 150%;
+    letter-spacing: 0px;
+  `,
   body3_r: `
     font-size: 14px;
     font-weight: 400;
@@ -75,6 +87,12 @@ export const typoStyleMap = {
     font-size: 10px;
     font-weight: 400;
     line-height: 130%;
+    letter-spacing: 0px;
+  `,
+  caption3_b: `
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 160%;
     letter-spacing: 0px;
   `,
 } as const;

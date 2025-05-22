@@ -9,8 +9,6 @@ import Button from '@/components/Button/Button';
 import CheckBox from '@/components/CheckBox/CheckBox';
 import { authSchemas } from '@/schemas/auth.schema';
 
-
-
 import { BtnContainer, Container, Title } from '../EmailForm/EmailForm.style';
 
 type FormData = z.infer<typeof authSchemas.agreement>;

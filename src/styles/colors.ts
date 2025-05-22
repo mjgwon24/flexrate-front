@@ -2,6 +2,7 @@ export const primitiveColor = {
   background: {
     wt: '#ffffff',
     bk: '#000000',
+    cardBg: '#f9fafb',
   },
   blue: {
     950: '#00223d',
@@ -33,6 +34,8 @@ export const primitiveColor = {
     500: '#ff6969',
     50: '#ffe1e1',
   },
+  green: ' #51b13a',
+  yellow: '#ffec98',
 } as const;
 
 export const semanticColor = {

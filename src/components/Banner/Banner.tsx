@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { BannerContainer, BannerContent, BannerLabel, BannerDesc } from './Banner.style';
 import { BannerProps, bannerMetaMap } from './Banner.type';
 
-const Banner = ({ type }: BannerProps) => {
+const Banner = ({ type, borderNone }: BannerProps) => {
   const meta = type ? bannerMetaMap[type] : undefined;
 
   if (!meta) {
@@ -13,7 +13,7 @@ const Banner = ({ type }: BannerProps) => {
   }
 
   return (
-    <BannerContainer>
+    <BannerContainer $borderNone={borderNone}>
       <BannerContent>
         <BannerLabel $bgColor={meta.bgColor} $color={meta.color}>
           {meta.label}
