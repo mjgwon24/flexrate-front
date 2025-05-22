@@ -38,8 +38,10 @@ const ConsumptionResult = ({ onNext, userName, finalConsumptionType = '균형형
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // finalIndex를 상태로 관리하지 않고, loading이 false일 때 계산
-  const finalIndex =
-    characterList.findIndex((char) => char.key === finalConsumptionType) ?? 0;
+  const finalIndex = (() => {
+    const idx = characterList.findIndex((char) => char.key === finalConsumptionType);
+      return idx >= 0 ? idx : 0;
+    })();
 
   useEffect(() => {
     const interval = setInterval(() => {

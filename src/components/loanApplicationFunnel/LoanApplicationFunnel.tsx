@@ -1,7 +1,6 @@
 'use client';
 
 import { useFunnel } from '@use-funnel/browser';
-import { useRouter } from 'next/navigation';
 
 import Header from '../Header/Header';
 import ProgressBar from '../ProgressBar/ProgressBar';
