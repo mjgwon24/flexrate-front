@@ -80,10 +80,7 @@ export interface LoginResponse {
   accessToken: string;
   refreshToken?: string;
   user: {
-    name: string;
     email: string;
-    consumeGoal: string;
-    consumptionType: string;
   };
 }
 
