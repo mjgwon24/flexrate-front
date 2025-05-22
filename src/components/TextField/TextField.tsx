@@ -7,8 +7,7 @@ import { getInputType } from '@/lib/getInputType';
 
 import * as S from './TextField.style';
 import { TextFieldProps } from './TextField.type';
-import { TextFieldContext , useTextFieldContext } from './TextFieldContext';
-
+import { TextFieldContext, useTextFieldContext } from './TextFieldContext';
 
 const TextFieldComponent = ({
   children,
@@ -101,8 +100,14 @@ const RightIcon = ({ focused }: { focused: boolean }) => {
       );
 
     case 'TIMER':
-      return <S.TimeText>01:23</S.TimeText>;
+      return <S.TimeText onClick={rightContent.onClick}>{rightContent.time}</S.TimeText>;
 
+    case 'RESEND':
+      return (
+        <S.ChangeBtn type="button" onClick={rightContent.onClick}>
+          재전송
+        </S.ChangeBtn>
+      );
     default:
       return null;
   }
