@@ -1,23 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { sendEmailVerificationCode, verifyEmailCode } from '@/apis/auth';
 import Button from '@/components/Button/Button';
 import TextField from '@/components/TextField/TextField';
 import { authSchemas } from '@/schemas/auth.schema';
 
 import { BtnContainer, Container, FormContainer, Title } from './EmailForm.style';
+import { useEmailVerification } from '@/hooks/useEmailVerification';
+import { useVerifyEmailCode } from '@/hooks/useVerifyEmailCode';
 
 type FormData = z.infer<typeof authSchemas.emailWithCode>;
 
 const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
-  const [codeSent, setCodeSent] = useState(false); // 인증 코드 요청 여부
+  const [timer, setTimer] = useState(0);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
   const {
     control,
@@ -36,31 +38,44 @@ const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
   const email = watch('email');
   const code = watch('code');
 
-  // 인증 코드 요청 핸들러
-  const handleRequestCode = async () => {
-    const isEmailValid = await trigger('email');
-    if (!isEmailValid) return;
+  const { requestCode, codeSent, setCodeSent } = useEmailVerification();
+  const verifyMutation = useVerifyEmailCode(onNext);
 
-    try {
-      await sendEmailVerificationCode({ email });
-      setCodeSent(true); // 코드 입력 UI 표시
-    } catch (error) {
-      console.error(error);
-      alert('인증메일 발송에 실패했습니다.');
-    }
-  };
-
-  // 인증 확인 핸들러
   const handleVerify = async () => {
     const isCodeValid = await trigger('code');
     if (!isCodeValid) return;
 
-    try {
-      await verifyEmailCode({ email, code });
-      onNext(email); // 인증 성공 시 다음 단계로 이동
-    } catch (error) {
-      console.error(error);
-      alert('인증번호가 틀렸거나 만료되었습니다.');
+    verifyMutation.mutate({ email, code });
+  };
+
+  useEffect(() => {
+    if (timer === 0 && intervalId) {
+      clearInterval(intervalId);
+      setIntervalId(null);
+      alert('시간이 만료되었습니다. 재전송 버튼을 눌러 다시 인증을 진행해주세요.');
+    }
+
+    if (timer > 0 && !intervalId) {
+      const id = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+      setIntervalId(id);
+    }
+  }, [timer]);
+
+  const formatTime = (sec: number) => {
+    const m = String(Math.floor(sec / 60)).padStart(2, '0');
+    const s = String(sec % 60).padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+  const handleRequestCode = async () => {
+    setCodeSent(true);
+
+    const isValid = await trigger('email');
+    if (isValid) {
+      requestCode(email);
+      setTimer(300);
     }
   };
 
@@ -88,7 +103,7 @@ const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
                   value={field.value}
                   onChange={field.onChange}
                   isError={!!errors.code}
-                  rightContent={{ type: 'DELETE', onClick: () => field.onChange('') }}
+                  rightContent={timer > 0 ? { type: 'TIMER', time: formatTime(timer) } : undefined}
                 >
                   <TextField.TextFieldBox type="text" placeholder="인증번호 입력" />
                   <TextField.ErrorText message={errors.code?.message ?? ''} />
@@ -107,7 +122,11 @@ const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
               value={field.value}
               onChange={field.onChange}
               isError={!!errors.email}
-              rightContent={{ type: 'DELETE', onClick: () => field.onChange('') }}
+              rightContent={
+                codeSent
+                  ? { type: 'RESEND', onClick: handleRequestCode }
+                  : { type: 'DELETE', onClick: () => field.onChange('') }
+              }
             >
               <TextField.TextFieldBox type="email" placeholder="이메일 주소 입력" />
               <TextField.ErrorText message={errors.email?.message ?? ''} />
