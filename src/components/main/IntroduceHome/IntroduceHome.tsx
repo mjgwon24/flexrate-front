@@ -1,10 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import {useRouter} from 'next/navigation';
 
-import {loanProductApi} from '@/apis/loanProducts';
 import Button from '@/components/Button/Button';
+import {useSelectLoanProduct} from "@/hooks/useSelectLoanProduct";
 
 import {
     BtnContainer,
@@ -27,37 +26,10 @@ import {
 const PRODUCT_ID = 1; // 일단 상품 ID 고정
 
 const IntroduceHome = () => {
-    const router = useRouter();
+    const {mutate} = useSelectLoanProduct();
 
     const handleLoanApplyClick = async () => {
-        const token = localStorage.getItem('accessToken');
-
-        if (!token) {
-            router.push('/auth/login');
-            return;
-        }
-
-        try {
-            await loanProductApi.selectLoanProduct(PRODUCT_ID, token);
-            router.push('/credit-evaluation');
-        } catch (error: any) {
-            console.error('대출 신청 에러 상세 정보:', error);
-
-            if (error.response) {
-                console.error('에러 상태 코드:', error.response.status);
-                console.error('에러 데이터:', error.response.data);
-
-                if (error.response.status === 401) {
-                    alert('인증에 실패했습니다. 다시 로그인해주세요.');
-                    localStorage.removeItem('accessToken');
-                    router.push('/auth/login');
-                } else {
-                    alert(`대출 신청 초기화에 실패했습니다: ${error.response.data.message || '알 수 없는 오류'}`);
-                }
-            } else {
-                alert('대출 신청 초기화에 실패했습니다. 네트워크 연결을 확인해주세요.');
-            }
-        }
+        mutate(PRODUCT_ID);
     };
 
     return (

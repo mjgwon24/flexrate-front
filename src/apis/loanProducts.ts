@@ -1,13 +1,11 @@
-import axios from 'axios';
-
-const API_URL = process.env.API_URL || 'http://localhost:8080';
+import {apiClient} from "@/apis/client";
 
 /**
  * 대출 상품 목록 전체 조회 API
  * @return data
  */
 const getAllProducts = async () => {
-    const {data} = await axios.get(`${API_URL}/api/loans`);
+    const {data} = await apiClient.get(`/api/loans`);
     return data;
 };
 
@@ -19,9 +17,8 @@ const getAllProducts = async () => {
 const selectLoanProduct = async (productId: number, token: string | null) => {
     if (!token) throw new Error('로그인이 필요합니다.');
 
-    await axios.post(`${API_URL}/api/loans/${productId}/select`, null, {
+    await apiClient.post(`/api/loans/${productId}/select`, null, {
         headers: {
-            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
         },
     });
