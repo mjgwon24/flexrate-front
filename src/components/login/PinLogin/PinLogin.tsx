@@ -3,7 +3,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 
 import { loginWithPin } from '@/apis/auth';
- 
+import PinEmailForm from '@/components/login/PinLogin/PinEmailForm/PinEmailForm';
+
 import {
   Container,
   Title,
@@ -11,9 +12,9 @@ import {
   Dot,
   KeypadWrapper,
   KeyButton,
+  RegisterButtonWrapper,
+  RegisterButton,
 } from './PinLogin.style';
-
-// API 함수 import (실제 경로에 맞게 조정 필요)
 
 const PIN_LENGTH = 6;
 
@@ -29,14 +30,14 @@ const shuffleArray = (array: number[]) => {
 const PinLogin = () => {
   const [pin, setPin] = useState<string[]>(Array(PIN_LENGTH).fill(''));
   const [loading, setLoading] = useState(false);
+  const [showPinEmailForm, setShowPinEmailForm] = useState(false);
 
-  // TODO: 실제 memberId는 로그인 상태나 Context에서 받아오기
-  const memberId = 123; 
+  const email = '';
 
   const shuffledNumbers = useMemo(() => shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]), []);
 
   const handleKeyClick = (key: string) => {
-    if (loading) return; // 로딩 중엔 입력 막기
+    if (loading) return;
 
     const newPin = [...pin];
 
@@ -53,26 +54,42 @@ const PinLogin = () => {
     setPin(newPin);
   };
 
-  // PIN이 다 채워지면 자동으로 로그인 시도
   useEffect(() => {
     const pinStr = pin.join('');
     if (pinStr.length === PIN_LENGTH && !pin.includes('')) {
       const doLogin = async () => {
         setLoading(true);
         try {
-          const response = await loginWithPin(memberId, pinStr);
+          const response = await loginWithPin(email, pinStr);
           alert(`로그인 성공! 환영합니다, ${response.user.name}님.`);
-          // TODO: 로그인 성공 처리 (토큰 저장, 페이지 이동 등)
+          // TODO: 토큰 저장 등 로그인 처리
         } catch (error) {
           alert('로그인 실패: PIN이 올바르지 않거나 오류가 발생했습니다.');
-          setPin(Array(PIN_LENGTH).fill('')); // PIN 초기화
+          setPin(Array(PIN_LENGTH).fill(''));
         } finally {
           setLoading(false);
         }
       };
       doLogin();
     }
-  }, [pin, memberId]);
+  }, [pin, email]);
+
+  const handleRegisterClick = () => {
+    setShowPinEmailForm(true);
+  };
+
+  // PinEmailForm이 보여야 하면 해당 컴포넌트 렌더링
+  if (showPinEmailForm) {
+    return (
+      <PinEmailForm
+        onVerified={() => {
+          alert(`이메일 인증 완료!`);
+          setShowPinEmailForm(false);
+        }}
+        onCancel={() => setShowPinEmailForm(false)}
+      />
+    );
+  }
 
   return (
     <Container>
@@ -83,15 +100,27 @@ const PinLogin = () => {
         ))}
       </DotWrapper>
 
+      <RegisterButtonWrapper>
+        <RegisterButton onClick={handleRegisterClick} disabled={loading}>
+          등록 / 변경 &gt;
+        </RegisterButton>
+      </RegisterButtonWrapper>
+
       <KeypadWrapper>
         {shuffledNumbers.map((num) => (
           <KeyButton key={num} onClick={() => handleKeyClick(num.toString())} disabled={loading}>
             {num}
           </KeyButton>
         ))}
-        <KeyButton onClick={() => handleKeyClick('reset')} disabled={loading}>전체삭제</KeyButton>
-        <KeyButton onClick={() => handleKeyClick('0')} disabled={loading}>0</KeyButton>
-        <KeyButton onClick={() => handleKeyClick('del')} disabled={loading}>←</KeyButton>
+        <KeyButton onClick={() => handleKeyClick('reset')} disabled={loading}>
+          전체삭제
+        </KeyButton>
+        <KeyButton onClick={() => handleKeyClick('0')} disabled={loading}>
+          0
+        </KeyButton>
+        <KeyButton onClick={() => handleKeyClick('del')} disabled={loading}>
+          ←
+        </KeyButton>
       </KeypadWrapper>
     </Container>
   );

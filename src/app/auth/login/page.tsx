@@ -22,7 +22,7 @@ const LoginPage = () => {
       <Header />
       {step === 'selector' && (
         <LoginSelector
-          onSelectPin={() => setStep('PinEmailVerification')}
+          onSelectPin={() => setStep('pin')}
           onSelectFace={() => {
             // Face ID 로직
           }}
@@ -31,9 +31,7 @@ const LoginPage = () => {
       )}
       {step === 'form' && <LoginForm />}
 
-      {step === 'PinEmailVerification' && <PinRegisterPage onBack={handleBack}/>}
-
-      {step === 'pin' && <PinLogin />}
+      {step === 'pin' && <PinLogin/>}
     </Wrapper>
   );
 };

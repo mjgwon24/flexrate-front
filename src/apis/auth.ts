@@ -64,10 +64,22 @@ export const loginUser = async (data: LoginRequest): Promise<LoginResponse> => {
   return response.data;
 };
 
+
+// PIN 등록
+interface PinRegisterRequest {
+  email: string;
+  pin: string;
+}
+
+export const registerPin = async (data: PinRegisterRequest): Promise<string> => {
+  const response = await apiClient.post('/api/auth/register/pin', data);
+  return response.data;  // "PIN 등록/변경 성공"
+};
+
 // PIN 로그인 API
-export const loginWithPin = async (memberId: number, pin: string): Promise<LoginResponse> => {
+export const loginWithPin = async (email: string, pin: string): Promise<LoginResponse> => {
   const response = await apiClient.post('/api/auth/login/pin', {
-    memberId,
+    email,
     pin,
   });
   return response.data;

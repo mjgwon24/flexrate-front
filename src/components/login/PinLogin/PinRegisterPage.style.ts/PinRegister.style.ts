@@ -15,6 +15,7 @@ export const Container = styled.div`
 
 export const Title = styled.div`
   ${typoStyleMap['head1']};
+  text-align: center;
   color: ${semanticColor.text.normal.primary};
 `;
 

@@ -58,3 +58,18 @@ export const KeyButton = styled.button`
     background: rgba(255, 255, 255, 0.2);
   }
 `;
+
+
+export const RegisterButtonWrapper = styled.div`
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+`;
+
+export const RegisterButton = styled.button`
+  background-color: transparent;
+  color: #000000;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+`;
