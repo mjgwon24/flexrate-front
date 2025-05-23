@@ -9,12 +9,12 @@ import { Controller, useForm } from 'react-hook-form';
 import { loginUser } from '@/apis/auth';
 import Button from '@/components/Button/Button';
 import TextField from '@/components/TextField/TextField';
+import { LoginFormValues, useLoginUser } from '@/hooks/useLoginUser';
 import { authSchemas } from '@/schemas/auth.schema';
 
 import { Container, Title } from '../LoginSelector/LoginSelector.style';
 
 import { BtnContainer, FormContainer } from './LoginForm.style';
-import { LoginFormValues, useLoginUser } from '@/hooks/useLoginUser';
 
 const LoginForm = () => {
   const [emailEntered, setEmailEntered] = useState(false);
