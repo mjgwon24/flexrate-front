@@ -9,7 +9,7 @@ export const Container = styled.div`
 `;
 export const TitleContainer = styled.div`
   width: 100%;
-  margin-top: 67px 0px 26px 0px;
+  margin: 67px 0px 26px 0px;
 `;
 
 export const CheckBoxContainer = styled.div`
