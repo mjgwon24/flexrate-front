@@ -16,7 +16,6 @@ import {
 
 export type LoginSelectorProps = {
   onSelectPassword: () => void;
-  // onSelectEmail: () => void;
   onSelectFace: () => void;
   onSelectPin: () => void;
 };
@@ -40,13 +39,13 @@ const LoginSelector = ({ onSelectFace, onSelectPassword, onSelectPin }: LoginSel
           </SheetBtn>
           <SheetBtn onClick={onSelectFace}>
             <BtnContainer>
-              <Image src={'/imgs/faceId.svg'} width={36} height={36} alt="지문" />
-              지문
+              <Image src={'/icons/finger_36.svg'} width={36} height={36} alt="지문" />
+              지문 인증
             </BtnContainer>
           </SheetBtn>
           <SheetBtn onClick={onSelectPassword}>
             <BtnContainer>
-              <Image src={'/imgs/pattern.svg'} width={36} height={36} alt="일반 로그인" />
+              <Image src={'/icons/webee_36.svg'} width={36} height={36} alt="일반 로그인" />
               일반 로그인
             </BtnContainer>
           </SheetBtn>
