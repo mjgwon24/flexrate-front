@@ -1,3 +1,10 @@
+import { useState } from 'react';
+
+import Image from 'next/image';
+
+import { useSlideTouch } from '@/hooks/useSlideTouch';
+
+import FirstPage from './FirstPage/FirstPage';
 import {
   ArrowWrapper,
   IndicatorDot,
@@ -7,10 +14,6 @@ import {
   SlideContainer,
   SliderWrapper,
 } from './MainHasLoan.style';
-import { useState } from 'react';
-import FirstPage from './FirstPage/FirstPage';
-import { useSlideTouch } from '@/hooks/useSlideTouch';
-import Image from 'next/image';
 import SecondPage from './SecondPage/SecondPage';
 
 const MainHasLoan = () => {
