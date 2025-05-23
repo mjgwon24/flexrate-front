@@ -92,13 +92,10 @@ const PinEmailForm = ({ onVerified, onCancel }: PinEmailFormProps) => {
   return (
     <Container>
       <Title>
-        PIN 등록 전 이메일 인증이 필요해요
-        <br />
-        이메일을 입력해주세요
+        PIN 등록 전에 이메일 인증이 필요합니다
       </Title>
 
       <FormContainer>
-        {/* 인증번호 입력 영역 */}
         {codeSent && (
           <motion.div
             initial={{ y: -40, opacity: 0 }}
@@ -123,7 +120,6 @@ const PinEmailForm = ({ onVerified, onCancel }: PinEmailFormProps) => {
           </motion.div>
         )}
 
-        {/* 이메일 입력 필드 */}
         <Controller
           name="email"
           control={control}

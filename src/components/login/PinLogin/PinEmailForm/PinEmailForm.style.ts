@@ -27,4 +27,5 @@ export const BtnContainer = styled.div`
   width: calc(100% - 44px);
   position: absolute;
   bottom: 0;
+  margin: 16px 0;
 `;
