@@ -4,10 +4,9 @@ import React from 'react';
 
 import Button from '@/components/Button/Button';
 
-import { BtnContainer } from '../LoginForm/LoginForm.style';
-import { Container, Title } from '../LoginSelector/LoginSelector.style';
+import { BackButton, BtnContainer, Container, Title } from './PinRegister.style';
 
-const PinRegisterPage = (): JSX.Element => {
+const PinRegisterPage = ({ onBack }: { onBack: () => void }): JSX.Element => {
   return (
     <Container>
       <Title>아직 간편 비밀번호가 없어요</Title>
@@ -15,9 +14,13 @@ const PinRegisterPage = (): JSX.Element => {
         <Button
           text='등록하기'
         />
-        <div className="font-pretendard-body2-m-14 text-semantic-text-normal-sub2 text-center">
+        <BackButton
+          type="button"
+          onClick={onBack}
+          
+        >
           다른 로그인 방법 &gt;
-        </div>
+        </BackButton>
       </BtnContainer>
     </Container>
   );
