@@ -16,11 +16,11 @@ import {
 
 export type LoginSelectorProps = {
   onSelectPassword: () => void;
-  onSelectEmail: () => void;
   onSelectFace: () => void;
+  onSelectPin: () => void;
 };
 
-const LoginSelector = ({ onSelectEmail, onSelectFace, onSelectPassword }: LoginSelectorProps) => {
+const LoginSelector = ({ onSelectFace, onSelectPassword, onSelectPin }: LoginSelectorProps) => {
   return (
     <Container>
       <Title>
@@ -31,7 +31,7 @@ const LoginSelector = ({ onSelectEmail, onSelectFace, onSelectPassword }: LoginS
       <BottomSheet isOpen={true}>
         <Question>어떤 방법으로 로그인할까요?</Question>
         <BtnWrapper>
-          <SheetBtn onClick={onSelectEmail}>
+          <SheetBtn onClick={onSelectPin}>
             <BtnContainer>
               <Image src={'/imgs/lock.svg'} width={36} height={36} alt="간편 비밀번호" />
               간편 비밀번호
@@ -39,13 +39,13 @@ const LoginSelector = ({ onSelectEmail, onSelectFace, onSelectPassword }: LoginS
           </SheetBtn>
           <SheetBtn onClick={onSelectFace}>
             <BtnContainer>
-              <Image src={'/imgs/faceId.svg'} width={36} height={36} alt="지문" />
-              지문
+              <Image src={'/icons/finger_36.svg'} width={36} height={36} alt="지문" />
+              지문 인증
             </BtnContainer>
           </SheetBtn>
           <SheetBtn onClick={onSelectPassword}>
             <BtnContainer>
-              <Image src={'/imgs/pattern.svg'} width={36} height={36} alt="일반 로그인" />
+              <Image src={'/icons/webee_36.svg'} width={36} height={36} alt="일반 로그인" />
               일반 로그인
             </BtnContainer>
           </SheetBtn>

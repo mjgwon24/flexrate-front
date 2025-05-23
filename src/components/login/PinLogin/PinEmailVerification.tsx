@@ -13,11 +13,11 @@ import { useEmailVerification } from '@/hooks/useEmailVerification';
 import { useVerifyEmailCode } from '@/hooks/useVerifyEmailCode';
 import { authSchemas } from '@/schemas/auth.schema';
 
-import { BtnContainer, Container, FormContainer, Title } from './EmailForm.style';
+import { BtnContainer, Container, FormContainer, Title } from './PinEmailVerification.style';
 
 type FormData = z.infer<typeof authSchemas.emailWithCode>;
 
-const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
+const PinEmailVerification = ({ onVerified }: { onVerified: () => void }) => {
   const [timer, setTimer] = useState(0);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
@@ -39,12 +39,11 @@ const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
   const code = watch('code');
 
   const { requestCode, codeSent, setCodeSent } = useEmailVerification();
-  const verifyMutation = useVerifyEmailCode(onNext);
+  const verifyMutation = useVerifyEmailCode(() => onVerified());
 
   const handleVerify = async () => {
-    const isCodeValid = await trigger('code');
-    if (!isCodeValid) return;
-
+    const isValid = await trigger('code');
+    if (!isValid) return;
     verifyMutation.mutate({ email, code });
   };
 
@@ -71,7 +70,6 @@ const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
 
   const handleRequestCode = async () => {
     setCodeSent(true);
-
     const isValid = await trigger('email');
     if (isValid) {
       requestCode(email);
@@ -82,13 +80,12 @@ const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
   return (
     <Container>
       <Title>
-        반가워요!
+        본인 확인을 위해
         <br />
-        이메일 인증을 시작할게요
+        이메일 인증을 진행해주세요
       </Title>
 
       <FormContainer>
-        {/* 인증번호 입력 영역 (코드 요청 후 노출) */}
         {codeSent && (
           <motion.div
             initial={{ y: -40, opacity: 0 }}
@@ -113,7 +110,6 @@ const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
           </motion.div>
         )}
 
-        {/* 이메일 입력 필드 */}
         <Controller
           name="email"
           control={control}
@@ -135,7 +131,6 @@ const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
         />
 
         <BtnContainer>
-          {/* 인증 요청/확인 버튼 */}
           {!codeSent ? (
             <Button
               type="button"
@@ -157,4 +152,4 @@ const EmailForm = ({ onNext }: { onNext: (email: string) => void }) => {
   );
 };
 
-export default EmailForm;
+export default PinEmailVerification;

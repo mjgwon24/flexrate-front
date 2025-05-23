@@ -5,23 +5,22 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
 
+import { loginUser } from '@/apis/auth';
 import Button from '@/components/Button/Button';
 import TextField from '@/components/TextField/TextField';
+import { LoginFormValues, useLoginUser } from '@/hooks/useLoginUser';
 import { authSchemas } from '@/schemas/auth.schema';
 
 import { Container, Title } from '../LoginSelector/LoginSelector.style';
 
-
 import { BtnContainer, FormContainer } from './LoginForm.style';
-
-
-type LoginFormValues = z.infer<typeof authSchemas.login>;
 
 const LoginForm = () => {
   const [emailEntered, setEmailEntered] = useState(false);
   const router = useRouter();
+
+  const { mutate: login } = useLoginUser();
 
   const {
     control,
@@ -54,7 +53,7 @@ const LoginForm = () => {
   }, [email, emailEntered, trigger]);
 
   const onSubmit = (data: LoginFormValues) => {
-    console.log('로그인 시도:', data);
+    login(data);
   };
 
   return (
@@ -106,7 +105,7 @@ const LoginForm = () => {
                 onClick: () => field.onChange(''),
               }}
             >
-              <TextField.TextFieldBox type="email" placeholder="example@fisa.com" />
+              <TextField.TextFieldBox type="email" placeholder="이메일 주소 입력" />
               <TextField.ErrorText message={errors.email?.message ?? ''} />
             </TextField>
           )}
@@ -117,7 +116,6 @@ const LoginForm = () => {
             type="submit"
             text="로그인하기"
             disabled={emailEntered ? !isValid : !dirtyFields.email || !!errors.email}
-            onClick={() => router.push('/')}
           />
         </BtnContainer>
       </FormContainer>
