@@ -5,7 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
 
 import { loginUser } from '@/apis/auth';
 import Button from '@/components/Button/Button';
@@ -14,15 +13,14 @@ import { authSchemas } from '@/schemas/auth.schema';
 
 import { Container, Title } from '../LoginSelector/LoginSelector.style';
 
-
 import { BtnContainer, FormContainer } from './LoginForm.style';
-
-
-type LoginFormValues = z.infer<typeof authSchemas.login>;
+import { LoginFormValues, useLoginUser } from '@/hooks/useLoginUser';
 
 const LoginForm = () => {
   const [emailEntered, setEmailEntered] = useState(false);
   const router = useRouter();
+
+  const { mutate: login } = useLoginUser();
 
   const {
     control,
@@ -54,28 +52,8 @@ const LoginForm = () => {
     }
   }, [email, emailEntered, trigger]);
 
-  const onSubmit = async (data: LoginFormValues) => {
-    // console.log('로그인 시도:', data);
-    try {
-    const response = await loginUser(data);
-    console.log('로그인 성공:', response);
-
-    // accessToken, refreshToken 저장
-    localStorage.setItem('accessToken', response.accessToken);
-    if (response.refreshToken) {
-      localStorage.setItem('refreshToken', response.refreshToken);
-    }
-
-    // 홈으로 이동
-    router.push('/');
-    } catch (error: unknown) {
-      if(error instanceof Error){
-        console.error('로그인 실패:', error);
-        alert('이메일 또는 비밀번호가 올바르지 않습니다.');
-      } else {
-      console.error("알 수 없는 오류", error);
-      }
-    }
+  const onSubmit = (data: LoginFormValues) => {
+    login(data);
   };
 
   return (
