@@ -1,7 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import styled from '@emotion/styled';
+import Image from 'next/image';
+
 import { ImageLabelContainer, Label, ShowMore, Wrapper } from './CheckBox.style';
 
 interface SvgCheckboxProps {

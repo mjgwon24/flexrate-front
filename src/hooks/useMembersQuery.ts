@@ -3,9 +3,10 @@ import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 
-import { getMembers, RawMember } from '@/apis/adminMembers';
+import { getMembers } from '@/apis/adminMembers';
 import { FilterType } from '@/types/filter.type';
 import { filtersToParams } from '@/utils/memberParams';
+import { RawMember } from '@/types/admin.type';
 const PAGE_SIZE = 8;
 
 /**

@@ -1,12 +1,13 @@
 'use client';
 import React, { useState } from 'react';
-import { TextFieldContext } from './TextFieldContext';
-import { TextFieldProps } from './TextField.type';
-import * as S from './TextField.style';
-import { useTextFieldContext } from './TextFieldContext';
-import { getInputType } from '@/lib/getInputType';
-import ErrorIcon from '@/assets/icons/error_18.svg';
+
 import DeleteIcon from '@/assets/icons/delete_24.svg';
+import ErrorIcon from '@/assets/icons/error_18.svg';
+import { getInputType } from '@/lib/getInputType';
+
+import * as S from './TextField.style';
+import { TextFieldProps } from './TextField.type';
+import { TextFieldContext, useTextFieldContext } from './TextFieldContext';
 
 const TextFieldComponent = ({
   children,
@@ -99,8 +100,14 @@ const RightIcon = ({ focused }: { focused: boolean }) => {
       );
 
     case 'TIMER':
-      return <S.TimeText>01:23</S.TimeText>;
+      return <S.TimeText onClick={rightContent.onClick}>{rightContent.time}</S.TimeText>;
 
+    case 'RESEND':
+      return (
+        <S.ChangeBtn type="button" onClick={rightContent.onClick}>
+          재전송
+        </S.ChangeBtn>
+      );
     default:
       return null;
   }

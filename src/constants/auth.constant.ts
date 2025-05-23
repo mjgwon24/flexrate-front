@@ -1,5 +1,3 @@
-export type ConsumptionType = '절약형' | '실용형' | '균형형' | '일반형';
-
 export interface ConsumptionOption {
   label: string;
   value: string;
@@ -10,8 +8,10 @@ export interface ConsumptionGoalSet {
   options: ConsumptionOption[];
 }
 
-export const consumptionGoalMap: Record<ConsumptionType, ConsumptionGoalSet> = {
-  절약형: {
+export type ConsumptionTypeKey = 'BALANCED' | 'CONSUMPTION_ORIENTED' | 'PRACTICAL' | 'CONSERVATIVE';
+
+export const consumptionGoalMap: Record<ConsumptionTypeKey, ConsumptionGoalSet> = {
+  CONSERVATIVE: {
     intro: '최대한 아껴서 써요',
     options: [
       { label: '오늘 하루, 지출 없이 보내고싶어요', value: 'NO_SPENDING_TODAY' },
@@ -20,7 +20,7 @@ export const consumptionGoalMap: Record<ConsumptionType, ConsumptionGoalSet> = {
       { label: '지출보다 수익이 많아요', value: 'INCOME_OVER_EXPENSE' },
     ],
   },
-  실용형: {
+  PRACTICAL: {
     intro: '필요한 것만 써요',
     options: [
       { label: '대중교통만 이용해요', value: 'ONLY_PUBLIC_TRANSPORT' },
@@ -29,7 +29,7 @@ export const consumptionGoalMap: Record<ConsumptionType, ConsumptionGoalSet> = {
       { label: '10만원 이하의 의류를 소비해요', value: 'CLOTHING_UNDER_100K' },
     ],
   },
-  균형형: {
+  BALANCED: {
     intro: '계획적으로 소비해요',
     options: [
       { label: '오늘은 하나의 카테고리에만 소비해보세요', value: 'ONE_CATEGORY_SPEND' },
@@ -38,7 +38,7 @@ export const consumptionGoalMap: Record<ConsumptionType, ConsumptionGoalSet> = {
       { label: '평균 지출의 10% 이상 소비해요', value: 'OVER_10_PERCENT' },
     ],
   },
-  일반형: {
+  CONSUMPTION_ORIENTED: {
     intro: '하고 싶은 건 하는 편이에요',
     options: [
       { label: '만원을 넘기는 디저트와 커피는 사치에요', value: 'NO_EXPENSIVE_DESSERT' },
@@ -48,3 +48,37 @@ export const consumptionGoalMap: Record<ConsumptionType, ConsumptionGoalSet> = {
     ],
   },
 };
+
+export interface CharacterInfo {
+  key: ConsumptionTypeKey;
+  src: string;
+  description: string;
+  name: string;
+}
+
+export const characterList: CharacterInfo[] = [
+  {
+    key: 'BALANCED',
+    src: '/icons/webeeBalance_120.svg',
+    description: '계획적으로 소비해요',
+    name: '균형형',
+  },
+  {
+    key: 'CONSUMPTION_ORIENTED',
+    src: '/icons/webeeConsumption_120.svg',
+    description: '하고 싶은 건 하는 편이에요',
+    name: '소비지향형',
+  },
+  {
+    key: 'PRACTICAL',
+    src: '/icons/webeePracticality_120.svg',
+    description: '필요한 건 아끼지 않고 써요',
+    name: '실용형',
+  },
+  {
+    key: 'CONSERVATIVE',
+    src: '/icons/webeeSaving_120.svg',
+    description: '필요한 것만 소비하는 편이에요',
+    name: '절약형',
+  },
+];

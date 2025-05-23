@@ -1,7 +1,6 @@
 'use client';
 
 import { useFunnel } from '@use-funnel/browser';
-import { useRouter } from 'next/navigation';
 
 import Header from '../Header/Header';
 import ProgressBar from '../ProgressBar/ProgressBar';
@@ -19,6 +18,7 @@ import {
 } from './LoanApplicationFunnel.style';
 import { PurposeStep } from './PurposeStep/PurposeStep';
 import ReviewResultAndLoanApplication from './ReviewResultAndLoanApplication/ReviewResultAndLoanApplication';
+import { useRouter } from 'next/navigation';
 
 export type FunnelContextMap = {
   직업정보입력: {
@@ -136,7 +136,6 @@ const LoanApplicationFunnel = () => {
                 value={context}
                 onChange={(ctx) => funnel.history.replace('대출신청접수', ctx)}
                 onSubmit={() => {
-                  console.log('최종 대출 신청 제출:', context);
                   router.push('/loan-result');
                 }}
               />

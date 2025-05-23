@@ -1,21 +1,29 @@
 'use client';
 
-import { Controller, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import TextField from '@/components/TextField/TextField';
-import Button from '@/components/Button/Button';
-import { Container, FormContainer, BtnContainer } from './../EmailForm/EmailForm.style';
-import { BottomSheetBtnContainer, Title } from './PasswordForm.style';
 import { useEffect, useRef, useState } from 'react';
+
+import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import BottomSheet from '@/components/BottomSheet/BottomSheet';
+import Button from '@/components/Button/Button';
 import {
   BtnWrapper,
   Question,
   SheetBtn,
 } from '@/components/login/LoginSelector/LoginSelector.style';
-import Image from 'next/image';
-import BottomSheet from '@/components/BottomSheet/BottomSheet';
+import TextField from '@/components/TextField/TextField';
+
+import { Container, FormContainer, BtnContainer } from './../EmailForm/EmailForm.style';
+import { BottomSheetBtnContainer, Title } from './PasswordForm.style';
+
+
+
+
+
 
 const schema = z
   .object({
