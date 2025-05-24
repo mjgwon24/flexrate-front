@@ -65,6 +65,15 @@ export const loginUser = async (data: LoginRequest): Promise<LoginResponse> => {
   return response.data;
 };
 
+// PIN 등록 여부 조회 API
+export const checkPinRegistered = async (userId: number): Promise<boolean> => {
+  const response = await apiClient.get<{ registered: boolean }>('/api/auth/login/pin/registered', {
+    params: { userId },
+  });
+  return response.data.registered;
+};
+
+
 // PIN 등록 API
 interface PinRegisterRequest {
   email: string;
@@ -72,8 +81,8 @@ interface PinRegisterRequest {
 }
 
 export const registerPin = async (data: PinRegisterRequest): Promise<string> => {
-  const response = await apiClient.post('/api/auth/register/pin', data);
-  return response.data; // "PIN 등록/변경 성공"
+  const response = await apiClient.post('/api/auth/pin/register', data);
+  return response.data;
 };
 
 // PIN 로그인 API

@@ -29,7 +29,20 @@ const ConsumptionGoalStep = ({
           consumeGoal: selectedGoal,
         };
 
-        signupMutation.mutate(signupData);
+        signupMutation.mutate(signupData, {
+          onSuccess: (data) => {
+            // 서버 응답 data 안에 userId가 있다고 가정
+            if (data?.userId) {
+              localStorage.setItem('memberId', data.userId.toString());
+              console.log('memberId saved to localStorage:', data.userId);
+            } else {
+              console.warn('회원가입 응답에 userId가 없습니다.');
+            }
+          },
+          onError: (error) => {
+            console.error('회원가입 실패:', error);
+          },
+        });
       }}
     />
   );

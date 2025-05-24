@@ -117,12 +117,6 @@ const PinLogin = () => {
         ))}
       </DotWrapper>
 
-      <RegisterButtonWrapper>
-        <RegisterButton onClick={handleRegisterClick} disabled={loading}>
-          등록 / 변경 &gt;
-        </RegisterButton>
-      </RegisterButtonWrapper>
-
       <KeypadWrapper>
         {shuffledNumbers.map((num) => (
           <KeyButton key={num} onClick={() => handleKeyClick(num.toString())} disabled={loading}>

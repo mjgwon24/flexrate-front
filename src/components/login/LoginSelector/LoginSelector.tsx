@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
-
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 import BottomSheet from '@/components/BottomSheet/BottomSheet';
 
@@ -14,13 +14,45 @@ import {
   Title,
 } from './LoginSelector.style';
 
+// API 호출 함수 임포트 위치에 맞게 수정 필요
+import { checkPinRegistered } from '@/apis/auth'; 
+
 export type LoginSelectorProps = {
   onSelectPassword: () => void;
   onSelectFace: () => void;
   onSelectPin: () => void;
 };
 
-const LoginSelector = ({ onSelectFace, onSelectPassword, onSelectPin }: LoginSelectorProps) => {
+const LoginSelector = ({
+  onSelectFace,
+  onSelectPassword,
+}: Omit<LoginSelectorProps, 'onSelectPin'>) => {
+  const router = useRouter();
+
+  // 간편 비밀번호 버튼 클릭 시 처리
+  const handleSelectPin = async () => {
+    try {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        // userId 없으면 바로 등록 페이지로 이동 (alert 없이)
+        router.push('/pin/register');
+        return;
+      }
+      // API 호출해서 PIN 등록 여부 확인 (boolean 반환 가정)
+      const isRegistered = await checkPinRegistered(Number(userId));
+
+      if (isRegistered) {
+        router.push('/pin/login');      // PIN 로그인 페이지로 이동
+      } else {
+        router.push('/pin/register');   // PIN 등록 페이지로 이동
+      }
+    } catch (error) {
+      console.error('PIN 등록 여부 확인 중 오류:', error);
+      // 오류 시에도 등록 페이지로 이동 처리 (alert 제거)
+      router.push('/pin/register');
+    }
+  };
+
   return (
     <Container>
       <Title>
@@ -31,7 +63,7 @@ const LoginSelector = ({ onSelectFace, onSelectPassword, onSelectPin }: LoginSel
       <BottomSheet isOpen={true}>
         <Question>어떤 방법으로 로그인할까요?</Question>
         <BtnWrapper>
-          <SheetBtn onClick={onSelectPin}>
+          <SheetBtn onClick={handleSelectPin}>
             <BtnContainer>
               <Image src={'/imgs/lock.svg'} width={36} height={36} alt="간편 비밀번호" />
               간편 비밀번호
