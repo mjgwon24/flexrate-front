@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 
 import { loginWithPin } from '@/apis/auth';
+import AddPinLogin from '@/components/login/PinLogin/AddPinLogin/AddPinLogin'; // AddPinLogin 임포트
 import PinEmailForm from '@/components/login/PinLogin/PinEmailForm/PinEmailForm';
 
 import {
@@ -32,7 +33,10 @@ const PinLogin = () => {
   const [loading, setLoading] = useState(false);
   const [showPinEmailForm, setShowPinEmailForm] = useState(false);
 
-  const email = '';
+  const [verifiedEmail, setVerifiedEmail] = useState('');
+  const [showAddPin, setShowAddPin] = useState(false);
+
+  const email = verifiedEmail;
 
   const shuffledNumbers = useMemo(() => shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]), []);
 
@@ -61,10 +65,10 @@ const PinLogin = () => {
         setLoading(true);
         try {
           const response = await loginWithPin(email, pinStr);
-          alert(`로그인 성공! 환영합니다, ${response.user.name}님.`);
+          alert(`로그인 성공! ${response.user.name}님.`);
           // TODO: 토큰 저장 등 로그인 처리
-        } catch (error) {
-          alert('로그인 실패: PIN이 올바르지 않거나 오류가 발생했습니다.');
+        } catch {
+          alert('PIN이 올바르지 않거나 등록되지 않은 PIN입니다. ');
           setPin(Array(PIN_LENGTH).fill(''));
         } finally {
           setLoading(false);
@@ -78,13 +82,26 @@ const PinLogin = () => {
     setShowPinEmailForm(true);
   };
 
-  // PinEmailForm이 보여야 하면 해당 컴포넌트 렌더링
+  // PIN 등록 화면 보여주기
+  if (showAddPin) {
+    return <AddPinLogin
+        email={verifiedEmail}
+        onComplete={() => {
+          setShowAddPin(false);
+          setPin(Array(PIN_LENGTH).fill(''));
+        }}
+      />;
+  }
+
+  // 이메일 인증 폼 보여주기
   if (showPinEmailForm) {
     return (
       <PinEmailForm
-        onVerified={() => {
+        onVerified={(emailFromForm: string) => {
           alert(`이메일 인증 완료!`);
+          setVerifiedEmail(emailFromForm);
           setShowPinEmailForm(false);
+          setShowAddPin(true);
         }}
         onCancel={() => setShowPinEmailForm(false)}
       />

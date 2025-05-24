@@ -7,14 +7,14 @@ import { useFunnel } from '@use-funnel/browser';
 import Header from '@/components/Header/Header';
 import { Wrapper } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
 import Agreement from '@/components/signup/AgreeForConsumptionType/AgreeForConsumptionType';
+import ConsumptionGoalStep from '@/components/signup/ConsumptionGoalStep/ConsumptionGoalStep';
 import ConsumptionResult from '@/components/signup/ConsumptionResult/ConsumptionResult';
 import EmailForm from '@/components/signup/EmailForm/EmailForm';
-import PasswordForm from '@/components/signup/PasswordForm/PasswordForm';
-import { SignupSteps } from '@/types/funnel.type';
 import { InfoForm } from '@/components/signup/InfoForm/InfoForm';
-import { characterMap } from '@/utils/signup.util';
+import PasswordForm from '@/components/signup/PasswordForm/PasswordForm';
 import { ConsumptionTypeKey } from '@/constants/auth.constant';
-import ConsumptionGoalStep from '@/components/signup/ConsumptionGoalStep/ConsumptionGoalStep';
+import { SignupSteps } from '@/types/funnel.type';
+import { characterMap } from '@/utils/signup.util';
 
 const SignupPage = () => {
   const funnel = useFunnel<SignupSteps>({

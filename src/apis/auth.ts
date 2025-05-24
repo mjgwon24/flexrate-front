@@ -53,6 +53,7 @@ export const patchEmailChange = async (token: string, email: string) => {
   return data;
 };
 
+// 소비성향 조회
 export const getConsumptionType = async (): Promise<ConsumptionTypeKey> => {
   const response = await apiClient.get<ConsumptionTypeResponse>('/api/auth/consumption-type');
   return response.data.consumptionType;
@@ -64,8 +65,7 @@ export const loginUser = async (data: LoginRequest): Promise<LoginResponse> => {
   return response.data;
 };
 
-
-// PIN 등록
+// PIN 등록 API
 interface PinRegisterRequest {
   email: string;
   pin: string;
@@ -73,7 +73,7 @@ interface PinRegisterRequest {
 
 export const registerPin = async (data: PinRegisterRequest): Promise<string> => {
   const response = await apiClient.post('/api/auth/register/pin', data);
-  return response.data;  // "PIN 등록/변경 성공"
+  return response.data; // "PIN 등록/변경 성공"
 };
 
 // PIN 로그인 API
