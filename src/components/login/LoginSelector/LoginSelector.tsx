@@ -17,38 +17,35 @@ import {
 // API 호출 함수 임포트 위치에 맞게 수정 필요
 import { checkPinRegistered } from '@/apis/auth'; 
 
-export type LoginSelectorProps = {
+type LoginSelectorProps = {
   onSelectPassword: () => void;
   onSelectFace: () => void;
-  onSelectPin: () => void;
+  // onSelectPin는 내부에서 처리하므로 제거하거나,
+  // 외부에서 처리하려면 컴포넌트 인자에 포함하세요
 };
 
 const LoginSelector = ({
   onSelectFace,
   onSelectPassword,
-}: Omit<LoginSelectorProps, 'onSelectPin'>) => {
+}: LoginSelectorProps) => {
   const router = useRouter();
 
-  // 간편 비밀번호 버튼 클릭 시 처리
   const handleSelectPin = async () => {
     try {
       const userId = localStorage.getItem('userId');
-      if (!userId) {
-        // userId 없으면 바로 등록 페이지로 이동 (alert 없이)
+      if (!userId || isNaN(Number(userId))) {
         router.push('/pin/register');
         return;
       }
-      // API 호출해서 PIN 등록 여부 확인 (boolean 반환 가정)
       const isRegistered = await checkPinRegistered(Number(userId));
 
       if (isRegistered) {
-        router.push('/pin/login');      // PIN 로그인 페이지로 이동
+        router.push('/pin/login');
       } else {
-        router.push('/pin/register');   // PIN 등록 페이지로 이동
+        router.push('/pin/register');
       }
     } catch (error) {
       console.error('PIN 등록 여부 확인 중 오류:', error);
-      // 오류 시에도 등록 페이지로 이동 처리 (alert 제거)
       router.push('/pin/register');
     }
   };
@@ -86,5 +83,3 @@ const LoginSelector = ({
     </Container>
   );
 };
-
-export default LoginSelector;
