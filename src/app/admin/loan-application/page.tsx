@@ -8,8 +8,13 @@ import { isAxiosError } from 'axios';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 
+import { SubContainer } from "@/app/mypage/page.style";
 import Conditionbar from '@/components/admin/Conditionbar/Conditionbar';
 import DataTable from '@/components/admin/DataTable/DataTable';
+import LoanStatusChangeModal from "@/components/admin/LoanStatusChangeModal/LoanStatusChangeModal";
+import FlexrateButton from '@/components/Button/Button';
+import { FlexContainer } from "@/components/loanApplicationFunnel/CreditStep/CreditStep.style";
+import TextField from "@/components/TextField/TextField";
 import {
   LoanApplicationTableRow,
   useLoanApplicationsQuery,
@@ -19,7 +24,15 @@ import { useLoanFilterStore } from '@/stores/loanFilterStore';
 import type { LoanFilterType } from '@/types/loan.filter.type';
 import { filtersToLoanApplicationParams } from '@/utils/loanApplicationParams';
 
-import { PageContainer, ContentColumn, FilterRow, FilterLabel } from './page.style';
+import {
+  PageContainer,
+  ContentColumn,
+  FilterRow,
+  FilterLabel,
+  ModalTitle,
+  ModalInfoContainer,
+  ModalInfoKeyColumn, InfoLabel, InfoValue, ModalInfoValueColumn
+} from "./page.style";
 
 const PAGE_SIZE = 8;
 
@@ -324,6 +337,16 @@ const AdminLoanApplicationPage = () => {
     }));
   }, [data?.loanApplications, handleStatusChange]);
 
+  // 대출 거절 핸들러
+  const handleRejectLoan = (applicationId: number) => {
+    
+  }
+
+  // 대출 승인 핸들러
+  const handleApproveLoan = (applicationId: number) => {
+    
+  };
+
   return (
     <PageContainer>
       <ContentColumn>
@@ -477,25 +500,81 @@ const AdminLoanApplicationPage = () => {
           }}
         />
 
+        <LoanStatusChangeModal isOpen={isModalVisible} onOutsideClick={handleModalCancel}>
+          <ModalTitle>대출 상태 변경</ModalTitle>
+
+          <ModalInfoContainer>
+            <ModalInfoKeyColumn>
+              <InfoLabel>신청자:</InfoLabel>
+              <InfoLabel>현재 상태:</InfoLabel>
+              <InfoLabel>대출 심사 일자:</InfoLabel>
+              <InfoLabel>대출 가능 한도:</InfoLabel>
+              <InfoLabel>초기 대출 금리:</InfoLabel>
+              <InfoLabel>금리 범위:</InfoLabel>
+              <InfoLabel>대출 금액:</InfoLabel>
+              <InfoLabel>대출 상환 기간:</InfoLabel>
+              <InfoLabel>소비 성향:</InfoLabel>
+              <InfoLabel>소비 목표:</InfoLabel>
+            </ModalInfoKeyColumn>
+
+            <ModalInfoValueColumn>
+              <InfoValue>홍길동</InfoValue>
+              <InfoValue>대기중</InfoValue>
+              <InfoValue>2023.10.03</InfoValue>
+              <InfoValue>3,000,000원</InfoValue>
+              <InfoValue>연 14.5%</InfoValue>
+              <InfoValue>연 12.1% ~ 15.1%</InfoValue>
+              <InfoValue>1,000,000원</InfoValue>
+              <InfoValue>6개월</InfoValue>
+              <InfoValue>균형형</InfoValue>
+              <InfoValue>매달 소액의 저축을 목표로 해요.</InfoValue>
+            </ModalInfoValueColumn>
+          </ModalInfoContainer>
+
+          <SubContainer>
+            <TextField value={''} onChange={() => {}} isDisabled={false}>
+              <TextField.Label>변경 사유</TextField.Label>
+              <TextField.TextFieldBox placeholder={"변경 사유 입력"}/>
+            </TextField>
+          </SubContainer>
+          {/*<Form form={statusChangeForm} layout="vertical">*/}
+          {/*  <Form.Item*/}
+          {/*    name="reason"*/}
+          {/*    label="변경 사유"*/}
+          {/*    rules={[{ required: true, message: '변경 사유를 입력해주세요' }]}*/}
+          {/*  >*/}
+          {/*    <Input.TextArea rows={4} placeholder="상태 변경 사유를 입력해주세요" />*/}
+          {/*  </Form.Item>*/}
+          {/*</Form>*/}
+
+          <FlexContainer>
+            <FlexrateButton text="대출 거절" varient="ERROR" onClick={handleRejectLoan} />
+            <FlexrateButton
+              text="대출 승인"
+              varient="PRIMARY"
+              onClick={handleApproveLoan}
+            />
+          </FlexContainer>
+        </LoanStatusChangeModal>
         {/* 상태 변경 확인 모달 */}
-        <Modal
-          title="대출 상태 변경"
-          open={isModalVisible}
-          onOk={handleModalOk}
-          onCancel={handleModalCancel}
-          okText="확인"
-          cancelText="취소"
-        >
-          <Form form={statusChangeForm} layout="vertical">
-            <Form.Item
-              name="reason"
-              label="변경 사유"
-              rules={[{ required: true, message: '변경 사유를 입력해주세요' }]}
-            >
-              <Input.TextArea rows={4} placeholder="상태 변경 사유를 입력해주세요" />
-            </Form.Item>
-          </Form>
-        </Modal>
+        {/*<Modal*/}
+        {/*  title="대출 상태 변경"*/}
+        {/*  open={isModalVisible}*/}
+        {/*  onOk={handleModalOk}*/}
+        {/*  onCancel={handleModalCancel}*/}
+        {/*  okText="확인"*/}
+        {/*  cancelText="취소"*/}
+        {/*>*/}
+        {/*  <Form form={statusChangeForm} layout="vertical">*/}
+        {/*    <Form.Item*/}
+        {/*      name="reason"*/}
+        {/*      label="변경 사유"*/}
+        {/*      rules={[{ required: true, message: '변경 사유를 입력해주세요' }]}*/}
+        {/*    >*/}
+        {/*      <Input.TextArea rows={4} placeholder="상태 변경 사유를 입력해주세요" />*/}
+        {/*    </Form.Item>*/}
+        {/*  </Form>*/}
+        {/*</Modal>*/}
       </ContentColumn>
     </PageContainer>
   );
