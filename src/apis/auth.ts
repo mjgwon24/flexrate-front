@@ -88,6 +88,7 @@ export const registerPin = async (data: PinRegisterRequest): Promise<string> => 
 
 // PIN 로그인 API
 export const loginWithPin = async (memberId: number, pin: string): Promise<LoginResponse> => {
+  console.log('로그인 API 호출 memberId:', memberId, 'pin:', pin);
   const response = await apiClient.post('/api/auth/login/pin', {
     memberId,
     pin,
