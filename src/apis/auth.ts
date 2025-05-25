@@ -78,17 +78,18 @@ export const checkPinRegistered = async (userId: number): Promise<boolean> => {
 interface PinRegisterRequest {
   email: string;
   pin: string;
+  userId: number;
 }
 
 export const registerPin = async (data: PinRegisterRequest): Promise<string> => {
-  const response = await apiClient.post('/api/auth/pin/register', data);
+  const response = await apiClient.post('/api/auth/login/pin/register', data);
   return response.data;
 };
 
 // PIN 로그인 API
-export const loginWithPin = async (email: string, pin: string): Promise<LoginResponse> => {
+export const loginWithPin = async (memberId: number, pin: string): Promise<LoginResponse> => {
   const response = await apiClient.post('/api/auth/login/pin', {
-    email,
+    memberId,
     pin,
   });
   return response.data;

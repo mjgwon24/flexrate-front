@@ -59,28 +59,31 @@ const PinLogin = () => {
   };
 
   useEffect(() => {
-    const pinStr = pin.join('');
-    if (pinStr.length === PIN_LENGTH && !pin.includes('')) {
-      const doLogin = async () => {
-        setLoading(true);
-        try {
-          const response = await loginWithPin(email, pinStr);
-          alert(`로그인 성공! ${response.user.name}님.`);
-          // TODO: 토큰 저장 등 로그인 처리
-        } catch {
-          alert('PIN이 올바르지 않거나 등록되지 않은 PIN입니다. ');
-          setPin(Array(PIN_LENGTH).fill(''));
-        } finally {
-          setLoading(false);
+  const pinStr = pin.join('');
+  if (pinStr.length === PIN_LENGTH && !pin.includes('')) {
+    const doLogin = async () => {
+      setLoading(true);
+      try {
+        const storedUserId = localStorage.getItem('memberId');
+        if (!storedUserId || isNaN(Number(storedUserId))) {
+          alert('유효하지 않습니다.');
+          return;
         }
-      };
-      doLogin();
-    }
-  }, [pin, email]);
 
-  const handleRegisterClick = () => {
-    setShowPinEmailForm(true);
-  };
+        const userId = Number(storedUserId);
+        const response = await loginWithPin(userId, pinStr);
+        alert(`로그인 성공! ${response.user.name}님.`);
+        // TODO: 토큰 저장 등 로그인 처리
+      } catch {
+        alert('PIN이 올바르지 않거나 등록되지 않은 PIN입니다.');
+        setPin(Array(PIN_LENGTH).fill(''));
+      } finally {
+        setLoading(false);
+      }
+    };
+    doLogin();
+  }
+}, [pin]);
 
   // PIN 등록 화면 보여주기
   if (showAddPin) {

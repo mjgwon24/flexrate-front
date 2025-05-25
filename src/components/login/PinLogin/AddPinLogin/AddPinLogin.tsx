@@ -92,9 +92,21 @@ const AddPinLogin = ({ email, onComplete }: AddPinLoginProps) => {
       const doRegister = async () => {
         setLoading(true);
         try {
-          await registerPin({ email, pin: pinStr });
+          const memberId = localStorage.getItem('memberId');
+          if (!memberId) {
+            alert('회원 정보가 없습니다. 다시 로그인해 주세요.');
+            setLoading(false);
+            return;
+          }
+
+          await registerPin({
+            email,
+            pin: pinStr,
+            userId: Number(memberId),
+          });
+
           alert('PIN 등록 완료!');
-          onComplete();  // 등록 완료 후 부모 콜백 호출
+          onComplete();
         } catch (error) {
           console.error(error);
           alert('PIN 등록 실패. 다시 시도해 주세요.');

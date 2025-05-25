@@ -20,8 +20,6 @@ import { checkPinRegistered } from '@/apis/auth';
 type LoginSelectorProps = {
   onSelectPassword: () => void;
   onSelectFace: () => void;
-  // onSelectPin는 내부에서 처리하므로 제거하거나,
-  // 외부에서 처리하려면 컴포넌트 인자에 포함하세요
 };
 
 const LoginSelector = ({
@@ -30,25 +28,27 @@ const LoginSelector = ({
 }: LoginSelectorProps) => {
   const router = useRouter();
 
-  const handleSelectPin = async () => {
-    try {
-      const userId = localStorage.getItem('userId');
-      if (!userId || isNaN(Number(userId))) {
-        router.push('/pin/register');
-        return;
-      }
-      const isRegistered = await checkPinRegistered(Number(userId));
-
-      if (isRegistered) {
-        router.push('/pin/login');
-      } else {
-        router.push('/pin/register');
-      }
-    } catch (error) {
-      console.error('PIN 등록 여부 확인 중 오류:', error);
+const handleSelectPin = async () => {
+  try {
+    const userId = localStorage.getItem('memberId');
+    if (!userId || isNaN(Number(userId))) {
+      console.log('userId가 없거나 유효하지 않습니다.');
       router.push('/pin/register');
+      return;
     }
-  };
+    const isRegistered = await checkPinRegistered(Number(userId));
+    console.log('PIN 등록 여부:', isRegistered);
+
+    if (isRegistered) {
+      router.push('/pin/login');  // 등록된 경우 로그인 페이지로 이동
+    } else {
+      router.push('/pin/register');  // 미등록 시 등록 페이지로 이동
+    }
+  } catch (error) {
+    console.error('PIN 등록 여부 확인 중 오류:', error);
+    router.push('/pin/register');  // 오류 발생 시 등록 페이지로 이동
+  }
+};
 
   return (
     <Container>
@@ -83,3 +83,5 @@ const LoginSelector = ({
     </Container>
   );
 };
+
+export default LoginSelector;

@@ -7,6 +7,7 @@ export const Container = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
 `;
 
 export const Title = styled.div`
@@ -25,7 +26,7 @@ export const FormContainer = styled.form`
 
 export const BtnContainer = styled.div`
   width: calc(100% - 44px);
-  position: absolute;
+  position: relative;
   bottom: 0;
   margin: 16px 0;
 `;
