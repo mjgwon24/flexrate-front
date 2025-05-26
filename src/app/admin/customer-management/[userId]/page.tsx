@@ -8,7 +8,6 @@ import { Button, Spin } from 'antd';
 import dayjs from 'dayjs';
 import { useParams, useRouter } from 'next/navigation';
 
-import { fetchCustomerDetail } from '@/apis/customer';
 import { fetchTransactionHistory } from '@/apis/transactions';
 import { TitleRow, Total } from '@/components/admin/Conditionbar/Conditionbar.style';
 import DataTable from '@/components/admin/DataTable/DataTable';
@@ -32,6 +31,7 @@ import {
 } from '@/constants/customer.constant';
 
 import { PageContainer, ContentColumn, HeaderContainer, Title } from './page.style';
+import { getAdminCustomerDetail } from '@/apis/customer';
 
 const CustomerDetailPage = () => {
   const params = useParams();
@@ -56,7 +56,7 @@ const CustomerDetailPage = () => {
     error: customerError,
   } = useQuery({
     queryKey: ['customerDetail', memberId],
-    queryFn: () => fetchCustomerDetail(memberId, accessToken),
+    queryFn: () => getAdminCustomerDetail(memberId, accessToken),
     enabled: !!accessToken,
   });
 
