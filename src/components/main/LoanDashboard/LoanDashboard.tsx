@@ -26,7 +26,7 @@ const LoanDashboard = () => {
       <ProgressBar type="MAIN" currentStep={10} totalSteps={100} />
       <TransparentCardContainer>
         <TransparentCard>
-          <TransparentCardTitle>원리금</TransparentCardTitle>
+          <TransparentCardTitle>원금</TransparentCardTitle>
           <TransparentCardAccount>250,000원</TransparentCardAccount>
           <Description>3,000,000원 / 12개월</Description>
         </TransparentCard>

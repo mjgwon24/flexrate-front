@@ -1,18 +1,19 @@
 'use client';
 
+import styled from '@emotion/styled';
+import { useRouter } from 'next/navigation';
+
 import Button from '@/components/Button/Button';
 import Header from '@/components/Header/Header';
-import { loanStatusMap, LoanStatusType } from '@/constants/loan.constant';
-import { useRouter } from 'next/navigation';
-import styled from '@emotion/styled';
 import {
   Container,
   Description,
   Title,
   Wrapper,
 } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
-import { typoStyleMap } from '@/styles/typos';
+import { loanStatusMap, LoanStatusType } from '@/constants/loan.constant';
 import { semanticColor } from '@/styles/colors';
+import { typoStyleMap } from '@/styles/typos';
 
 interface LoanResultProps {
   loanStatus: LoanStatusType;

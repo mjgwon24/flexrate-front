@@ -3,10 +3,8 @@ import React, { useEffect, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
 
-import { loginUser } from '@/apis/auth';
 import Button from '@/components/Button/Button';
 import TextField from '@/components/TextField/TextField';
 import { LoginFormValues, useLoginUser } from '@/hooks/useLoginUser';
@@ -18,7 +16,6 @@ import { BtnContainer, FormContainer } from './LoginForm.style';
 
 const LoginForm = () => {
   const [emailEntered, setEmailEntered] = useState(false);
-  const router = useRouter();
 
   const { mutate: login } = useLoginUser();
 

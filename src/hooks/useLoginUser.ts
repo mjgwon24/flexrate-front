@@ -1,20 +1,44 @@
-import { loginUser } from '@/apis/auth';
-import { authSchemas } from '@/schemas/auth.schema';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
+
+import { loginUser } from '@/apis/auth';
+import { getCreditStatus } from '@/apis/credit';
+import { getCustomerLoanStatus } from '@/apis/customer';
+import { authSchemas } from '@/schemas/auth.schema';
+import { useUserStore } from '@/stores/userStore';
 
 export type LoginFormValues = z.infer<typeof authSchemas.login>;
 
 export const useLoginUser = () => {
   const router = useRouter();
+  const setUser = useUserStore((state) => state.setUser);
+
   return useMutation({
-    mutationFn: (data: LoginFormValues) => loginUser(data),
-    onSuccess: (res) => {
-      localStorage.setItem('accessToken', res.accessToken);
-      localStorage.setItem('refreshToken', res.refreshToken);
+    mutationFn: async (form: LoginFormValues) => {
+      const loginRes = await loginUser(form);
+
+      localStorage.setItem('accessToken', loginRes.accessToken);
+      localStorage.setItem('refreshToken', loginRes.refreshToken);
+
+      const [loanStatus, creditResult] = await Promise.all([
+        getCustomerLoanStatus(loginRes.accessToken),
+        getCreditStatus(loginRes.accessToken),
+      ]);
+
+      return {
+        username: loginRes.username,
+        email: loginRes.email,
+        recentLoanStatus: loanStatus,
+        hasCreditScore: creditResult.creditScoreStatus,
+      };
+    },
+
+    onSuccess: (fullUser) => {
+      setUser(fullUser);
       router.push('/');
     },
+
     onError: (error: unknown) => {
       if (error instanceof Error) {
         console.error('로그인 실패:', error);
