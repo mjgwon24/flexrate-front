@@ -71,7 +71,7 @@ const PinEmailForm = ({ onVerified, onCancel }: PinEmailFormProps) => {
       }, 1000)
       setIntervalId(id)
     }
-  }, [timer])
+  }, [timer, intervalId])
 
   const formatTime = (sec: number) => {
     const m = String(Math.floor(sec / 60)).padStart(2, '0')

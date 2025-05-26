@@ -1,10 +1,10 @@
 'use client';
 
-import { usePostSignup } from '@/hooks/usePostSignup';
 import ConsumptionGoal from '@/components/signup/ConsumptionGoal/ConsumptionGoal';
-import { SignupSteps } from '@/types/funnel.type';
 import { CharacterInfo } from '@/constants/auth.constant';
+import { usePostSignup } from '@/hooks/usePostSignup';
 import { ConsumptionType } from '@/stores/userStore';
+import { SignupSteps } from '@/types/funnel.type';
 
 const ConsumptionGoalStep = ({
   context,
@@ -31,12 +31,11 @@ const ConsumptionGoalStep = ({
 
         signupMutation.mutate(signupData, {
           onSuccess: (data) => {
-            // 서버 응답 data 안에 userId가 있다고 가정
-            if (data?.userId) {
-              localStorage.setItem('memberId', data.userId.toString());
-              console.log('memberId saved to localStorage:', data.userId);
+            if (data?.accessToken) {
+              localStorage.setItem('accessToken', data.accessToken);
+              console.log('로컬스토리지에 저장됨:', data.accessToken);
             } else {
-              console.warn('회원가입 응답에 userId가 없습니다.');
+              console.warn('회원가입 응답에 엑세스토큰이 없습니다.');
             }
           },
           onError: (error) => {

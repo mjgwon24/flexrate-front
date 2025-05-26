@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+
 import { useRouter } from 'next/navigation';  // 1. import 추가
 
 import { loginWithPin } from '@/apis/auth';
@@ -59,29 +60,23 @@ const PinLogin = () => {
   useEffect(() => {
     const pinStr = pin.join('');
     if (pinStr.length === PIN_LENGTH && !pin.includes('')) {
-      const doLogin = async () => {
-        setLoading(true);
-        try {
-          const storedUserId = localStorage.getItem('memberId');
-          if (!storedUserId || isNaN(Number(storedUserId))) {
-            alert('유효하지 않은 사용자 ID입니다.');
+        const doLogin = async () => {
+          setLoading(true);
+          try {
+            const pinStr = pin.join('');
+            const response = await loginWithPin({ pin: pinStr }); 
+
+            const { accessToken } = response;
+            localStorage.setItem('accessToken', accessToken);  // ✅ 저장
+            router.push('/');
+          } catch (error) {
+            console.error('PIN 로그인 실패:', error);
+            alert('PIN이 올바르지 않거나 등록되지 않았습니다.');
+            setPin(Array(PIN_LENGTH).fill(''));
+          } finally {
             setLoading(false);
-            return;
           }
-
-          // 로그인 성공 후 홈 화면으로 이동
-          router.push('/');
-
-          // TODO: 토큰 저장 등 로그인 처리
-
-        } catch (error) {
-          console.error('PIN 로그인 실패:', error);
-          alert('PIN이 올바르지 않거나 등록되지 않은 PIN입니다.');
-          setPin(Array(PIN_LENGTH).fill(''));
-        } finally {
-          setLoading(false);
-        }
-      };
+        };
       doLogin();
     }
   }, [pin, router]);

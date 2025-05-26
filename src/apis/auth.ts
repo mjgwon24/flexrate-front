@@ -27,6 +27,7 @@ export const getMyPageUser = async (token: string) => {
 // 회원가입 API는 공통 인스턴스 사용
 export const postSignupUser = async (data: SignupRequest): Promise<SignupResponse> => {
   const response = await apiClient.post('/api/auth/signup/password', data);
+  console.log('Signup tokens:', response.data.accessToken, response.data.refreshToken);
   return response.data;
 };
 
@@ -65,33 +66,66 @@ export const loginUser = async (data: LoginRequest): Promise<LoginResponse> => {
   return response.data;
 };
 
-// PIN 등록 여부 조회 API
-export const checkPinRegistered = async (userId: number): Promise<boolean> => {
-  const response = await apiClient.get<{ registered: boolean }>('/api/auth/login/pin/registered', {
-    params: { userId },
-  });
-  return response.data.registered;
-};
+
 
 
 // PIN 등록 API
 interface PinRegisterRequest {
-  email: string;
   pin: string;
-  userId: number;
 }
 
 export const registerPin = async (data: PinRegisterRequest): Promise<string> => {
-  const response = await apiClient.post('/api/auth/login/pin/register', data);
+  const token = localStorage.getItem('accessToken');
+  console.log('Register PIN token:', token);
+  if (!token) {
+  throw new Error('Access token is missing, 로그인 필요');
+  }
+  const response = await apiClient.post(
+    '/api/auth/login/pin/register',
+    data,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   return response.data;
 };
 
-// PIN 로그인 API
-export const loginWithPin = async (memberId: number, pin: string): Promise<LoginResponse> => {
-  console.log('로그인 API 호출 memberId:', memberId, 'pin:', pin);
-  const response = await apiClient.post('/api/auth/login/pin', {
-    memberId,
-    pin,
-  });
+
+// 엑세스토큰 로그인
+export interface LoginResponseDTO {
+  userId: number;
+  email: string;
+  accessToken: string;
+  refreshToken: string;
+  challenge: string;
+}
+
+export const loginWithPin = async (data: { pin: string }): Promise<LoginResponseDTO> => {
+  const token = localStorage.getItem('accessToken');
+  const response = await apiClient.post(
+    '/api/auth/login/pin',  // 여기 경로를 정확히 맞춰주세요
+    data,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   return response.data;
+};
+
+
+// PIN 등록여부 조회 API
+export const checkPinRegistered = async (): Promise<boolean> => {
+  const token = localStorage.getItem('accessToken');
+  console.log('서버로 엑세스토큰 전송:', token);
+
+  const response = await apiClient.get<boolean>('/api/auth/login/pin/registered', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;  // true 혹은 false 직접 반환
 };

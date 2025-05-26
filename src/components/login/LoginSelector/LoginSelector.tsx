@@ -1,8 +1,10 @@
 'use client';
 import React from 'react';
+
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
+import { checkPinRegistered } from '@/apis/auth'; 
 import BottomSheet from '@/components/BottomSheet/BottomSheet';
 
 import {
@@ -15,7 +17,6 @@ import {
 } from './LoginSelector.style';
 
 // API 호출 함수 임포트 위치에 맞게 수정 필요
-import { checkPinRegistered } from '@/apis/auth'; 
 
 type LoginSelectorProps = {
   onSelectPassword: () => void;
@@ -29,24 +30,25 @@ const LoginSelector = ({
   const router = useRouter();
 
 const handleSelectPin = async () => {
-  try {
-    const userId = localStorage.getItem('memberId');
-    if (!userId || isNaN(Number(userId))) {
-      console.log('userId가 없거나 유효하지 않습니다.');
-      router.push('/pin/register');
-      return;
-    }
-    const isRegistered = await checkPinRegistered(Number(userId));
-    console.log('PIN 등록 여부:', isRegistered);
+  const accessToken = localStorage.getItem('accessToken');
+  if (!accessToken) {
+    alert('로그인이 필요합니다.');
+    router.push('/login');
+    return;
+  }
 
-    if (isRegistered) {
-      router.push('/pin/login');  // 등록된 경우 로그인 페이지로 이동
-    } else {
-      router.push('/pin/register');  // 미등록 시 등록 페이지로 이동
-    }
+  try {
+    const data = await checkPinRegistered();
+    console.log('PIN 등록 여부 API 응답:', data);  // true 또는 false
+
+  if (data) {
+    router.push('/pin/login');
+  } else {
+    router.push('/pin/register');
+  }
   } catch (error) {
-    console.error('PIN 등록 여부 확인 중 오류:', error);
-    router.push('/pin/register');  // 오류 발생 시 등록 페이지로 이동
+    console.error('PIN 확인 실패:', error);
+    alert('오류가 발생했습니다.');
   }
 };
 

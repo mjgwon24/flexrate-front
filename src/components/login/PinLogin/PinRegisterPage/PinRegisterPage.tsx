@@ -3,8 +3,8 @@
 import React, { useState } from 'react'
 
 import Button from '@/components/Button/Button'
-import PinEmailForm from '@/components/login/PinLogin/PinEmailForm/PinEmailForm'
 import AddPinLogin from '@/components/login/PinLogin/AddPinLogin/AddPinLogin'  // AddPinLogin 경로 맞게 조정
+import PinEmailForm from '@/components/login/PinLogin/PinEmailForm/PinEmailForm'
 
 import { BackButton, BtnContainer, Container, Title } from './PinRegister.style'
 

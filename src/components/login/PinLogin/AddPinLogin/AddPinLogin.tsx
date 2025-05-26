@@ -92,17 +92,15 @@ const AddPinLogin = ({ email, onComplete }: AddPinLoginProps) => {
       const doRegister = async () => {
         setLoading(true);
         try {
-          const memberId = localStorage.getItem('memberId');
-          if (!memberId) {
+          const token = localStorage.getItem('accessToken');
+          if (!token) {
             alert('회원 정보가 없습니다. 다시 로그인해 주세요.');
             setLoading(false);
             return;
           }
 
           await registerPin({
-            email,
             pin: pinStr,
-            userId: Number(memberId),
           });
 
           alert('PIN 등록 완료!');

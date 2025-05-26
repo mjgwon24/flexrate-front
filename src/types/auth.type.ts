@@ -13,6 +13,7 @@ export interface SignupRequest {
 export interface SignupResponse {
   userId: number;
   email: string;
+  accessToken: string;
 }
 
 export interface SendEmailRequest {
