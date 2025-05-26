@@ -8,6 +8,7 @@ import { isAxiosError } from 'axios';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 
+import { getLoanApplicationDetail } from '@/apis/adminLoans';
 import { SubContainer } from "@/app/mypage/page.style";
 import Conditionbar from '@/components/admin/Conditionbar/Conditionbar';
 import DataTable from '@/components/admin/DataTable/DataTable';
@@ -16,13 +17,23 @@ import FlexrateButton from '@/components/Button/Button';
 import { FlexContainer } from "@/components/loanApplicationFunnel/CreditStep/CreditStep.style";
 import TextField from "@/components/TextField/TextField";
 import {
+  STATUS_LABEL,
+  EMPLOYMENT_TYPE_LABEL,
+  RESIDENCE_TYPE_LABEL,
+  BANKRUPT_LABEL,
+  LOAN_PURPOSE_LABEL,
+} from "@/constants/loan.constant";
+import {
   LoanApplicationTableRow,
   useLoanApplicationsQuery,
 } from '@/hooks/useLoanApplicationsQuery';
 import { usePatchLoanStatus } from '@/hooks/usePatchLoanStatus';
 import { useLoanFilterStore } from '@/stores/loanFilterStore';
+import type { LoanDetailsApiResponse } from "@/types/admin.type";
 import type { LoanFilterType } from '@/types/loan.filter.type';
+import { formatYMD } from '@/utils/dateFormat';
 import { filtersToLoanApplicationParams } from '@/utils/loanApplicationParams';
+import { displayValue } from '@/utils/nullDisplay';
 
 import {
   PageContainer,
@@ -33,6 +44,7 @@ import {
   ModalInfoContainer,
   ModalInfoKeyColumn, InfoLabel, InfoValue, ModalInfoValueColumn, ModalSubTitle, ModalColumnContainer, ModalRowContainer
 } from "./page.style";
+
 
 const PAGE_SIZE = 8;
 
@@ -108,6 +120,7 @@ const AdminLoanApplicationPage = () => {
     record: LoanApplicationTableRow;
     newStatus: string;
   } | null>(null);
+  const [detail, setDetail] = useState<LoanDetailsApiResponse | null>(null);
   const [page, setPage] = useState(1);
 
   const loanFilterStore = useLoanFilterStore();
@@ -199,6 +212,18 @@ const AdminLoanApplicationPage = () => {
     // 모달 표시
     setIsModalVisible(true);
   };
+
+  // 모달 데이터 패치
+  useEffect(() => {
+    if (isModalVisible && pendingStatusChange?.record?.applicationId && accessToken) {
+      getLoanApplicationDetail(pendingStatusChange.record.applicationId, accessToken)
+        .then(setDetail)
+        .catch(() => setDetail(null));
+    }
+    if (!isModalVisible) {
+      setDetail(null);
+    }
+  }, [isModalVisible, pendingStatusChange?.record?.applicationId, accessToken]);
 
   // 모달 취소 핸들러
   const handleModalCancel = () => {
@@ -347,7 +372,7 @@ const AdminLoanApplicationPage = () => {
     patchStatusMutation.mutate(
       {
         applicationId,
-        payload: { status: 'REJECTED', reason: '대출 거절 사유 입력' }, // 실제 사유는 폼에서 받아야 함
+        payload: { status: 'REJECTED', reason: '대출 거절 사유 입력' },
         accessToken,
       },
       {
@@ -373,7 +398,7 @@ const AdminLoanApplicationPage = () => {
     patchStatusMutation.mutate(
       {
         applicationId,
-        payload: { status: 'EXECUTED', reason: '대출 승인 사유 입력' }, // 실제 사유는 폼에서 받아야 함
+        payload: { status: 'EXECUTED', reason: '대출 승인 사유 입력' },
         accessToken,
       },
       {
@@ -550,28 +575,25 @@ const AdminLoanApplicationPage = () => {
               <ModalInfoContainer>
                 <ModalInfoKeyColumn>
                   <InfoLabel>신청자:</InfoLabel>
-                  <InfoLabel>소비 성향:</InfoLabel>
-                  <InfoLabel>소비 목표:</InfoLabel>
+                  <InfoLabel>현재 상태:</InfoLabel>
                 </ModalInfoKeyColumn>
 
                 <ModalInfoValueColumn>
-                  <InfoValue>홍길동</InfoValue>
-                  <InfoValue>균형형</InfoValue>
-                  <InfoValue>매달 소액의 저축을 목표로 해요.</InfoValue>
+                  <InfoValue>{displayValue(detail?.applicantName)}</InfoValue>
+                  <InfoValue>{displayValue(detail?.applicationStatus ? STATUS_LABEL[detail.applicationStatus] : null)}</InfoValue>
+
                 </ModalInfoValueColumn>
               </ModalInfoContainer>
 
               <ModalInfoContainer>
                 <ModalInfoKeyColumn>
-                  <InfoLabel>현재 상태:</InfoLabel>
-                  <InfoLabel>대출 금액:</InfoLabel>
-                  <InfoLabel>대출 상환 기간:</InfoLabel>
+                  <InfoLabel>소비 성향:</InfoLabel>
+                  <InfoLabel>소비 목표:</InfoLabel>
                 </ModalInfoKeyColumn>
 
                 <ModalInfoValueColumn>
-                  <InfoValue>대기중</InfoValue>
-                  <InfoValue>1,000,000원</InfoValue>
-                  <InfoValue>6개월</InfoValue>
+                  <InfoValue>{displayValue(detail?.consumptionType)}</InfoValue>
+                  <InfoValue>{displayValue(detail?.consumeGoal)}</InfoValue>
                 </ModalInfoValueColumn>
               </ModalInfoContainer>
             </ModalRowContainer>
@@ -583,29 +605,56 @@ const AdminLoanApplicationPage = () => {
             <ModalRowContainer>
               <ModalInfoContainer>
                 <ModalInfoKeyColumn>
-                  <InfoLabel>대출 심사 일자:</InfoLabel>
-                  <InfoLabel>대출 가능 한도:</InfoLabel>
+                  <InfoLabel>대출 신청 일자:</InfoLabel>
+                  <InfoLabel>금리 범위:</InfoLabel>
                   <InfoLabel>초기 대출 금리:</InfoLabel>
+                  <InfoLabel>최근 금리:</InfoLabel>
                 </ModalInfoKeyColumn>
 
                 <ModalInfoValueColumn>
-                  <InfoValue>2023.10.03</InfoValue>
-                  <InfoValue>3,000,000원</InfoValue>
-                  <InfoValue>연 14.5%</InfoValue>
+                  <InfoValue>{displayValue(detail?.appliedAt, v => `${formatYMD(v)}`)}</InfoValue>
+                  <InfoValue>
+                    {displayValue(
+                      detail?.interestRateMin !== undefined && detail?.interestRateMax !== undefined
+                        ? `연 ${detail.interestRateMin}% ~ ${detail.interestRateMax}%`
+                        : null
+                    )}
+                  </InfoValue>
+                  <InfoValue>{displayValue(detail?.initialInterestRate, v => `연 ${v}%`)}</InfoValue>
+                  <InfoValue>{displayValue(
+                    detail?.lastInterestRate,
+                    v => {
+                      if (v === '0') {
+                        return `-`;
+                      }
+                      return `${Number(v)}% (최종 갱신 ${formatYMD(detail?.lastInterestDate)})`;
+                    }
+                  )}</InfoValue>
                 </ModalInfoValueColumn>
               </ModalInfoContainer>
 
               <ModalInfoContainer>
                 <ModalInfoKeyColumn>
-                  <InfoLabel>금리 범위:</InfoLabel>
-                  <InfoLabel>대출 금액:</InfoLabel>
-                  <InfoLabel>대출 상환 기간:</InfoLabel>
+                  <InfoLabel>대출 가능 한도:</InfoLabel>
+                  <InfoLabel>요청 대출 금액:</InfoLabel>
+                  <InfoLabel>요청 상환 기간:</InfoLabel>
                 </ModalInfoKeyColumn>
 
                 <ModalInfoValueColumn>
-                  <InfoValue>연 12.1% ~ 15.1%</InfoValue>
-                  <InfoValue>1,000,000원</InfoValue>
-                  <InfoValue>6개월</InfoValue>
+                  <InfoValue>{displayValue(detail?.approvedMaxAmount, v => `${v?.toLocaleString()}원`)}</InfoValue>
+                  <InfoValue>{displayValue(detail?.requestedAmount, v => `${v?.toLocaleString()}원`)}</InfoValue>
+                  <InfoValue>{displayValue(
+                    detail?.repaymentMonths,
+                    v => {
+                      const start = formatYMD(detail?.repaymentStartDate);
+                      const end = formatYMD(detail?.repaymentEndDate);
+
+                      if (start === '-' && end === '-') {
+                        return `-`;
+                      }
+                      return `${start} ~ ${end} (${v}개월)`;
+                    }
+                  )}</InfoValue>
                 </ModalInfoValueColumn>
               </ModalInfoContainer>
             </ModalRowContainer>
@@ -623,9 +672,9 @@ const AdminLoanApplicationPage = () => {
                 </ModalInfoKeyColumn>
 
                 <ModalInfoValueColumn>
-                  <InfoValue>정규직</InfoValue>
-                  <InfoValue>3,000,000원</InfoValue>
-                  <InfoValue>자가</InfoValue>
+                  <InfoValue>{displayValue(EMPLOYMENT_TYPE_LABEL[detail?.employmentType ?? 'ETC'])}</InfoValue>
+                  <InfoValue>{displayValue(detail?.annualIncome, v => `${v?.toLocaleString()}원`)}</InfoValue>
+                  <InfoValue>{displayValue(RESIDENCE_TYPE_LABEL[detail?.residenceType ?? 'MONTHLY'])}</InfoValue>
                 </ModalInfoValueColumn>
               </ModalInfoContainer>
 
@@ -636,8 +685,8 @@ const AdminLoanApplicationPage = () => {
                 </ModalInfoKeyColumn>
 
                 <ModalInfoValueColumn>
-                  <InfoValue>아니요</InfoValue>
-                  <InfoValue>생활비 충당</InfoValue>
+                  <InfoValue>{BANKRUPT_LABEL(detail?.isBankrupt)}</InfoValue>
+                  <InfoValue>{displayValue(LOAN_PURPOSE_LABEL[detail?.loanPurpose ?? 'ETC'])}</InfoValue>
                 </ModalInfoValueColumn>
               </ModalInfoContainer>
             </ModalRowContainer>

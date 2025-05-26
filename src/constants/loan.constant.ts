@@ -75,7 +75,7 @@ export const LOAN_PURPOSE_LABEL: Record<string, string> = {
 };
 
 // 개인회생 여부
-export function BANKRUPT_LABEL(v: boolean | null) {
+export function BANKRUPT_LABEL(v: boolean | null | undefined): string {
   if (v === null || v === undefined) return '-';
   return v ? '예' : '아니요';
 }

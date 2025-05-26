@@ -1,4 +1,4 @@
-import { LoanApiResponse, PatchLoanStatusPayload } from '@/types/admin.type';
+import { LoanApiResponse, LoanDetailsApiResponse, PatchLoanStatusPayload } from "@/types/admin.type";
 
 import { apiClient } from './client';
 
@@ -53,8 +53,8 @@ export async function patchLoanStatus(
 export async function getLoanApplicationDetail(
   applicationId: number,
   accessToken: string
-): Promise<LoanApiResponse> {
-  const { data } = await apiClient.get<LoanApiResponse>(`/api/admin/loans/${applicationId}/detail`, {
+): Promise<LoanDetailsApiResponse> {
+  const { data } = await apiClient.get<LoanDetailsApiResponse>(`/api/admin/loans/${applicationId}/detail`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
 

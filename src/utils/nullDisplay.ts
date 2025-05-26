@@ -1,4 +1,7 @@
-export function displayValue(value: any, formatter?: (v: any) => string) {
+export function displayValue(value: unknown, formatter?: (v: string | null | undefined) => string) {
   if (value === null || value === undefined || value === '') return '-';
-  return formatter ? formatter(value) : value;
+  if (formatter) return formatter(String(value));
+  if (typeof value === 'object') return JSON.stringify(value);
+
+  return String(value);
 }

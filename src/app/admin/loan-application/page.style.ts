@@ -37,6 +37,7 @@ export const ModalRowContainer = styled.div`
   flex-direction: row;
   width: 100%;
   justify-content: space-between;
+  border-bottom: 1px solid ${semanticColor.border.inactive.default};
 `;
 
 export const ModalTitle = styled.div`
@@ -57,7 +58,7 @@ export const ModalInfoContainer = styled.div`
   flex-direction: row;
   gap: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid ${semanticColor.border.inactive.default};
+  
 `;
 
 export const ModalInfoKeyColumn = styled.div`
@@ -70,7 +71,7 @@ export const ModalInfoKeyColumn = styled.div`
 export const ModalInfoValueColumn = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 250px;
+  min-width: 300px;
   gap: 0.3rem;
 `;
 
