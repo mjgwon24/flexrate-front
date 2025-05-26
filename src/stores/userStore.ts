@@ -7,15 +7,15 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { LoanStatusType } from '@/types/user.type';
 
-type ConsumptionType = 'CONSERVATIVE' | 'BALANCED' | 'PRACTICAL' | 'CONSUMPTION_ORIENTED';
+export type ConsumptionType = 'CONSERVATIVE' | 'BALANCED' | 'PRACTICAL' | 'CONSUMPTION_ORIENTED';
 
 export type User = {
-  name: string;
+  username: string;
   email: string;
-  consumeGoal: string;
-  consumptionType: ConsumptionType;
   recentLoanStatus: LoanStatusType;
   hasCreditScore: boolean;
+  consumeGoal?: string;
+  consumptionType?: ConsumptionType;
 };
 
 type UserStore = {

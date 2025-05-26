@@ -27,7 +27,8 @@ export const useLoginUser = () => {
       ]);
 
       return {
-        ...loginRes.user,
+        username: loginRes.username,
+        email: loginRes.email,
         recentLoanStatus: loanStatus,
         hasCreditScore: creditResult.creditScoreStatus,
       };
