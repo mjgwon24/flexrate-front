@@ -18,7 +18,7 @@ const RootLayout = ({
 }>) => {
   return (
     <html lang="ko">
-      <body>
+      <body suppressHydrationWarning={true}>
         <GlobalStyleProvider>
           <Providers>{children}</Providers>
         </GlobalStyleProvider>
