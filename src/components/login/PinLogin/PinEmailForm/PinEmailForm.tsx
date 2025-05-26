@@ -1,35 +1,25 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { motion } from 'framer-motion'
-import { Controller, useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { motion } from 'framer-motion';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import Button from '@/components/Button/Button'
-import TextField from '@/components/TextField/TextField'
-import { useEmailVerification } from '@/hooks/useEmailVerification'
-import { useVerifyEmailCode } from '@/hooks/useVerifyEmailCode'
-import { authSchemas } from '@/schemas/auth.schema'
+import Button from '@/components/Button/Button';
+import TextField from '@/components/TextField/TextField';
+import { useEmailVerification } from '@/hooks/useEmailVerification';
+import { useVerifyEmailCode } from '@/hooks/useVerifyEmailCode';
+import { authSchemas } from '@/schemas/auth.schema';
 
-import {
-  BtnContainer,
-  Container,
-  FormContainer,
-  Title,
-} from './PinEmailForm.style'
+import { BtnContainer, Container, FormContainer, Title } from './PinEmailForm.style';
 
-type FormData = z.infer<typeof authSchemas.emailWithCode>
+type FormData = z.infer<typeof authSchemas.emailWithCode>;
 
-type PinEmailFormProps = {
-  onVerified: (email: string) => void
-  onCancel?: () => void
-}
-
-const PinEmailForm = ({ onVerified, onCancel }: PinEmailFormProps) => {
-  const [timer, setTimer] = useState(0)
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null)
+const PinEmailForm = ({ onVerified }: { onVerified: (email: string) => void }) => {
+  const [timer, setTimer] = useState(0);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
   const {
     control,
@@ -43,56 +33,58 @@ const PinEmailForm = ({ onVerified, onCancel }: PinEmailFormProps) => {
       email: '',
       code: '',
     },
-  })
+  });
 
-  const email = watch('email')
-  const code = watch('code')
+  const email = watch('email');
+  const code = watch('code');
 
-  const { requestCode, codeSent, setCodeSent } = useEmailVerification()
-  const verifyMutation = useVerifyEmailCode(onVerified)
+  const { requestCode, codeSent, setCodeSent } = useEmailVerification();
+  const verifyMutation = useVerifyEmailCode(onVerified);
 
   const handleVerify = async () => {
-    const isCodeValid = await trigger('code')
-    if (!isCodeValid) return
+    const isCodeValid = await trigger('code');
+    if (!isCodeValid) return;
 
-    verifyMutation.mutate({ email, code })
-  }
+    verifyMutation.mutate({ email, code });
+  };
 
   useEffect(() => {
     if (timer === 0 && intervalId) {
-      clearInterval(intervalId)
-      setIntervalId(null)
-      alert('시간이 만료되었습니다. 재전송 해주세요.')
+      clearInterval(intervalId);
+      setIntervalId(null);
+      alert('시간이 만료되었습니다. 재전송 버튼을 눌러 다시 인증을 진행해주세요.');
     }
 
     if (timer > 0 && !intervalId) {
       const id = setInterval(() => {
-        setTimer((prev) => prev - 1)
-      }, 1000)
-      setIntervalId(id)
+        setTimer((prev) => prev - 1);
+      }, 1000);
+      setIntervalId(id);
     }
-  }, [timer, intervalId])
+  }, [timer]);
 
   const formatTime = (sec: number) => {
-    const m = String(Math.floor(sec / 60)).padStart(2, '0')
-    const s = String(sec % 60).padStart(2, '0')
-    return `${m}:${s}`
-  }
+    const m = String(Math.floor(sec / 60)).padStart(2, '0');
+    const s = String(sec % 60).padStart(2, '0');
+    return `${m}:${s}`;
+  };
 
   const handleRequestCode = async () => {
-    setCodeSent(true)
+    setCodeSent(true);
 
-    const isValid = await trigger('email')
+    const isValid = await trigger('email');
     if (isValid) {
-      requestCode(email)
-      setTimer(300)
+      requestCode(email);
+      setTimer(300);
     }
-  }
+  };
 
   return (
     <Container>
       <Title>
-        PIN 등록 전에 이메일 인증이 필요합니다
+        PIN 등록 전에
+        <br />
+        이메일 인증이 필요합니다
       </Title>
 
       <FormContainer>
@@ -142,42 +134,24 @@ const PinEmailForm = ({ onVerified, onCancel }: PinEmailFormProps) => {
 
         <BtnContainer>
           {!codeSent ? (
-            <>
-              <Button
-                type="button"
-                text="인증요청"
-                onClick={handleRequestCode}
-                disabled={!dirtyFields.email || !!errors.email}
-              />
-              {onCancel && (
-                <Button
-                  type="button"
-                  text="취소"
-                  onClick={onCancel}
-                />
-              )}
-            </>
+            <Button
+              type="button"
+              text="인증요청하기"
+              onClick={handleRequestCode}
+              disabled={!dirtyFields.email || !!errors.email}
+            />
           ) : (
-            <>
-              <Button
-                type="button"
-                text="인증하기"
-                onClick={handleVerify}
-                disabled={!code || !!errors.code}
-              />
-              {onCancel && (
-                <Button
-                  type="button"
-                  text="취소"
-                  onClick={onCancel}
-                />
-              )}
-            </>
+            <Button
+              type="button"
+              text="인증하기"
+              onClick={handleVerify}
+              disabled={!code || !!errors.code}
+            />
           )}
         </BtnContainer>
       </FormContainer>
     </Container>
-  )
-}
+  );
+};
 
-export default PinEmailForm
+export default PinEmailForm;
