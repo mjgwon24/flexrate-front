@@ -15,7 +15,7 @@ const Home = () => {
 
   return (
     <Container>
-      <Header type="우리금융그룹" user={isLoggedIn} hasLoan={hasLoan} />
+      <Header type="우리금융그룹" isLoggedIn={isLoggedIn} hasLoan={hasLoan} />
       <TabBar />
       {user && hasLoan ? <MainHasLoan /> : <IntroduceHome />}
     </Container>
