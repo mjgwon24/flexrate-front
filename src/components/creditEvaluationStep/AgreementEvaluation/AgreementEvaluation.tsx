@@ -9,10 +9,12 @@ import CircularChart from '@/components/CircularChart/CircularChart';
 import { Container, Title } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
 import { Description } from '@/components/loanApplicationFunnel/ReviewResultAndLoanApplication/ReviewResultAndLoanApplication.style';
 import { useCreditScoreEvaluate } from '@/hooks/useCreditScore';
+import { useUserStore } from '@/stores/userStore';
 
 import { BtnContainer, TextContainer, Wrapper } from './AgreementEvaluation.style';
 
 const AgreementEvaluation = () => {
+  const user = useUserStore((state) => state.user);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
@@ -37,7 +39,7 @@ const AgreementEvaluation = () => {
         {!loading && (
           <>
             <TextContainer>
-              <Title>서채연님의 신용 점수를 산출했어요</Title>
+              <Title>{`${user?.name}님의 신용 점수를 산출했어요`}</Title>
               <Description>이제 대출 신청이 가능해요</Description>
             </TextContainer>
             <BtnContainer>
