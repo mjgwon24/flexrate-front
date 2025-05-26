@@ -1,6 +1,6 @@
-import { ConsumptionTypeResponse } from '@/types/auth.type';
-import { getConsumptionType } from '../apis/auth';
 import { useQuery } from '@tanstack/react-query';
+
+import { getConsumptionType } from '../apis/auth';
 
 export const useConsumptionType = () => {
   return useQuery({

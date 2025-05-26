@@ -1,18 +1,18 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 import Button from '@/components/Button/Button';
+import { characterList, ConsumptionTypeKey } from '@/constants/auth.constant';
+import { useConsumptionType } from '@/hooks/useConsumptionType';
+import { characterMap } from '@/utils/signup.util';
 
 import { BtnContainer, Container, Title } from '../EmailForm/EmailForm.style';
 
 import { CharacterContainer, Description, ResultCard, Tag } from './ConsumptionResult.style';
-import { characterList, ConsumptionTypeKey } from '@/constants/auth.constant';
-import { useConsumptionType } from '@/hooks/useConsumptionType';
-import { characterMap } from '@/utils/signup.util';
 
 interface ConsumptionResultProps {
   onNext: (consumptionType: string) => void;

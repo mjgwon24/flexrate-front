@@ -1,5 +1,9 @@
 'use client';
 
+import styled from '@emotion/styled';
+import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+
 import Button from '@/components/Button/Button';
 import Header from '@/components/Header/Header';
 import {
@@ -10,9 +14,6 @@ import {
 import { BtnContainer } from '@/components/signup/EmailForm/EmailForm.style';
 import { primitiveColor, semanticColor } from '@/styles/colors';
 import { typoStyleMap } from '@/styles/typos';
-import styled from '@emotion/styled';
-import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
 
 const categoryMap: Record<string, string> = {
   FOOD: '식비',
