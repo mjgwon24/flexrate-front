@@ -35,10 +35,25 @@ const EditableCell = ({
   dataIndex,
   inputType,
   options,
+  record,
   children,
   handleChange,
   ...restProps
 }: EditableCellProps) => {
+  // 상태 컬럼일 시 select 대신 클릭만 처리
+  if (dataIndex === 'status') {
+    return (
+      <td {...restProps}
+        style={{ cursor: 'pointer', textAlign: 'center' }}
+        onClick={() => {
+          handleChange('', dataIndex, record);
+        }}
+      >
+        {children}
+      </td>
+    );
+  }
+
   const renderInputNode = () => {
     switch (inputType) {
       case 'text':

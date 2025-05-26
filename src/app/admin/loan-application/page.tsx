@@ -203,9 +203,8 @@ const AdminLoanApplicationPage = () => {
     }));
   };
 
-  // 대출 상태 변경 핸들러
   const handleStatusChange = (
-    newValue: string,
+    _: string,
     dataIndex?: string,
     record?: LoanApplicationTableRow
   ) => {
@@ -214,18 +213,16 @@ const AdminLoanApplicationPage = () => {
       return;
     }
 
-    // 상태 변경을 바로 실행하지 않고 모달을 표시하기 위해 정보 저장
     setPendingStatusChange({
       record,
-      newStatus: newValue,
+      newStatus: '',
     });
 
-    // 폼 초기화
-    statusChangeForm.resetFields();
-
-    // 모달 표시
     setIsModalVisible(true);
+    setReason('');
+    setReasonError('');
   };
+
 
   // 모달 데이터 패치
   useEffect(() => {
