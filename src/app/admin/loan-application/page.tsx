@@ -31,7 +31,7 @@ import {
   FilterLabel,
   ModalTitle,
   ModalInfoContainer,
-  ModalInfoKeyColumn, InfoLabel, InfoValue, ModalInfoValueColumn
+  ModalInfoKeyColumn, InfoLabel, InfoValue, ModalInfoValueColumn, ModalSubTitle, ModalColumnContainer, ModalRowContainer
 } from "./page.style";
 
 const PAGE_SIZE = 8;
@@ -339,12 +339,54 @@ const AdminLoanApplicationPage = () => {
 
   // 대출 거절 핸들러
   const handleRejectLoan = (applicationId: number) => {
-    
+    if (!accessToken) {
+      console.error('Access token is not available.');
+      return;
+    }
+
+    patchStatusMutation.mutate(
+      {
+        applicationId,
+        payload: { status: 'REJECTED', reason: '대출 거절 사유 입력' }, // 실제 사유는 폼에서 받아야 함
+        accessToken,
+      },
+      {
+        onSuccess: () => {
+          message.success('대출이 거절되었습니다.');
+          queryClient.invalidateQueries(['loanApplications']);
+        },
+        onError: (error) => {
+          console.error('대출 거절 실패:', error);
+          message.error('대출 거절에 실패했습니다.');
+        },
+      }
+    );
   }
 
   // 대출 승인 핸들러
   const handleApproveLoan = (applicationId: number) => {
-    
+    if (!accessToken) {
+      console.error('Access token is not available.');
+      return;
+    }
+
+    patchStatusMutation.mutate(
+      {
+        applicationId,
+        payload: { status: 'EXECUTED', reason: '대출 승인 사유 입력' }, // 실제 사유는 폼에서 받아야 함
+        accessToken,
+      },
+      {
+        onSuccess: () => {
+          message.success('대출이 승인되었습니다.');
+          queryClient.invalidateQueries(['loanApplications']);
+        },
+        onError: (error) => {
+          console.error('대출 승인 실패:', error);
+          message.error('대출 승인에 실패했습니다.');
+        },
+      }
+    );
   };
 
   return (
@@ -501,35 +543,109 @@ const AdminLoanApplicationPage = () => {
         />
 
         <LoanStatusChangeModal isOpen={isModalVisible} onOutsideClick={handleModalCancel}>
-          <ModalTitle>대출 상태 변경</ModalTitle>
+          <ModalColumnContainer>
+            <ModalTitle>대출 상태 변경</ModalTitle>
 
-          <ModalInfoContainer>
-            <ModalInfoKeyColumn>
-              <InfoLabel>신청자:</InfoLabel>
-              <InfoLabel>현재 상태:</InfoLabel>
-              <InfoLabel>대출 심사 일자:</InfoLabel>
-              <InfoLabel>대출 가능 한도:</InfoLabel>
-              <InfoLabel>초기 대출 금리:</InfoLabel>
-              <InfoLabel>금리 범위:</InfoLabel>
-              <InfoLabel>대출 금액:</InfoLabel>
-              <InfoLabel>대출 상환 기간:</InfoLabel>
-              <InfoLabel>소비 성향:</InfoLabel>
-              <InfoLabel>소비 목표:</InfoLabel>
-            </ModalInfoKeyColumn>
+            <ModalRowContainer>
+              <ModalInfoContainer>
+                <ModalInfoKeyColumn>
+                  <InfoLabel>신청자:</InfoLabel>
+                  <InfoLabel>소비 성향:</InfoLabel>
+                  <InfoLabel>소비 목표:</InfoLabel>
+                </ModalInfoKeyColumn>
 
-            <ModalInfoValueColumn>
-              <InfoValue>홍길동</InfoValue>
-              <InfoValue>대기중</InfoValue>
-              <InfoValue>2023.10.03</InfoValue>
-              <InfoValue>3,000,000원</InfoValue>
-              <InfoValue>연 14.5%</InfoValue>
-              <InfoValue>연 12.1% ~ 15.1%</InfoValue>
-              <InfoValue>1,000,000원</InfoValue>
-              <InfoValue>6개월</InfoValue>
-              <InfoValue>균형형</InfoValue>
-              <InfoValue>매달 소액의 저축을 목표로 해요.</InfoValue>
-            </ModalInfoValueColumn>
-          </ModalInfoContainer>
+                <ModalInfoValueColumn>
+                  <InfoValue>홍길동</InfoValue>
+                  <InfoValue>균형형</InfoValue>
+                  <InfoValue>매달 소액의 저축을 목표로 해요.</InfoValue>
+                </ModalInfoValueColumn>
+              </ModalInfoContainer>
+
+              <ModalInfoContainer>
+                <ModalInfoKeyColumn>
+                  <InfoLabel>현재 상태:</InfoLabel>
+                  <InfoLabel>대출 금액:</InfoLabel>
+                  <InfoLabel>대출 상환 기간:</InfoLabel>
+                </ModalInfoKeyColumn>
+
+                <ModalInfoValueColumn>
+                  <InfoValue>대기중</InfoValue>
+                  <InfoValue>1,000,000원</InfoValue>
+                  <InfoValue>6개월</InfoValue>
+                </ModalInfoValueColumn>
+              </ModalInfoContainer>
+            </ModalRowContainer>
+          </ModalColumnContainer>
+
+          <ModalColumnContainer>
+            <ModalSubTitle>대출 심사 결과</ModalSubTitle>
+
+            <ModalRowContainer>
+              <ModalInfoContainer>
+                <ModalInfoKeyColumn>
+                  <InfoLabel>대출 심사 일자:</InfoLabel>
+                  <InfoLabel>대출 가능 한도:</InfoLabel>
+                  <InfoLabel>초기 대출 금리:</InfoLabel>
+                </ModalInfoKeyColumn>
+
+                <ModalInfoValueColumn>
+                  <InfoValue>2023.10.03</InfoValue>
+                  <InfoValue>3,000,000원</InfoValue>
+                  <InfoValue>연 14.5%</InfoValue>
+                </ModalInfoValueColumn>
+              </ModalInfoContainer>
+
+              <ModalInfoContainer>
+                <ModalInfoKeyColumn>
+                  <InfoLabel>금리 범위:</InfoLabel>
+                  <InfoLabel>대출 금액:</InfoLabel>
+                  <InfoLabel>대출 상환 기간:</InfoLabel>
+                </ModalInfoKeyColumn>
+
+                <ModalInfoValueColumn>
+                  <InfoValue>연 12.1% ~ 15.1%</InfoValue>
+                  <InfoValue>1,000,000원</InfoValue>
+                  <InfoValue>6개월</InfoValue>
+                </ModalInfoValueColumn>
+              </ModalInfoContainer>
+            </ModalRowContainer>
+          </ModalColumnContainer>
+
+          <ModalColumnContainer>
+            <ModalSubTitle>대출 신청 정보</ModalSubTitle>
+
+            <ModalRowContainer>
+              <ModalInfoContainer>
+                <ModalInfoKeyColumn>
+                  <InfoLabel>고용 형태:</InfoLabel>
+                  <InfoLabel>연소득:</InfoLabel>
+                  <InfoLabel>주거 형태:</InfoLabel>
+                </ModalInfoKeyColumn>
+
+                <ModalInfoValueColumn>
+                  <InfoValue>정규직</InfoValue>
+                  <InfoValue>3,000,000원</InfoValue>
+                  <InfoValue>자가</InfoValue>
+                </ModalInfoValueColumn>
+              </ModalInfoContainer>
+
+              <ModalInfoContainer>
+                <ModalInfoKeyColumn>
+                  <InfoLabel>개인회생 여부:</InfoLabel>
+                  <InfoLabel>대출 목적:</InfoLabel>
+                </ModalInfoKeyColumn>
+
+                <ModalInfoValueColumn>
+                  <InfoValue>아니요</InfoValue>
+                  <InfoValue>생활비 충당</InfoValue>
+                </ModalInfoValueColumn>
+              </ModalInfoContainer>
+            </ModalRowContainer>
+          </ModalColumnContainer>
+
+          <div style={{display: 'flex', flexDirection: 'column', marginBottom: '2rem'}}>
+          </div>
+
 
           <SubContainer>
             <TextField value={''} onChange={() => {}} isDisabled={false}>

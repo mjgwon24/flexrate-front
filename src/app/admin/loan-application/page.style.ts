@@ -27,32 +27,51 @@ export const FilterLabel = styled.p`
     min-width: fit-content;
 `;
 
+export const ModalColumnContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const ModalRowContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+`;
+
 export const ModalTitle = styled.div`
   padding: 12px 0px 12px 0px;
   ${typoStyleMap['title3']};
   color: ${semanticColor.text.normal.primary};
 `;
 
+export const ModalSubTitle = styled.div`
+  padding: 12px 0px 8px 0px;
+  ${typoStyleMap['body2_b']};
+  color: ${semanticColor.text.normal.sub1};
+`;
+
 export const ModalInfoContainer = styled.div`
+  min-width: fit-content;
   display: flex;
   flex-direction: row;
   gap: 1rem;
   padding-bottom: 1rem;
-  margin-bottom: 1rem;
   border-bottom: 1px solid ${semanticColor.border.inactive.default};
 `;
 
 export const ModalInfoKeyColumn = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  min-width: 80px;
+  gap: 0.3rem;
 `;
 
 export const ModalInfoValueColumn = styled.div`
   display: flex;
   flex-direction: column;
   min-width: 250px;
-  gap: 0.5rem;
+  gap: 0.3rem;
 `;
 
 export const InfoLabel = styled.p`
