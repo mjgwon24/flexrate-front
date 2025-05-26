@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+
 import { getCustomerLoanStatus } from '@/apis/customer';
 
 export const useLoanStatus = () => {

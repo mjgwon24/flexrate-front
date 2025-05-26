@@ -1,6 +1,7 @@
+import { useQuery } from '@tanstack/react-query';
+
 import { getCreditScore, getCreditScoreEvaluate, getCreditStatus } from '@/apis/credit';
 import { CreditResponse, CreditStatusResponse } from '@/types/credit.type';
-import { useQuery } from '@tanstack/react-query';
 
 export const useCreditScoreEvaluate = () => {
   return useQuery<CreditResponse, Error>({

@@ -1,6 +1,8 @@
-import { AnimatePresence } from 'framer-motion';
-import { Handle, Overlay, Sheet } from './BottomSheet.style';
 import { ReactNode } from 'react';
+
+import { AnimatePresence } from 'framer-motion';
+
+import { Handle, Overlay, Sheet } from './BottomSheet.style';
 
 interface BottomSheetProps {
   isOpen: boolean;

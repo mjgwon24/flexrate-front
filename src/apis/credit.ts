@@ -1,4 +1,5 @@
 import { CreditResponse, CreditStatusResponse } from '@/types/credit.type';
+
 import { apiClient } from './client';
 
 export const getCreditScoreEvaluate = async (token: string) => {

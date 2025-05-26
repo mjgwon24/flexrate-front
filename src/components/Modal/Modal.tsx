@@ -1,7 +1,9 @@
 'use client';
 
 import { ReactNode, MouseEvent } from 'react';
+
 import { AnimatePresence } from 'framer-motion';
+
 import { Overlay, Sheet, Handle } from './Modal.style';
 
 interface ModalProps {
@@ -11,7 +13,7 @@ interface ModalProps {
   children: ReactNode;
 }
 
-const Modal = ({ type, isOpen, onClose, children }: ModalProps) => {
+const Modal = ({ isOpen, onClose, children }: ModalProps) => {
   const handleOverlayClick = () => {
     onClose();
   };

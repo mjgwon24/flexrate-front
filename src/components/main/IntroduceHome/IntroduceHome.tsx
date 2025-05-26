@@ -1,11 +1,20 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 import Button from '@/components/Button/Button';
 import Modal from '@/components/Modal/Modal';
+import {
+  ModalBtnContainer,
+  ModalSubTitle,
+  ModalTitle,
+  TitleContainer,
+} from '@/components/Modal/Modal.style';
+import { useCreditStatus } from '@/hooks/useCreditScore';
+import { useLoanStatus } from '@/hooks/useLoanStatus';
 import { useSelectLoanProduct } from '@/hooks/useSelectLoanProduct';
 import { useUserStore } from '@/stores/userStore';
 
@@ -26,14 +35,6 @@ import {
   Title,
   Wrapper,
 } from './IntroduceHome.style';
-import {
-  ModalBtnContainer,
-  ModalSubTitle,
-  ModalTitle,
-  TitleContainer,
-} from '@/components/Modal/Modal.style';
-import { useCreditStatus } from '@/hooks/useCreditScore';
-import { useLoanStatus } from '@/hooks/useLoanStatus';
 
 const PRODUCT_ID = 1; // 임시 상품 ID
 

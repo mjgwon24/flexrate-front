@@ -8,9 +8,9 @@ import Button from '@/components/Button/Button';
 import CircularChart from '@/components/CircularChart/CircularChart';
 import { Container, Title } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
 import { Description } from '@/components/loanApplicationFunnel/ReviewResultAndLoanApplication/ReviewResultAndLoanApplication.style';
+import { useCreditScoreEvaluate } from '@/hooks/useCreditScore';
 
 import { BtnContainer, TextContainer, Wrapper } from './AgreementEvaluation.style';
-import { useCreditScoreEvaluate } from '@/hooks/useCreditScore';
 
 const AgreementEvaluation = () => {
   const router = useRouter();

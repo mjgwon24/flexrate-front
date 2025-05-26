@@ -2,9 +2,10 @@
  * 사용자 정보 전역 상태를 관리하는 Zustand 스토어
  * (예: 로그인 상태, 사용자 프로필 정보 등)
  */
-import { LoanStatusType } from '@/types/user.type';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+
+import { LoanStatusType } from '@/types/user.type';
 
 type ConsumptionType = 'CONSERVATIVE' | 'BALANCED' | 'PRACTICAL' | 'CONSUMPTION_ORIENTED';
 
