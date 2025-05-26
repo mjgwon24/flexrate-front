@@ -2,12 +2,12 @@ import { getCreditScore, getCreditScoreEvaluate, getCreditStatus } from '@/apis/
 import { CreditResponse, CreditStatusResponse } from '@/types/credit.type';
 import { useQuery } from '@tanstack/react-query';
 
-const token = localStorage.getItem('accessToken');
-
 export const useCreditScoreEvaluate = () => {
   return useQuery<CreditResponse, Error>({
     queryKey: ['credit-score', 'evaluate'],
     queryFn: async () => {
+      const token = localStorage.getItem('accessToken');
+
       if (!token) throw new Error('로그인이 필요합니다.');
       return await getCreditScoreEvaluate(token);
     },
@@ -21,6 +21,8 @@ export const useCreditScore = () => {
   return useQuery<CreditResponse, Error>({
     queryKey: ['credit-score'],
     queryFn: async () => {
+      const token = localStorage.getItem('accessToken');
+
       if (!token) throw new Error('로그인이 필요합니다.');
       return await getCreditScore(token);
     },
@@ -34,6 +36,8 @@ export const useCreditStatus = () => {
   return useQuery<CreditStatusResponse, Error>({
     queryKey: ['credit-score-status'],
     queryFn: async () => {
+      const token = localStorage.getItem('accessToken');
+
       if (!token) throw new Error('로그인이 필요합니다.');
       return await getCreditStatus(token);
     },
