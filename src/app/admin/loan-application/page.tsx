@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from "react";
 
 import { useQueryClient } from '@tanstack/react-query';
-import { Input, InputNumber, Select, Space, Button, DatePicker, Modal, Form, message } from 'antd';
+import { Input, InputNumber, Select, Space, Button, DatePicker, Form, message } from 'antd';
 import { isAxiosError } from 'axios';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
@@ -203,26 +203,24 @@ const AdminLoanApplicationPage = () => {
     }));
   };
 
-  const handleStatusChange = (
-    _: string,
-    dataIndex?: string,
-    record?: LoanApplicationTableRow
-  ) => {
-    if (!record?.applicationId || !accessToken || dataIndex !== 'status') {
-      console.error('상태 변경 실패: 필수 정보 누락', { record, accessToken, dataIndex });
-      return;
-    }
+  const handleStatusChange = useCallback(
+    (_: string, dataIndex?: string, record?: LoanApplicationTableRow) => {
+      if (!record?.applicationId || !accessToken || dataIndex !== 'status') {
+        console.error('상태 변경 실패: 필수 정보 누락', { record, accessToken, dataIndex });
+        return;
+      }
 
-    setPendingStatusChange({
-      record,
-      newStatus: '',
-    });
+      setPendingStatusChange({
+        record,
+        newStatus: record.status,
+      });
 
-    setIsModalVisible(true);
-    setReason('');
-    setReasonError('');
-  };
-
+      setIsModalVisible(true);
+      setReason('');
+      setReasonError('');
+    },
+    [accessToken]
+  );
 
   // 모달 데이터 패치
   useEffect(() => {
@@ -241,8 +239,6 @@ const AdminLoanApplicationPage = () => {
     setIsModalVisible(false);
     setPendingStatusChange(null);
 
-    // 중요: 상태 변경이 취소되었으므로 테이블을 원래 상태로 되돌려야 함
-    // 데이터를 다시 불러오거나 상태를 복원하는 로직 필요
     const params = filtersToLoanApplicationParams(filters, page, PAGE_SIZE);
     queryClient.invalidateQueries({
       queryKey: ['loanApplications', JSON.stringify(params), accessToken],
@@ -704,7 +700,7 @@ const AdminLoanApplicationPage = () => {
                 {detail?.applicationStatus === 'COMPLETED' && (
                   <FlexrateButton
                     text="초기 상태로 변경"
-                    varient="SECONDARY"
+                    varient="PRIMARY"
                     onClick={() => handleModalOk('NONE')}
                   />
                 )}
