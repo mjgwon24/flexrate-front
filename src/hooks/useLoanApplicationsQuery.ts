@@ -37,15 +37,17 @@ export interface LoanApplicationTableRow {
 function getLoanStatus(status: RawLoanApplication['status']) {
   switch (status) {
     case 'PRE_APPLIED':
-      return '신청 접수';
+      return '신청 접수중';
     case 'PENDING':
       return '심사중';
     case 'REJECTED':
-      return '거절됨';
+      return '거절';
     case 'EXECUTED':
-      return '실행됨';
+      return '실행중';
     case 'COMPLETED':
       return '상환 완료';
+    case 'NONE':
+      return '초기';
     default:
       return '-';
   }

@@ -9,23 +9,26 @@ import { filtersToLoanApplicationParams } from '@/utils/loanApplicationParams';
  */
 function toRawStatus(
   status: string | undefined
-): 'PRE_APPLIED' | 'PENDING' | 'REJECTED' | 'EXECUTED' | 'COMPLETED' {
+): 'PRE_APPLIED' | 'PENDING' | 'REJECTED' | 'EXECUTED' | 'COMPLETED' | 'NONE' {
   switch (status) {
-    case '신청 접수':
+    case '신청 접수중':
     case 'PRE_APPLIED':
       return 'PRE_APPLIED';
     case '심사중':
     case 'PENDING':
       return 'PENDING';
-    case '거절됨':
+    case '거절':
     case 'REJECTED':
       return 'REJECTED';
-    case '실행됨':
+    case '실행중':
     case 'EXECUTED':
       return 'EXECUTED';
     case '상환 완료':
     case 'COMPLETED':
       return 'COMPLETED';
+    case '초기':
+    case 'NONE':
+      return 'NONE';
     default:
       throw new Error(`지원하지 않는 상태입니다: ${status}`);
   }

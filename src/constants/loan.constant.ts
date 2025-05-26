@@ -45,7 +45,7 @@ export const STATUS_LABEL: Record<string, string> = {
   REJECTED: '거절',
   COMPLETED: '상환 완료',
   PRE_APPLIED: '신청 접수중',
-  NONE: '대출 상품 선택 전'
+  NONE: '초기'
 };
 
 // 고용 형태

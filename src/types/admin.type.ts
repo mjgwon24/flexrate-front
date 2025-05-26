@@ -14,7 +14,7 @@ export interface RawMember {
 
 export interface RawLoanApplication {
   id: number;
-  status: 'PRE_APPLIED' | 'PENDING' | 'REJECTED' | 'EXECUTED' | 'COMPLETED';
+  status: 'PRE_APPLIED' | 'PENDING' | 'REJECTED' | 'EXECUTED' | 'COMPLETED' | 'NONE';
   appliedAt: string;
   applicant: string;
   applicantId: number;
