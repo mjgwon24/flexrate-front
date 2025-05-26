@@ -8,7 +8,7 @@ import { Button, Spin } from 'antd';
 import dayjs from 'dayjs';
 import { useParams, useRouter } from 'next/navigation';
 
-import { fetchCustomerDetail } from '@/apis/customer';
+import { getAdminCustomerDetail } from '@/apis/customer';
 import { fetchTransactionHistory } from '@/apis/transactions';
 import { TitleRow, Total } from '@/components/admin/Conditionbar/Conditionbar.style';
 import DataTable from '@/components/admin/DataTable/DataTable';
@@ -56,7 +56,7 @@ const CustomerDetailPage = () => {
     error: customerError,
   } = useQuery({
     queryKey: ['customerDetail', memberId],
-    queryFn: () => fetchCustomerDetail(memberId, accessToken),
+    queryFn: () => getAdminCustomerDetail(memberId, accessToken),
     enabled: !!accessToken,
   });
 

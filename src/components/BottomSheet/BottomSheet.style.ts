@@ -1,7 +1,7 @@
 import { semanticColor } from '@/styles/colors';
-import { typoStyleMap } from '@/styles/typos';
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
+
 export const Overlay = styled.div`
   position: fixed;
   inset: 0;

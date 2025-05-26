@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
 
 import {
   Wrapper,
@@ -11,17 +11,16 @@ import {
   SubTitle,
   TableItem,
   TableItemKey,
-  TableItemValue, BtnContainer
-} from "@/app/mypage/page.style";
-import Banner from "@/components/Banner/Banner";
+  TableItemValue,
+  BtnContainer,
+} from '@/app/mypage/page.style';
+import Banner from '@/components/Banner/Banner';
 import Button from '@/components/Button/Button';
-import Header from "@/components/Header/Header";
-import {
-  Container,
-} from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
-import { useInitUser } from "@/hooks/useInitUser";
-import type { User } from "@/stores/userStore";
-import { useUserStore } from "@/stores/userStore";
+import Header from '@/components/Header/Header';
+import { Container } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
+import { useInitUser } from '@/hooks/useInitUser';
+import type { User } from '@/stores/userStore';
+import { useUserStore } from '@/stores/userStore';
 
 const MyPage = () => {
   const router = useRouter();
@@ -51,15 +50,11 @@ const MyPage = () => {
 
             <TableItem>
               <TableItemKey>이름</TableItemKey>
-              <TableItemValue>
-                {user?.name}
-              </TableItemValue>
+              <TableItemValue>{user?.username}</TableItemValue>
             </TableItem>
             <TableItem>
               <TableItemKey>이메일</TableItemKey>
-              <TableItemValue>
-                {user?.email}
-              </TableItemValue>
+              <TableItemValue>{user?.email}</TableItemValue>
             </TableItem>
           </SubContainer>
 
@@ -72,10 +67,9 @@ const MyPage = () => {
         <BtnContainer>
           <Button text="정보 변경하기" onClick={handleClick} />
         </BtnContainer>
-
       </Container>
     </Wrapper>
-  )
+  );
 };
 
 export default MyPage;

@@ -1,10 +1,10 @@
 'use client';
 
-import { usePostSignup } from '@/hooks/usePostSignup';
 import ConsumptionGoal from '@/components/signup/ConsumptionGoal/ConsumptionGoal';
-import { SignupSteps } from '@/types/funnel.type';
 import { CharacterInfo } from '@/constants/auth.constant';
+import { usePostSignup } from '@/hooks/usePostSignup';
 import { ConsumptionType } from '@/stores/userStore';
+import { SignupSteps } from '@/types/funnel.type';
 
 const ConsumptionGoalStep = ({
   context,

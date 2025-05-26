@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 
 import '@/app/globals.css';
 import GlobalStyleProvider from '@/components/GlobalStyleProvider/GlobalStyleProvider';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClient } from '@/lib/queryClient';
+
 import { Providers } from './providers';
 
 export const metadata: Metadata = {
@@ -18,7 +17,7 @@ const RootLayout = ({
 }>) => {
   return (
     <html lang="ko">
-      <body>
+      <body suppressHydrationWarning={true}>
         <GlobalStyleProvider>
           <Providers>{children}</Providers>
         </GlobalStyleProvider>

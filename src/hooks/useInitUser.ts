@@ -6,20 +6,27 @@ import { useUserStore } from '@/stores/userStore';
 /**
  * 사용자 정보를 초기화
  */
-export function useInitUser() {
+export const useInitUser = () => {
   const setUser = useUserStore((state) => state.setUser);
+  const prevUser = useUserStore.getState().user;
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-    if (!token) {
+    if (!token || !prevUser) {
       setUser(null);
       return;
     }
 
     getMyPageUser(token)
-      .then((data) => setUser(data))
+      .then((data) => {
+        setUser({
+          ...prevUser,
+          consumeGoal: data.consumeGoal,
+          consumptionType: data.consumptionType,
+        });
+      })
       .catch(() => {
         setUser(null);
       });
   }, [setUser]);
-}
+};
