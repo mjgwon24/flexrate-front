@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import dynamic from 'next/dynamic';
 
@@ -15,7 +15,23 @@ interface CircularChartProps {
 }
 
 const CircularChart = ({ loading = false, score, rank }: CircularChartProps) => {
-  const displaySeries = loading ? [100] : [(score / 1000) * 100];
+  const [displaySeries, setDisplaySeries] = useState<number[]>([0]);
+
+  useEffect(() => {
+    if (!loading) {
+      let current = 0;
+      const interval = setInterval(() => {
+        current += 2;
+        if (current >= (score / 1000) * 100) {
+          current = (score / 1000) * 100;
+          clearInterval(interval);
+        }
+        setDisplaySeries([current]);
+      }, 16);
+    } else {
+      setDisplaySeries([100]);
+    }
+  }, [loading, score]);
 
   const options: ApexCharts.ApexOptions = {
     chart: {
@@ -90,7 +106,7 @@ const CircularChart = ({ loading = false, score, rank }: CircularChartProps) => 
             </>
           )}
         </Score>
-        <Percentile>상위 {!loading && rank}%</Percentile>
+        {!loading && <Percentile>{`상위 ${rank}%`}</Percentile>}
       </ChartOverlay>
     </Wrapper>
   );

@@ -15,6 +15,7 @@ import { BtnContainer, TextContainer, Wrapper } from './AgreementEvaluation.styl
 
 const AgreementEvaluation = () => {
   const user = useUserStore((state) => state.user);
+
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
@@ -39,7 +40,7 @@ const AgreementEvaluation = () => {
         {!loading && (
           <>
             <TextContainer>
-              <Title>{`${user?.name}님의 신용 점수를 산출했어요`}</Title>
+              <Title>{`${user?.username}님의 신용 점수를 산출했어요`}</Title>
               <Description>이제 대출 신청이 가능해요</Description>
             </TextContainer>
             <BtnContainer>
