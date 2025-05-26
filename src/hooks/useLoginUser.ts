@@ -20,8 +20,10 @@ export const useLoginUser = () => {
       localStorage.setItem('accessToken', loginRes.accessToken);
       localStorage.setItem('refreshToken', loginRes.refreshToken);
 
-      const loanStatus = await getCustomerLoanStatus(loginRes.accessToken);
-      const creditResult = await getCreditStatus(loginRes.accessToken);
+      const [loanStatus, creditResult] = await Promise.all([
+        getCustomerLoanStatus(loginRes.accessToken),
+        getCreditStatus(loginRes.accessToken),
+      ]);
 
       return {
         ...loginRes.user,
