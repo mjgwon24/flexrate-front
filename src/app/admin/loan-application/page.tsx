@@ -673,7 +673,7 @@ const AdminLoanApplicationPage = () => {
                   <>
                     <FlexrateButton
                       text="대출 거절"
-                      varient="ERROR"
+                      varient="WARN"
                       onClick={() => handleModalOk('REJECTED')}
                     />
                     <FlexrateButton
@@ -687,7 +687,7 @@ const AdminLoanApplicationPage = () => {
                   <>
                     <FlexrateButton
                       text="대출 중도 취소"
-                      varient="ERROR"
+                      varient="WARN"
                       onClick={() => handleModalOk('REJECTED')}
                     />
                     <FlexrateButton
