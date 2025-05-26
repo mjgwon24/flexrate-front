@@ -42,9 +42,15 @@ import {
   FilterLabel,
   ModalTitle,
   ModalInfoContainer,
-  ModalInfoKeyColumn, InfoLabel, InfoValue, ModalInfoValueColumn, ModalSubTitle, ModalColumnContainer, ModalRowContainer
+  ModalInfoKeyColumn,
+  InfoLabel,
+  InfoValue,
+  ModalInfoValueColumn,
+  ModalSubTitle,
+  ModalColumnContainer,
+  ModalRowContainer,
+  InfoBottomText
 } from "./page.style";
-
 
 const PAGE_SIZE = 8;
 
@@ -104,6 +110,9 @@ const LOAN_APPLICATION_COLUMN_METAS = [
   { title: '', dataIndex: 'userId', key: 'userId', width: 60, editable: false },
 ] as const;
 
+const CHANGEABLE_STATUSES = ['PRE_APPLIED', 'PENDING', 'EXECUTED', 'COMPLETED', 'NONE', 'REJECTED'] as const;
+type ChangeableStatus = typeof CHANGEABLE_STATUSES[number];
+
 /**
  * 관리자 페이지 - 대출 신청 현황 메뉴
  * @since 2025.05.18
@@ -122,6 +131,8 @@ const AdminLoanApplicationPage = () => {
   } | null>(null);
   const [detail, setDetail] = useState<LoanDetailsApiResponse | null>(null);
   const [page, setPage] = useState(1);
+  const isChangeable =
+    detail && detail.applicationStatus && CHANGEABLE_STATUSES.includes(detail?.applicationStatus as ChangeableStatus);
 
   const loanFilterStore = useLoanFilterStore();
   const {
@@ -695,31 +706,185 @@ const AdminLoanApplicationPage = () => {
           <div style={{display: 'flex', flexDirection: 'column', marginBottom: '2rem'}}>
           </div>
 
+          {isChangeable ? (
+            <>
+              <SubContainer>
+                <TextField value={''} onChange={() => {}} isDisabled={false}>
+                  <TextField.Label>변경 사유</TextField.Label>
+                  <TextField.TextFieldBox placeholder={"변경 사유 입력"}/>
+                </TextField>
+              </SubContainer>
 
-          <SubContainer>
-            <TextField value={''} onChange={() => {}} isDisabled={false}>
-              <TextField.Label>변경 사유</TextField.Label>
-              <TextField.TextFieldBox placeholder={"변경 사유 입력"}/>
-            </TextField>
-          </SubContainer>
-          {/*<Form form={statusChangeForm} layout="vertical">*/}
-          {/*  <Form.Item*/}
-          {/*    name="reason"*/}
-          {/*    label="변경 사유"*/}
-          {/*    rules={[{ required: true, message: '변경 사유를 입력해주세요' }]}*/}
-          {/*  >*/}
-          {/*    <Input.TextArea rows={4} placeholder="상태 변경 사유를 입력해주세요" />*/}
-          {/*  </Form.Item>*/}
-          {/*</Form>*/}
+              {/*<Form form={statusChangeForm} layout="vertical">*/}
+              {/*  <Form.Item*/}
+              {/*    name="reason"*/}
+              {/*    label="변경 사유"*/}
+              {/*    rules={[{ required: true, message: '변경 사유를 입력해주세요' }]}*/}
+              {/*  >*/}
+              {/*    <Input.TextArea rows={4} placeholder="상태 변경 사유를 입력해주세요" />*/}
+              {/*  </Form.Item>*/}
+              {/*</Form>*/}
 
-          <FlexContainer>
-            <FlexrateButton text="대출 거절" varient="ERROR" onClick={handleRejectLoan} />
-            <FlexrateButton
-              text="대출 승인"
-              varient="PRIMARY"
-              onClick={handleApproveLoan}
-            />
-          </FlexContainer>
+              <FlexContainer>
+                {detail?.applicationStatus === 'PRE_APPLIED' && (
+                  <FlexrateButton
+                    text="초기 상태로 변경"
+                    varient="PRIMARY"
+                    onClick={() =>
+                      patchStatusMutation.mutate(
+                        {
+                          applicationId: detail.applicationId,
+                          payload: { status: 'NONE', reason: '초기 상태로 변경' },
+                          accessToken,
+                        },
+                        {
+                          onSuccess: () => {
+                            message.success('초기 상태로 변경되었습니다.');
+                            setIsModalVisible(false);
+                            setPendingStatusChange(null);
+                            queryClient.invalidateQueries(['loanApplications']);
+                          },
+                          onError: (error) => {
+                            message.error('초기 상태 변경에 실패했습니다.');
+                          },
+                        }
+                      )
+                    }
+                  />
+                )}
+                {detail?.applicationStatus === 'PENDING' && (
+                  <>
+                    <FlexrateButton
+                      text="대출 거절"
+                      varient="ERROR"
+                      onClick={() => handleRejectLoan(detail.applicationId)}
+                    />
+                    <FlexrateButton
+                      text="대출 승인"
+                      varient="PRIMARY"
+                      onClick={() => handleApproveLoan(detail.applicationId)}
+                    />
+                  </>
+                )}
+                {detail?.applicationStatus === 'EXECUTED' && (
+                  <>
+                    <FlexrateButton
+                      text="대출 중도 취소"
+                      varient="ERROR"
+                      onClick={() => handleRejectLoan(detail.applicationId)}
+                    />
+                    <FlexrateButton
+                      text="상환 완료"
+                      varient="PRIMARY"
+                      onClick={() =>
+                        patchStatusMutation.mutate(
+                          {
+                            applicationId: detail.applicationId,
+                            payload: { status: 'COMPLETED', reason: '상환 완료 처리' },
+                            accessToken,
+                          },
+                          {
+                            onSuccess: () => {
+                              message.success('상환 완료 처리되었습니다.');
+                              setIsModalVisible(false);
+                              setPendingStatusChange(null);
+                              queryClient.invalidateQueries(['loanApplications']);
+                            },
+                            onError: (error) => {
+                              message.error('상환 완료 처리에 실패했습니다.');
+                            },
+                          }
+                        )
+                      }
+                    />
+                  </>
+                )}
+                {detail?.applicationStatus === 'COMPLETED' && (
+                  <FlexrateButton
+                    text="초기 상태로 변경"
+                    varient="SECONDARY"
+                    onClick={() =>
+                      patchStatusMutation.mutate(
+                        {
+                          applicationId: detail.applicationId,
+                          payload: { status: 'NONE', reason: '초기 상태로 변경' },
+                          accessToken,
+                        },
+                        {
+                          onSuccess: () => {
+                            message.success('초기 상태로 변경되었습니다.');
+                            setIsModalVisible(false);
+                            setPendingStatusChange(null);
+                            queryClient.invalidateQueries(['loanApplications']);
+                          },
+                          onError: (error) => {
+                            message.error('초기 상태 변경에 실패했습니다.');
+                          },
+                        }
+                      )
+                    }
+                  />
+                )}
+                {detail?.applicationStatus === 'NONE' && (
+                  <FlexrateButton
+                    text="신청 접수중으로 변경"
+                    varient="PRIMARY"
+                    onClick={() =>
+                      patchStatusMutation.mutate(
+                        {
+                          applicationId: detail.applicationId,
+                          payload: { status: 'PRE_APPLIED', reason: '신청 접수중으로 변경' },
+                          accessToken,
+                        },
+                        {
+                          onSuccess: () => {
+                            message.success('신청 접수중으로 변경되었습니다.');
+                            setIsModalVisible(false);
+                            setPendingStatusChange(null);
+                            queryClient.invalidateQueries(['loanApplications']);
+                          },
+                          onError: (error) => {
+                            message.error('신청 접수중으로 변경에 실패했습니다.');
+                          },
+                        }
+                      )
+                    }
+                  />
+                )}
+                {detail?.applicationStatus === 'REJECTED' && (
+                  <FlexrateButton
+                    text="초기 상태로 변경"
+                    varient="PRIMARY"
+                    onClick={() =>
+                      patchStatusMutation.mutate(
+                        {
+                          applicationId: detail.applicationId,
+                          payload: { status: 'NONE', reason: '초기 상태로 변경' },
+                          accessToken,
+                        },
+                        {
+                          onSuccess: () => {
+                            message.success('초기 상태로 변경되었습니다.');
+                            setIsModalVisible(false);
+                            setPendingStatusChange(null);
+                            queryClient.invalidateQueries(['loanApplications']);
+                          },
+                          onError: (error) => {
+                            message.error('초기 상태 변경에 실패했습니다.');
+                          },
+                        }
+                      )
+                    }
+                  />
+                )}
+              </FlexContainer>
+            </>
+          ) : (
+            <InfoBottomText>
+              변경 가능한 상태가 아닙니다
+            </InfoBottomText>
+          )}
+
         </LoanStatusChangeModal>
         {/* 상태 변경 확인 모달 */}
         {/*<Modal*/}

@@ -41,10 +41,11 @@ export const loanStatusMap: Record<LoanStatusType, { title: string; description:
 
 export const STATUS_LABEL: Record<string, string> = {
   PENDING: '심사중',
-  EXECUTED: '실행됨',
-  REJECTED: '거절됨',
+  EXECUTED: '실행중',
+  REJECTED: '거절',
   COMPLETED: '상환 완료',
-  PRE_APPLIED: '신청 접수',
+  PRE_APPLIED: '신청 접수중',
+  NONE: '대출 상품 선택 전'
 };
 
 // 고용 형태

@@ -84,3 +84,9 @@ export const InfoValue = styled.p`
   color: ${semanticColor.text.normal.sub2};
   margin: 0;
 `;
+
+export const InfoBottomText = styled.div`
+  text-align: center;
+    color: ${semanticColor.text.normal.sub3};
+    padding: 1rem 0 2rem 0;
+`;
