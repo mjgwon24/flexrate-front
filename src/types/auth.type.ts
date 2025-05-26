@@ -40,6 +40,6 @@ export interface LoginResponse {
     name: string;
     email: string;
     consumeGoal: string;
-    consumptionType: string;
+    consumptionType: ConsumptionTypeKey;
   };
 }
