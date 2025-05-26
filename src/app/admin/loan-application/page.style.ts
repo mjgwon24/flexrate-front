@@ -90,3 +90,10 @@ export const InfoBottomText = styled.div`
     color: ${semanticColor.text.normal.sub3};
     padding: 1rem 0 2rem 0;
 `;
+
+export const ErrorInfo = styled.div`
+  color: ${semanticColor.text.state.textError};
+  ${typoStyleMap['caption1_m']};
+  padding-left: 0.5rem;
+  margin-top: 0.2rem;
+`;
