@@ -11,7 +11,7 @@ const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 interface CircularChartProps {
   loading?: boolean;
   score: number;
-  rank: string;
+  rank: number;
 }
 
 const CircularChart = ({ loading = false, score, rank }: CircularChartProps) => {
@@ -90,7 +90,7 @@ const CircularChart = ({ loading = false, score, rank }: CircularChartProps) => 
             </>
           )}
         </Score>
-        <Percentile>{!loading && rank}</Percentile>
+        <Percentile>상위 {!loading && rank}%</Percentile>
       </ChartOverlay>
     </Wrapper>
   );

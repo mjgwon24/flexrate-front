@@ -5,17 +5,18 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import Button from '@/components/Button/Button';
-import CircularChart from '@/components/CircularCart/CircularCart';
+import CircularChart from '@/components/CircularChart/CircularChart';
 import { Container, Title } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
 import { Description } from '@/components/loanApplicationFunnel/ReviewResultAndLoanApplication/ReviewResultAndLoanApplication.style';
 
 import { BtnContainer, TextContainer, Wrapper } from './AgreementEvaluation.style';
+import { useCreditScoreEvaluate } from '@/hooks/useCreditScore';
 
 const AgreementEvaluation = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [score] = useState(720);
-  const [rank] = useState('상위 00%');
+
+  const { data: creditResult } = useCreditScoreEvaluate();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -28,7 +29,11 @@ const AgreementEvaluation = () => {
   return (
     <Wrapper>
       <Container>
-        <CircularChart loading={loading} score={score} rank={rank} />
+        <CircularChart
+          loading={loading}
+          score={creditResult?.creditScore ?? 0}
+          rank={creditResult?.percentile ?? 0}
+        />
         {!loading && (
           <>
             <TextContainer>
