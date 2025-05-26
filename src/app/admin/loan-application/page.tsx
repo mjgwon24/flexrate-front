@@ -560,7 +560,7 @@ const AdminLoanApplicationPage = () => {
                 </ModalInfoKeyColumn>
 
                 <ModalInfoValueColumn>
-                  <InfoValue>{displayValue(detail?.appliedAt, v => `${formatYMD(v)}`)}</InfoValue>
+                  <InfoValue>{displayValue(detail?.appliedAt, v => `${formatYMD(String(v))}`)}</InfoValue>
                   <InfoValue>
                     {displayValue(
                       detail?.interestRateMin !== undefined && detail?.interestRateMax !== undefined
@@ -572,7 +572,7 @@ const AdminLoanApplicationPage = () => {
                   <InfoValue>{displayValue(
                     detail?.lastInterestRate,
                     v => {
-                      if (v === '0') {
+                      if (v === 0) {
                         return `-`;
                       }
                       return `${Number(v)}% (최종 갱신 ${formatYMD(detail?.lastInterestDate)})`;
