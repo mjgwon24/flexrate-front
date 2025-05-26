@@ -38,3 +38,44 @@ export const loanStatusMap: Record<LoanStatusType, { title: string; description:
     description: `대출금이 입금되었습니다.\n내역을 마이페이지에서 확인하세요.`,
   },
 };
+
+export const STATUS_LABEL: Record<string, string> = {
+  PENDING: '심사중',
+  EXECUTED: '실행됨',
+  REJECTED: '거절됨',
+  COMPLETED: '상환 완료',
+  PRE_APPLIED: '신청 접수',
+};
+
+// 고용 형태
+export const EMPLOYMENT_TYPE_LABEL: Record<string, string> = {
+  FULL_TIME: '정규직',
+  CONTRACT: '계약직',
+  PART_TIME: '비정규직',
+  SELF_EMPLOYED: '자영업',
+  UNEMPLOYED: '무직',
+  ETC: '기타',
+};
+
+// 주거 형태
+export const RESIDENCE_TYPE_LABEL: Record<string, string> = {
+  OWN: '자가',
+  JEONSE: '전세',
+  MONTHLY: '월세',
+};
+
+// 대출 목적
+export const LOAN_PURPOSE_LABEL: Record<string, string> = {
+  LIVING: '생활비',
+  BUSINESS: '사업자금',
+  CAR: '자동차 구입',
+  EDUCATION: '교육비',
+  HOUSE: '주택자금',
+  ETC: '기타',
+};
+
+// 개인회생 여부
+export function BANKRUPT_LABEL(v: boolean | null) {
+  if (v === null || v === undefined) return '-';
+  return v ? '예' : '아니요';
+}
