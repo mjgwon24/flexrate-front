@@ -1,4 +1,5 @@
 import { LoanApiResponse, PatchLoanStatusPayload } from '@/types/admin.type';
+
 import { apiClient } from './client';
 
 /**
@@ -38,4 +39,24 @@ export async function patchLoanStatus(
       Authorization: `Bearer ${accessToken}`,
     },
   });
+}
+
+/**
+ * 관리자 대출 신청 상세 조회 API
+ * @param applicationId 대출 ID
+ * @param accessToken 인증 토큰
+ * @returns 대출 신청 상세 정보
+ *
+ * @since 2025.05.26
+ * @author 권민지
+ */
+export async function getLoanApplicationDetail(
+  applicationId: number,
+  accessToken: string
+): Promise<LoanApiResponse> {
+  const { data } = await apiClient.get<LoanApiResponse>(`/api/admin/loans/${applicationId}/detail`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  return data;
 }

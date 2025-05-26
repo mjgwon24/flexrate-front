@@ -1,10 +1,14 @@
 import { GetAdminMembersResponse, PatchMemberPayload } from '@/types/admin.type';
+
 import { apiClient } from './client';
 
 /**
  * 관리자 회원 목록 조회 API
  * @param params 쿼리 파라미터
  * @param accessToken 인증 토큰
+ * 
+ * @since 2025.05.16
+ * @author 권민지
  */
 export async function getMembers(
   params: Record<string, string>,
@@ -23,6 +27,9 @@ export async function getMembers(
  * @param payload 수정할 데이터
  * @param accessToken 인증 토큰
  * @returns void
+ *
+ * @since 2025.05.16
+ * @author 권민지
  */
 export async function patchMember(
   userId: number,

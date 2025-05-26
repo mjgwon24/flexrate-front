@@ -29,6 +29,30 @@ export interface LoanApiResponse {
   loans: RawLoanApplication[];
 }
 
+export interface LoanDetailsApiResponse {
+  applicationId: number;
+  applicantName: string;
+  consumptionType: string | null;
+  consumeGoal: string | null;
+  applicationStatus: string | null;
+  requestedAmount: number | null;
+  repaymentStartDate: string | null;
+  repaymentEndDate: string | null;
+  repaymentMonths: number | null;
+  appliedAt: string | null;
+  approvedMaxAmount: number | null;
+  initialInterestRate: number | null;
+  interestRateMin: number | null;
+  interestRateMax: number | null;
+  lastInterestRate: number | null;
+  lastInterestDate: string | null;
+  employmentType: string | null;
+  annualIncome: number | null;
+  residenceType: string | null;
+  isBankrupt: boolean | null;
+  loanPurpose: string | null;
+}
+
 export interface PaginationInfo {
   currentPage: number;
   pageSize: number;
