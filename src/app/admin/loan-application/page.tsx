@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { useQueryClient } from '@tanstack/react-query';
 import { Input, InputNumber, Select, Space, Button, DatePicker, Form, message } from 'antd';
@@ -8,28 +8,28 @@ import { isAxiosError } from 'axios';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 
-import { getLoanApplicationDetail } from '@/apis/adminLoans';
-import { SubContainer } from "@/app/mypage/page.style";
+import { getLoanApplicationDetail } from '@/apis/admin';
+import { SubContainer } from '@/app/mypage/page.style';
 import Conditionbar from '@/components/admin/Conditionbar/Conditionbar';
 import DataTable from '@/components/admin/DataTable/DataTable';
-import LoanStatusChangeModal from "@/components/admin/LoanStatusChangeModal/LoanStatusChangeModal";
+import LoanStatusChangeModal from '@/components/admin/LoanStatusChangeModal/LoanStatusChangeModal';
 import FlexrateButton from '@/components/Button/Button';
-import { FlexContainer } from "@/components/loanApplicationFunnel/CreditStep/CreditStep.style";
-import TextField from "@/components/TextField/TextField";
+import { FlexContainer } from '@/components/loanApplicationFunnel/CreditStep/CreditStep.style';
+import TextField from '@/components/TextField/TextField';
 import {
   STATUS_LABEL,
   EMPLOYMENT_TYPE_LABEL,
   RESIDENCE_TYPE_LABEL,
   BANKRUPT_LABEL,
   LOAN_PURPOSE_LABEL,
-} from "@/constants/loan.constant";
+} from '@/constants/loan.constant';
 import {
   LoanApplicationTableRow,
   useLoanApplicationsQuery,
 } from '@/hooks/useLoanApplicationsQuery';
 import { usePatchLoanStatus } from '@/hooks/usePatchLoanStatus';
 import { useLoanFilterStore } from '@/stores/loanFilterStore';
-import type { LoanDetailsApiResponse } from "@/types/admin.type";
+import type { LoanDetailsApiResponse } from '@/types/admin.type';
 import type { LoanFilterType } from '@/types/loan.filter.type';
 import { formatYMD } from '@/utils/dateFormat';
 import { filtersToLoanApplicationParams } from '@/utils/loanApplicationParams';
@@ -49,8 +49,9 @@ import {
   ModalSubTitle,
   ModalColumnContainer,
   ModalRowContainer,
-  InfoBottomText, ErrorInfo
-} from "./page.style";
+  InfoBottomText,
+  ErrorInfo,
+} from './page.style';
 
 const PAGE_SIZE = 8;
 
@@ -111,8 +112,15 @@ const LOAN_APPLICATION_COLUMN_METAS = [
   { title: '', dataIndex: 'userId', key: 'userId', width: 60, editable: false },
 ] as const;
 
-const CHANGEABLE_STATUSES = ['PRE_APPLIED', 'PENDING', 'EXECUTED', 'COMPLETED', 'NONE', 'REJECTED'] as const;
-type ChangeableStatus = typeof CHANGEABLE_STATUSES[number];
+const CHANGEABLE_STATUSES = [
+  'PRE_APPLIED',
+  'PENDING',
+  'EXECUTED',
+  'COMPLETED',
+  'NONE',
+  'REJECTED',
+] as const;
+type ChangeableStatus = (typeof CHANGEABLE_STATUSES)[number];
 
 /**
  * 관리자 페이지 - 대출 신청 현황 메뉴
@@ -133,7 +141,9 @@ const AdminLoanApplicationPage = () => {
   const [detail, setDetail] = useState<LoanDetailsApiResponse | null>(null);
   const [page, setPage] = useState(1);
   const isChangeable =
-    detail && detail.applicationStatus && CHANGEABLE_STATUSES.includes(detail?.applicationStatus as ChangeableStatus);
+    detail &&
+    detail.applicationStatus &&
+    CHANGEABLE_STATUSES.includes(detail?.applicationStatus as ChangeableStatus);
   const [reason, setReason] = useState('');
   const [reasonError, setReasonError] = useState('');
 
@@ -277,7 +287,11 @@ const AdminLoanApplicationPage = () => {
               setIsModalVisible(false);
               setPendingStatusChange(null);
               queryClient.invalidateQueries({
-                queryKey: ['loanApplications', JSON.stringify(filtersToLoanApplicationParams(filters, page, PAGE_SIZE)), accessToken],
+                queryKey: [
+                  'loanApplications',
+                  JSON.stringify(filtersToLoanApplicationParams(filters, page, PAGE_SIZE)),
+                  accessToken,
+                ],
               });
             },
             onError: (error) => {
@@ -528,8 +542,11 @@ const AdminLoanApplicationPage = () => {
 
                 <ModalInfoValueColumn>
                   <InfoValue>{displayValue(detail?.applicantName)}</InfoValue>
-                  <InfoValue>{displayValue(detail?.applicationStatus ? STATUS_LABEL[detail.applicationStatus] : null)}</InfoValue>
-
+                  <InfoValue>
+                    {displayValue(
+                      detail?.applicationStatus ? STATUS_LABEL[detail.applicationStatus] : null
+                    )}
+                  </InfoValue>
                 </ModalInfoValueColumn>
               </ModalInfoContainer>
 
@@ -560,7 +577,9 @@ const AdminLoanApplicationPage = () => {
                 </ModalInfoKeyColumn>
 
                 <ModalInfoValueColumn>
-                  <InfoValue>{displayValue(detail?.appliedAt, v => `${formatYMD(String(v))}`)}</InfoValue>
+                  <InfoValue>
+                    {displayValue(detail?.appliedAt, (v) => `${formatYMD(String(v))}`)}
+                  </InfoValue>
                   <InfoValue>
                     {displayValue(
                       detail?.interestRateMin !== undefined && detail?.interestRateMax !== undefined
@@ -568,16 +587,17 @@ const AdminLoanApplicationPage = () => {
                         : null
                     )}
                   </InfoValue>
-                  <InfoValue>{displayValue(detail?.initialInterestRate, v => `연 ${v}%`)}</InfoValue>
-                  <InfoValue>{displayValue(
-                    detail?.lastInterestRate,
-                    v => {
+                  <InfoValue>
+                    {displayValue(detail?.initialInterestRate, (v) => `연 ${v}%`)}
+                  </InfoValue>
+                  <InfoValue>
+                    {displayValue(detail?.lastInterestRate, (v) => {
                       if (v === 0) {
                         return `-`;
                       }
                       return `${Number(v)}% (최종 갱신 ${formatYMD(detail?.lastInterestDate)})`;
-                    }
-                  )}</InfoValue>
+                    })}
+                  </InfoValue>
                 </ModalInfoValueColumn>
               </ModalInfoContainer>
 
@@ -589,11 +609,14 @@ const AdminLoanApplicationPage = () => {
                 </ModalInfoKeyColumn>
 
                 <ModalInfoValueColumn>
-                  <InfoValue>{displayValue(detail?.approvedMaxAmount, v => `${v?.toLocaleString()}원`)}</InfoValue>
-                  <InfoValue>{displayValue(detail?.requestedAmount, v => `${v?.toLocaleString()}원`)}</InfoValue>
-                  <InfoValue>{displayValue(
-                    detail?.repaymentMonths,
-                    v => {
+                  <InfoValue>
+                    {displayValue(detail?.approvedMaxAmount, (v) => `${v?.toLocaleString()}원`)}
+                  </InfoValue>
+                  <InfoValue>
+                    {displayValue(detail?.requestedAmount, (v) => `${v?.toLocaleString()}원`)}
+                  </InfoValue>
+                  <InfoValue>
+                    {displayValue(detail?.repaymentMonths, (v) => {
                       const start = formatYMD(detail?.repaymentStartDate);
                       const end = formatYMD(detail?.repaymentEndDate);
 
@@ -601,8 +624,8 @@ const AdminLoanApplicationPage = () => {
                         return `-`;
                       }
                       return `${start} ~ ${end} (${v}개월)`;
-                    }
-                  )}</InfoValue>
+                    })}
+                  </InfoValue>
                 </ModalInfoValueColumn>
               </ModalInfoContainer>
             </ModalRowContainer>
@@ -620,9 +643,15 @@ const AdminLoanApplicationPage = () => {
                 </ModalInfoKeyColumn>
 
                 <ModalInfoValueColumn>
-                  <InfoValue>{displayValue(EMPLOYMENT_TYPE_LABEL[detail?.employmentType ?? 'ETC'])}</InfoValue>
-                  <InfoValue>{displayValue(detail?.annualIncome, v => `${v?.toLocaleString()}원`)}</InfoValue>
-                  <InfoValue>{displayValue(RESIDENCE_TYPE_LABEL[detail?.residenceType ?? 'MONTHLY'])}</InfoValue>
+                  <InfoValue>
+                    {displayValue(EMPLOYMENT_TYPE_LABEL[detail?.employmentType ?? 'ETC'])}
+                  </InfoValue>
+                  <InfoValue>
+                    {displayValue(detail?.annualIncome, (v) => `${v?.toLocaleString()}원`)}
+                  </InfoValue>
+                  <InfoValue>
+                    {displayValue(RESIDENCE_TYPE_LABEL[detail?.residenceType ?? 'MONTHLY'])}
+                  </InfoValue>
                 </ModalInfoValueColumn>
               </ModalInfoContainer>
 
@@ -634,7 +663,9 @@ const AdminLoanApplicationPage = () => {
 
                 <ModalInfoValueColumn>
                   <InfoValue>{BANKRUPT_LABEL(detail?.isBankrupt)}</InfoValue>
-                  <InfoValue>{displayValue(LOAN_PURPOSE_LABEL[detail?.loanPurpose ?? 'ETC'])}</InfoValue>
+                  <InfoValue>
+                    {displayValue(LOAN_PURPOSE_LABEL[detail?.loanPurpose ?? 'ETC'])}
+                  </InfoValue>
                 </ModalInfoValueColumn>
               </ModalInfoContainer>
             </ModalRowContainer>
@@ -653,11 +684,7 @@ const AdminLoanApplicationPage = () => {
                 >
                   <TextField.Label>변경 사유</TextField.Label>
                   <TextField.TextFieldBox placeholder="변경 사유 입력" />
-                  {reasonError && (
-                    <ErrorInfo>
-                      {reasonError}
-                    </ErrorInfo>
-                  )}
+                  {reasonError && <ErrorInfo>{reasonError}</ErrorInfo>}
                 </TextField>
               </SubContainer>
 
@@ -721,11 +748,8 @@ const AdminLoanApplicationPage = () => {
               </FlexContainer>
             </>
           ) : (
-            <InfoBottomText>
-              변경 가능한 상태가 아닙니다
-            </InfoBottomText>
+            <InfoBottomText>변경 가능한 상태가 아닙니다</InfoBottomText>
           )}
-
         </LoanStatusChangeModal>
       </ContentColumn>
     </PageContainer>
