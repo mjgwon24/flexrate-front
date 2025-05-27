@@ -74,7 +74,7 @@ const Sidebar = () => {
           <ProfileGreeting>
             {user ? (
               <>
-                <ProfileName>{user?.name}</ProfileName> 님, 반가워요!
+                <ProfileName>{user?.username}</ProfileName> 님, 반가워요!
               </>
             ) : (
               <ProfileName></ProfileName>
