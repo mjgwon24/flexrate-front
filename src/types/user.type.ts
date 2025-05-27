@@ -1,3 +1,1 @@
-/**
- * 사용자 정보 타입
- */
+export type LoanStatusType = 'NONE' | 'PRE_APPLIED' | 'PENDING' | 'EXECUTED';

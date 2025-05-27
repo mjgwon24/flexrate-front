@@ -1,3 +1,4 @@
+import { ConsumptionTypeKey } from '@/constants/auth.constant';
 import {
   ConsumptionTypeResponse,
   LoginRequest,
@@ -7,8 +8,8 @@ import {
   SignupResponse,
   VerifyEmailCodeRequest,
 } from '@/types/auth.type';
+
 import { apiClient } from './client';
-import { ConsumptionTypeKey } from '@/constants/auth.constant';
 
 /**
  * 인증 관련 API
@@ -60,5 +61,14 @@ export const getConsumptionType = async (): Promise<ConsumptionTypeKey> => {
 // 로그인 API
 export const loginUser = async (data: LoginRequest): Promise<LoginResponse> => {
   const response = await apiClient.post('/api/auth/login/password', data);
+  return response.data;
+};
+
+// PIN 로그인 API
+export const loginWithPin = async (memberId: number, pin: string): Promise<LoginResponse> => {
+  const response = await apiClient.post('/api/auth/login/pin', {
+    memberId,
+    pin,
+  });
   return response.data;
 };

@@ -1,15 +1,17 @@
 'use client';
 
+import styled from '@emotion/styled';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { motion } from 'framer-motion';
+import { useForm, Controller } from 'react-hook-form';
+import { z } from 'zod';
+
 import Button from '@/components/Button/Button';
 import TextField from '@/components/TextField/TextField';
-import { BtnContainer, Container, Title } from '../EmailForm/EmailForm.style';
-import styled from '@emotion/styled';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { motion } from 'framer-motion';
 import { authSchemas } from '@/schemas/auth.schema';
 import { formatBirthDateIfPossible } from '@/utils/signup.util';
+
+import { BtnContainer, Container, Title } from '../EmailForm/EmailForm.style';
 
 type FormData = z.infer<typeof authSchemas.infoRegister>;
 

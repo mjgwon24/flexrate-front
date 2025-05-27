@@ -15,14 +15,14 @@ type HeaderType =
     | '내 정보 변경';
 
 interface HeaderProps {
-    type?: HeaderType;
-    backIcon?: boolean;
-    user?: boolean;
-    hasLoan?: boolean;
+  type?: HeaderType;
+  backIcon?: boolean;
+  isLoggedIn?: boolean;
+  hasLoan?: boolean;
 }
 
-const Header = ({type, backIcon = false, user = false}: HeaderProps) => {
-    const router = useRouter();
+const Header = ({ type, backIcon = false, isLoggedIn = false }: HeaderProps) => {
+  const router = useRouter();
 
     const handleBack = () => {
         if (window.history.length > 1) {
@@ -32,26 +32,23 @@ const Header = ({type, backIcon = false, user = false}: HeaderProps) => {
         }
     };
 
-    const renderRightIcons = () => {
-        if (type === '우리금융그룹' && user) {
-            return (
-                <HeaderRightContainer>
-                    <Image src="/icons/alert_36.svg" width={36} height={36} alt="알림"
-                           onClick={() => router.push('/notifications')}/>
-                    <Image src="/icons/webee_36.svg" width={36} height={36} alt="마이페이지"
-                           onClick={() => router.push('/mypage')}/>
-                </HeaderRightContainer>
-            );
-        }
+  const renderRightIcons = () => {
+    if (type === '우리금융그룹' && isLoggedIn) {
+      return (
+        <HeaderRightContainer>
+          <Image src="/icons/alert_36.svg" width={36} height={36} alt="알림" />
+          <Image src="/icons/webee_36.svg" width={36} height={36} alt="마이페이지" />
+        </HeaderRightContainer>
+      );
+    }
 
-        if (type === '알림함' && user) {
-            return (
-                <HeaderRightContainer>
-                    <Image src="/icons/webee_36.svg" width={36} height={36} alt="마이페이지"
-                           onClick={() => router.push('/mypage')}/>
-                </HeaderRightContainer>
-            );
-        }
+    if (type === '알림함' && isLoggedIn) {
+      return (
+        <HeaderRightContainer>
+          <Image src="/icons/webee_36.svg" width={36} height={36} alt="마이페이지" />
+        </HeaderRightContainer>
+      );
+    }
 
         return <None/>;
     };

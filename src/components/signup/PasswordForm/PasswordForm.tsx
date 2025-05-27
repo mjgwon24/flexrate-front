@@ -20,11 +20,6 @@ import TextField from '@/components/TextField/TextField';
 import { Container, FormContainer, BtnContainer } from './../EmailForm/EmailForm.style';
 import { BottomSheetBtnContainer, Title } from './PasswordForm.style';
 
-
-
-
-
-
 const schema = z
   .object({
     password: z
@@ -157,14 +152,14 @@ const PasswordForm = ({ email, onNext }: PasswordFormProps) => {
 
               <SheetBtn onClick={() => handleSelectMethod('지문')}>
                 <BottomSheetBtnContainer>
-                  <Image src={'/imgs/faceId.svg'} width={36} height={36} alt="FaceID" />
-                  지문
+                  <Image src={'/icons/finger_36.svg'} width={36} height={36} alt="FaceID" />
+                  지문 인증
                 </BottomSheetBtnContainer>
               </SheetBtn>
 
               <SheetBtn onClick={() => handleSelectMethod('일반')}>
                 <BottomSheetBtnContainer>
-                  <Image src={'/imgs/pattern.svg'} width={36} height={36} alt="패턴" />
+                  <Image src={'/icons/webee_36.svg'} width={36} height={36} alt="패턴" />
                   일반 로그인
                 </BottomSheetBtnContainer>
               </SheetBtn>
