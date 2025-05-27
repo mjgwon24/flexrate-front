@@ -13,7 +13,7 @@ export const Container = styled.div`
 
 export const Title = styled.div`
   padding: 12px 22px;
-  margin-top: 60px;
+  margin-top: 61px;
   ${typoStyleMap['head1']};
   color: ${semanticColor.text.normal.primary};
 `;
@@ -29,7 +29,7 @@ export const FormContainer = styled.form`
 export const BtnContainer = styled.div`
   width: calc(100% - 44px);
   position: absolute;
-  bottom: 0;   // 또는 원하는 위치
-  left: 22px;  // padding과 맞추기 위해
+  bottom: 85px;
+  left: 22px;
   height: 0px;
 `;

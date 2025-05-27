@@ -10,7 +10,7 @@ export const Container = styled.div`
 `;
 
 export const Title = styled.h2`
-  margin: 120px 0 40px;
+  margin: 140px 0 40px;
   ${typoStyleMap['head1']};
   color: ${semanticColor.text.normal.primary};
 `;
@@ -18,7 +18,7 @@ export const Title = styled.h2`
 export const DotWrapper = styled.div`
   display: flex;
   gap: 25px;
-  margin-bottom: 30px;
+  margin-bottom: 75px;
 `;
 
 export const Dot = styled.div<{ filled: boolean }>`
@@ -36,7 +36,7 @@ export const KeypadWrapper = styled.div`
   gap: 14px;
   padding: 35px 0px;
   background-color: ${semanticColor.bg.primary};
-  margin-top: 150px;
+  margin-top: 129px;
 
   @media (min-width: 600px) {
     max-width: none;
@@ -45,14 +45,14 @@ export const KeypadWrapper = styled.div`
 `;
 
 export const KeyButton = styled.button`
-  height: 92px;
+  height: 55px;
   ${typoStyleMap['title2']};
   color: ${semanticColor.text.normal.onPrimary};
   background: transparent;
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  font-size: 25px;
+  font-size: 20px;
 
   &:active {
     background: rgba(255, 255, 255, 0.2);

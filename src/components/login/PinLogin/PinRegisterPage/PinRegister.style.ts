@@ -10,7 +10,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding: 45px 24px;
+  padding: 44px 24px;
 `;
 
 export const Title = styled.div`
@@ -21,7 +21,7 @@ export const Title = styled.div`
 `;
 
 export const BtnContainer = styled.div`
-  width: calc(100% - 47px);
+  width: calc(100% - 40px);
   position: absolute;
   bottom: 0;
 `;
@@ -34,9 +34,6 @@ export const BackButton = styled.button`
   ${typoStyleMap['body2_m']};
   cursor: pointer;
 
-  transform: translateY(16px);
+  transform: translateY(10px);
 
-  &:hover {
-    text-decoration: underline;
-  }
 `;
