@@ -1,6 +1,7 @@
-import { useRouter } from 'next/navigation';
-import { postSignupUser } from '@/apis/auth';
 import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+
+import { postSignupUser } from '@/apis/auth';
 
 export const usePostSignup = () => {
   const router = useRouter();

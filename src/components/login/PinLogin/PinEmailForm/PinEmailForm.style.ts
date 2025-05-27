@@ -7,10 +7,13 @@ export const Container = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
+  min-height: 740px;
 `;
 
 export const Title = styled.div`
-  padding: 60px 22px;
+  padding: 12px 22px;
+  margin-top: 60px;
   ${typoStyleMap['head1']};
   color: ${semanticColor.text.normal.primary};
 `;
@@ -18,7 +21,7 @@ export const Title = styled.div`
 export const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
-  margin-top: 0px;
+  margin-top: 32px;
   padding: 0px 22px;
   gap: 12px;
 `;
@@ -26,6 +29,7 @@ export const FormContainer = styled.form`
 export const BtnContainer = styled.div`
   width: calc(100% - 44px);
   position: absolute;
-  bottom: -415px;
-  height: 0px; /* 버튼 높이에 맞게 */
+  bottom: 0;   // 또는 원하는 위치
+  left: 22px;  // padding과 맞추기 위해
+  height: 0px;
 `;

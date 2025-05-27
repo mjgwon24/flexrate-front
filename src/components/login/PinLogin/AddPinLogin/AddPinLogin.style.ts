@@ -45,7 +45,7 @@ export const KeypadWrapper = styled.div`
 `;
 
 export const KeyButton = styled.button`
-  height: 60px;
+  height: 92px;
   ${typoStyleMap['title2']};
   color: ${semanticColor.text.normal.onPrimary};
   background: transparent;

@@ -19,7 +19,7 @@ const PinRegisterPage = ({ onBack }: { onBack: () => void }): JSX.Element => {
           alert(`이메일 인증 완료: ${emailFromForm}`)
           setEmailStatus(emailFromForm)
         }}
-        onCancel={() => setEmailStatus('')}
+        // onCancel={() => setEmailStatus('')}
       />
     )
   }

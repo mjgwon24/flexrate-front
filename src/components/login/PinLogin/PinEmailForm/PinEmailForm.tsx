@@ -61,7 +61,7 @@ const PinEmailForm = ({ onVerified }: { onVerified: (email: string) => void }) =
       }, 1000);
       setIntervalId(id);
     }
-  }, [timer]);
+  }, [timer, intervalId]);
 
   const formatTime = (sec: number) => {
     const m = String(Math.floor(sec / 60)).padStart(2, '0');

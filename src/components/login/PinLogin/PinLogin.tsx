@@ -69,6 +69,8 @@ const PinLogin = () => {
             const { accessToken } = response;
             localStorage.setItem('accessToken', accessToken);  // ✅ 저장
             router.push('/');
+            console.log("PIN 로그인 성공");
+            
           } catch (error) {
             console.error('PIN 로그인 실패:', error);
             alert('PIN이 올바르지 않거나 등록되지 않았습니다.');
@@ -102,7 +104,7 @@ const PinLogin = () => {
           setShowPinEmailForm(false);
           setShowAddPin(true);
         }}
-        onCancel={() => setShowPinEmailForm(false)}
+        // onCancel={() => setShowPinEmailForm(false)}
       />
     );
   }

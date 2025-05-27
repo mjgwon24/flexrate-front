@@ -39,7 +39,7 @@ const ConsumptionGoalStep = ({
             }
           },
           onError: (error) => {
-            console.error('회원가입 실패:', error);
+            console.error('회원가입 오류:', error);
           },
         });
       }}
