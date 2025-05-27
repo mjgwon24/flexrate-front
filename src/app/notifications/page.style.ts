@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-import {semanticColor} from "@/styles/colors";
+import {primitiveColor, semanticColor} from "@/styles/colors";
 
 export const Wrapper = styled.div`
     height: 85vh;
@@ -8,11 +8,17 @@ export const Wrapper = styled.div`
 `;
 
 export const TopSection = styled.div`
+    position: sticky;
+    overflow-y: auto;
+    top: 56px;
     display: flex;
-    justify-content: flex-end;
+    height: 50px;
+    min-height: 50px;
+    padding: 7px 18px;
     align-items: center;
-    padding: 16px 11px;
-    height: 48px;
+    align-self: stretch;
+    background-color: ${semanticColor.bg.default};
+    z-index: 1000;
 `;
 
 export const MainContainer = styled.div`
@@ -20,13 +26,13 @@ export const MainContainer = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-    padding: 11px 11px 80px 11px;
+    padding: 11px 11px 0px 11px;
 `;
 
 export const NotificationList = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 3px;
 `;
 
 export const EmptyState = styled.div`
@@ -58,14 +64,14 @@ export const LoadingSpinner = styled.div`
     .spinner {
         width: 24px;
         height: 24px;
-        border: 2px solid #f3f3f3;
-        border-top: 2px solid #007AFF;
+        border: 2px solid ${semanticColor.bg.subtle};
+        border-top: 2px solid ${semanticColor.bg.primary};
         border-radius: 50%;
         animation: spin 1s linear infinite;
     }
 
     p {
-        color: #666;
+        color: ${semanticColor.text.normal.sub2};
         font-size: 14px;
         margin: 0;
     }
@@ -87,20 +93,20 @@ export const ErrorMessage = styled.div`
     justify-content: center;
     padding: 20px;
     margin: 10px;
-    background-color: #ffebee;
+    background-color: ${primitiveColor.red[50]};
     border-radius: 8px;
-    border: 1px solid #ffcdd2;
+    border: 1px solid ${primitiveColor.red[500]};
 
     p {
-        color: #c62828;
+        color: ${primitiveColor.red[500]};
         font-size: 14px;
         margin: 0 0 10px 0;
         text-align: center;
     }
 
     button {
-        background-color: #007AFF;
-        color: white;
+        background-color: ${semanticColor.bg.primary};
+        color: ${semanticColor.text.normal.onPrimary};
         border: none;
         padding: 8px 16px;
         border-radius: 6px;

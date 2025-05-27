@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {EventSourcePolyfill} from 'event-source-polyfill';
 
 export enum NotificationType {
@@ -66,55 +67,51 @@ class NotificationAPI {
 
     // 알림 목록 조회 (무한스크롤)
     async getNotifications(lastNotificationId?: number): Promise<NotificationResponse> {
-        const params = new URLSearchParams();
-        if (lastNotificationId !== undefined) {
-            params.append('lastNotificationId', lastNotificationId.toString());
-        }
+        const params = lastNotificationId ? {lastNotificationId} : {};
 
-        const response = await fetch(`${this.baseURL}?${params}`, {
-            headers: this.getAuthHeaders(),
-        });
-
-        if (!response.ok) {
+        try {
+            const {data} = await axios.get<NotificationResponse>(this.baseURL, {
+                headers: this.getAuthHeaders(),
+                params,
+            });
+            return data;
+        } catch (error) {
             throw new Error('알림 조회 실패');
         }
-        return response.json();
     }
 
     // 읽음 처리
     async markAsRead(notificationId: number): Promise<void> {
-        const response = await fetch(`${this.baseURL}/read/${notificationId}`, {
-            method: 'POST',
-            headers: this.getAuthHeaders(),
-        });
-
-        if (!response.ok) {
+        try {
+            await axios.post(`${this.baseURL}/read/${notificationId}`, null, {
+                headers: this.getAuthHeaders(),
+            });
+        } catch (error) {
             throw new Error('읽음 처리 실패');
         }
     }
 
     // 전체 삭제
     async deleteAll(): Promise<void> {
-        const response = await fetch(this.baseURL, {
-            method: 'DELETE',
-            headers: this.getAuthHeaders(),
-        });
-
-        if (!response.ok) {
+        try {
+            await axios.delete(this.baseURL, {
+                headers: this.getAuthHeaders(),
+            });
+        } catch (error) {
             throw new Error('전체 삭제 실패');
         }
     }
 
     // 읽지 않은 알림 개수
     async getUnreadCount(): Promise<NotificationCountResponse> {
-        const response = await fetch(`${this.baseURL}/unread-count`, {
-            headers: this.getAuthHeaders(),
-        });
-
-        if (!response.ok) {
+        try {
+            const {data} = await axios.get<NotificationCountResponse>(`${this.baseURL}/unread-count`, {
+                headers: this.getAuthHeaders(),
+            });
+            return data;
+        } catch (error) {
             throw new Error('읽지 않은 알림 개수 조회 실패');
         }
-        return response.json();
     }
 }
 

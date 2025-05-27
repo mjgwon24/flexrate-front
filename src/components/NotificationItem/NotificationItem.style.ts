@@ -34,7 +34,6 @@ export const NotificationIcon = styled.div<{ $isRead: boolean }>`
     flex-shrink: 0;
 `;
 
-// $isRead prop 필터링 추가 (motion.div가 아니라 일반 div라면 필요 없지만 일관성 위해 추가해도 됨)
 export const NotificationContent = styled.div`
     flex: 1;
     display: flex;

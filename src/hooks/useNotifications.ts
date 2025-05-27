@@ -103,8 +103,12 @@ export const useNotifications = (): UseNotificationsReturn => {
         const connectSSE = () => {
             try {
                 sseRef.current = notificationAPI.connectSSE((newNotification) => {
+                    console.log('새 알림 수신:', newNotification);
                     setNotifications(prev => {
-                        if (prev.some(n => n.id === newNotification.id)) return prev;
+                        if (prev.some(n => n.id === newNotification.id)) {
+                            console.log('중복 알림 발견, 추가 안 함:', newNotification.id);
+                            return prev;
+                        }
                         return [newNotification, ...prev];
                     });
                 });
