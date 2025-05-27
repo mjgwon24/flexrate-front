@@ -68,7 +68,7 @@ const NotificationPage = () => {
 
     return (
         <Wrapper>
-            <Header backIcon type="알림함" user={user}/>
+            <Header backIcon type="알림함" isLoggedIn={user}/>
             <TopSection>
                 <ChangeBtn
                     style={{marginLeft: 'auto'}}
