@@ -10,7 +10,7 @@ export const Container = styled.div`
 `;
 
 export const Title = styled.h2`
-  margin: 175px 0 7px;
+  margin: 120px 0 7px;
   ${typoStyleMap['head1']};
   color: ${semanticColor.text.normal.primary};
 `;
@@ -36,7 +36,7 @@ export const KeypadWrapper = styled.div`
   gap: 10px;
   padding: 35px 0px;
   background-color: ${semanticColor.bg.primary};
-  margin-top: 129px;
+  margin-top: 128px;
 
   @media (min-width: 600px) {
     max-width: none;

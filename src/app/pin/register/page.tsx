@@ -11,7 +11,7 @@ const RegisterPage = () => {
 
   return (
     <>
-      <Header backIcon user />
+      <Header backIcon/>
       <PinRegisterPage onBack={handleBack} />
     </>
   )
