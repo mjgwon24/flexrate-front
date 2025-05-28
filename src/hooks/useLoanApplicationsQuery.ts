@@ -6,7 +6,6 @@ import dayjs from 'dayjs';
 import { getLoanApplications } from '@/apis/admin';
 import { LoanFilterType } from '@/types/loan.filter.type';
 import { filtersToLoanApplicationParams } from '@/utils/loanApplicationParams';
-import { RawLoanApplication } from '@/types/admin.type';
 
 const PAGE_SIZE = 8;
 
@@ -37,15 +36,17 @@ export interface LoanApplicationTableRow {
 function getLoanStatus(status: RawLoanApplication['status']) {
   switch (status) {
     case 'PRE_APPLIED':
-      return '신청 접수';
+      return '신청 접수중';
     case 'PENDING':
       return '심사중';
     case 'REJECTED':
-      return '거절됨';
+      return '거절';
     case 'EXECUTED':
-      return '실행됨';
+      return '실행중';
     case 'COMPLETED':
       return '상환 완료';
+    case 'NONE':
+      return '초기';
     default:
       return '-';
   }
