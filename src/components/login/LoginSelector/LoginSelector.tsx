@@ -21,6 +21,7 @@ import {
 type LoginSelectorProps = {
   onSelectPassword: () => void;
   onSelectFace: () => void;
+  onSelectPin: () => void;
 };
 
 const LoginSelector = ({
@@ -33,7 +34,7 @@ const handleSelectPin = async () => {
   const accessToken = localStorage.getItem('accessToken');
   if (!accessToken) {
     alert('로그인이 필요합니다.');
-    router.push('/login');
+    router.push('/auth/login');
     return;
   }
 

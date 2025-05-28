@@ -11,13 +11,9 @@ type Step = 'selector' | 'form' | 'PinEmailVerification' |'pin';
 const LoginPage = () => {
   const [step, setStep] = useState<Step>('selector');
 
-  const handleBack = () => {
-    setStep('selector');
-  };
-
   return (
     <Wrapper>
-      <Header />
+      <Header backIcon/>
       {step === 'selector' && (
         <LoginSelector
           onSelectPin={() => setStep('pin')}

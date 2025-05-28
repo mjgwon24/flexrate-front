@@ -34,7 +34,7 @@ const Header = ({ type, backIcon = false, isLoggedIn = false }: HeaderProps) => 
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
-    router.replace('/login');
+    router.replace('/auth/login');
   };
 
   const renderRightIcons = () => {

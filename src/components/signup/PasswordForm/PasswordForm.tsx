@@ -77,11 +77,10 @@ const PasswordForm = ({ email, onNext }: PasswordFormProps) => {
   };
 
   const handleSelectMethod = (method: '간편비밀번호' | '지문' | '일반') => {
-    // 지문은 아직 구현 안 됐으면 무시 가능
+
     if (method === '간편비밀번호' || method === '일반') {
       onNext({ password: tempPassword.current, method });
     } else {
-      // 지문 인증 등은 추후 처리
       alert('지문 인증은 아직 지원하지 않습니다.');
     }
   };

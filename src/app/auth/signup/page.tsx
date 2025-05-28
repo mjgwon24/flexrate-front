@@ -4,8 +4,10 @@ import React from 'react';
 
 import { useFunnel } from '@use-funnel/browser';
 
+
 import Header from '@/components/Header/Header';
 import { Wrapper } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
+import PinLogin from '@/components/login/PinLogin/PinLogin';
 import Agreement from '@/components/signup/AgreeForConsumptionType/AgreeForConsumptionType';
 import ConsumptionGoalStep from '@/components/signup/ConsumptionGoalStep/ConsumptionGoalStep';
 import ConsumptionResult from '@/components/signup/ConsumptionResult/ConsumptionResult';
@@ -53,9 +55,7 @@ const SignupPage = () => {
         })}
         간편비밀번호설정={funnel.Render.with({
           render: () => (
-            <div>
-              <h2>간편 비밀번호 설정</h2>
-            </div>
+            <PinLogin />
           ),
         })}
         내정보입력={funnel.Render.with({
