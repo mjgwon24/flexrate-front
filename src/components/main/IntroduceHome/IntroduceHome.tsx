@@ -127,16 +127,25 @@ const IntroduceHome = () => {
         {modalType === 'PRE_APPLIED' && (
           <>
             <TitleContainer>
-              <ModalTitle>신청 작성 중인 대출이 있어요</ModalTitle>
+              <ModalTitle>신청 중인 대출이 있어요</ModalTitle>
               <ModalSubTitle>
                 이전에 신청 중이던 대출이 있어요
                 <br />
-                이어서 신청할까요?
+                새로 신청할까요?
               </ModalSubTitle>
             </TitleContainer>
             <ModalBtnContainer>
               <Button
-                text="이어서 작성할게요"
+                size="M"
+                text="안할래요"
+                varient="TERTIARY"
+                onClick={() => {
+                  setModalType(null);
+                  router.push('/loan-application');
+                }}
+              />
+              <Button
+                text="새로 신청할게요"
                 varient="PRIMARY"
                 onClick={() => {
                   setModalType(null);
