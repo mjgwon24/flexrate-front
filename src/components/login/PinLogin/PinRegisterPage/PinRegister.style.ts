@@ -5,7 +5,7 @@ import { typoStyleMap } from '@/styles/typos';
 
 export const Container = styled.div`
   width: 100%;
-  height: 729px;
+  height: 640px;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -14,16 +14,18 @@ export const Container = styled.div`
 `;
 
 export const Title = styled.div`
-  margin-top: 100px;
+  margin-top: 60px;
   ${typoStyleMap['head1']};
   text-align: center;
   color: ${semanticColor.text.normal.primary};
 `;
 
 export const BtnContainer = styled.div`
-  width: calc(100% - 40px);
+  width: calc(100% - 44px);
   position: absolute;
-  bottom: 0;
+  bottom: 43px;
+  left: 22px;
+  height: 0px;
 `;
 
 export const BackButton = styled.button`

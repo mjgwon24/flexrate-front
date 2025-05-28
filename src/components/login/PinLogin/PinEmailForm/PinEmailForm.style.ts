@@ -8,12 +8,12 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  min-height: 740px;
+  min-height: 640px;
 `;
 
 export const Title = styled.div`
-  padding: 12px 22px;
-  margin-top: 61px;
+  padding: 10px 22px;
+  margin-top: 8px;
   ${typoStyleMap['head1']};
   color: ${semanticColor.text.normal.primary};
 `;
@@ -29,7 +29,7 @@ export const FormContainer = styled.form`
 export const BtnContainer = styled.div`
   width: calc(100% - 44px);
   position: absolute;
-  bottom: 85px;
+  bottom: 43px;
   left: 22px;
   height: 0px;
 `;

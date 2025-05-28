@@ -1,11 +1,20 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+
+import Header from '@/components/Header/Header'
 import PinRegisterPage from '@/components/login/PinLogin/PinRegisterPage/PinRegisterPage'
 
-export default function RegisterPage() {
+const RegisterPage = () => {
   const router = useRouter()
   const handleBack = () => router.back()
 
-  return <PinRegisterPage onBack={handleBack} />
+  return (
+    <>
+      <Header backIcon user />
+      <PinRegisterPage onBack={handleBack} />
+    </>
+  )
 }
+
+export default RegisterPage
