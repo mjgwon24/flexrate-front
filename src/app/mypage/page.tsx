@@ -41,7 +41,7 @@ const MyPage = () => {
 
   return (
     <Wrapper>
-      <Header type="마이페이지" backIcon={true} />
+      <Header type="마이페이지" backIcon={true} isLoggedIn={true} />
 
       <Container>
         <MainContainer>

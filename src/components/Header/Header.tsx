@@ -32,6 +32,11 @@ const Header = ({ type, backIcon = false, isLoggedIn = false }: HeaderProps) => 
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    router.replace('/login');
+  };
+
   const renderRightIcons = () => {
     if (type === '우리금융그룹' && isLoggedIn) {
       return (
@@ -49,6 +54,22 @@ const Header = ({ type, backIcon = false, isLoggedIn = false }: HeaderProps) => 
         </HeaderRightContainer>
       );
     }
+
+    if (type === '마이페이지') {
+      return (
+      <HeaderRightContainer>
+        <Image
+          src="/icons/logout.svg"
+          width={36}
+          height={36}
+          alt="로그아웃"
+          onClick={handleLogout}
+          style={{ cursor: 'pointer' }}
+        />
+      </HeaderRightContainer>
+      );
+    }
+
 
     return <None />;
   };

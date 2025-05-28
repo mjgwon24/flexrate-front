@@ -66,20 +66,23 @@ const PasswordForm = ({ email, onNext }: PasswordFormProps) => {
     const check = async () => {
       const valid = await trigger('password');
       if (valid) setShowConfirm(true);
+      else setShowConfirm(false);
     };
     check();
   }, [password, trigger]);
 
   const onSubmit = (data: FormData) => {
-    setShowSelector(true);
     tempPassword.current = data.password;
+    setShowSelector(true);
   };
 
   const handleSelectMethod = (method: '간편비밀번호' | '지문' | '일반') => {
-    if (method === '간편비밀번호') {
-      onNext({ password: tempPassword.current, method: '간편비밀번호' });
-    } else if (method === '일반') {
-      onNext({ password: tempPassword.current, method: '일반' });
+    // 지문은 아직 구현 안 됐으면 무시 가능
+    if (method === '간편비밀번호' || method === '일반') {
+      onNext({ password: tempPassword.current, method });
+    } else {
+      // 지문 인증 등은 추후 처리
+      alert('지문 인증은 아직 지원하지 않습니다.');
     }
   };
 
@@ -87,6 +90,25 @@ const PasswordForm = ({ email, onNext }: PasswordFormProps) => {
     <Container>
       <Title>비밀번호를 입력해주세요</Title>
       <FormContainer onSubmit={handleSubmit(onSubmit)}>
+        <Controller
+          name="password"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              value={field.value}
+              onChange={field.onChange}
+              isError={!!errors.password}
+              rightContent={{
+                type: 'DELETE',
+                onClick: () => field.onChange(''),
+              }}
+            >
+              <TextField.TextFieldBox type="password" placeholder="비밀번호 입력" />
+              <TextField.ErrorText message={errors.password?.message ?? ''} />
+            </TextField>
+          )}
+        />
+
         {showConfirm && (
           <motion.div
             initial={{ y: -40, opacity: 0 }}
@@ -114,58 +136,37 @@ const PasswordForm = ({ email, onNext }: PasswordFormProps) => {
           </motion.div>
         )}
 
-        <Controller
-          name="password"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              value={field.value}
-              onChange={field.onChange}
-              isError={!!errors.password}
-              rightContent={{
-                type: 'DELETE',
-                onClick: () => field.onChange(''),
-              }}
-            >
-              <TextField.TextFieldBox type="password" placeholder="비밀번호 입력" />
-              <TextField.ErrorText message={errors.password?.message ?? ''} />
-            </TextField>
-          )}
-        />
-
         <BtnContainer>
-          <Button type="submit" text="다음으로" disabled={!isValid} onClick={() => onSubmit} />
+          <Button type="submit" text="다음으로" disabled={!isValid} />
         </BtnContainer>
       </FormContainer>
 
       {showSelector && (
-        <>
-          <BottomSheet isOpen={true}>
-            <Question>어떤 방법으로 로그인할까요?</Question>
-            <BtnWrapper>
-              <SheetBtn onClick={() => handleSelectMethod('간편비밀번호')}>
-                <BottomSheetBtnContainer>
-                  <Image src={'/imgs/lock.svg'} width={36} height={36} alt="간편 비밀번호" />
-                  간편 비밀번호
-                </BottomSheetBtnContainer>
-              </SheetBtn>
+        <BottomSheet isOpen={true}>
+          <Question>어떤 방법으로 로그인할까요?</Question>
+          <BtnWrapper>
+            <SheetBtn onClick={() => handleSelectMethod('간편비밀번호')}>
+              <BottomSheetBtnContainer>
+                <Image src={'/imgs/lock.svg'} width={36} height={36} alt="간편 비밀번호" />
+                간편 비밀번호
+              </BottomSheetBtnContainer>
+            </SheetBtn>
 
-              <SheetBtn onClick={() => handleSelectMethod('지문')}>
-                <BottomSheetBtnContainer>
-                  <Image src={'/icons/finger_36.svg'} width={36} height={36} alt="FaceID" />
-                  지문 인증
-                </BottomSheetBtnContainer>
-              </SheetBtn>
+            <SheetBtn onClick={() => handleSelectMethod('지문')}>
+              <BottomSheetBtnContainer>
+                <Image src={'/icons/finger_36.svg'} width={36} height={36} alt="지문 인증" />
+                지문 인증
+              </BottomSheetBtnContainer>
+            </SheetBtn>
 
-              <SheetBtn onClick={() => handleSelectMethod('일반')}>
-                <BottomSheetBtnContainer>
-                  <Image src={'/icons/webee_36.svg'} width={36} height={36} alt="패턴" />
-                  일반 로그인
-                </BottomSheetBtnContainer>
-              </SheetBtn>
-            </BtnWrapper>
-          </BottomSheet>
-        </>
+            <SheetBtn onClick={() => handleSelectMethod('일반')}>
+              <BottomSheetBtnContainer>
+                <Image src={'/icons/webee_36.svg'} width={36} height={36} alt="일반 로그인" />
+                일반 로그인
+              </BottomSheetBtnContainer>
+            </SheetBtn>
+          </BtnWrapper>
+        </BottomSheet>
       )}
     </Container>
   );
