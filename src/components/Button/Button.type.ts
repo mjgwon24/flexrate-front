@@ -3,7 +3,7 @@
 import { semanticColor } from '@/styles/colors';
 
 export type ButtonSize = 'XL' | 'L' | 'M' | 'S' | 'XS';
-export type ButtonVarient = 'PRIMARY' | 'SECONDARY' | 'TERTIARY' | 'S_SPECIAL';
+export type ButtonVarient = 'PRIMARY' | 'SECONDARY' | 'TERTIARY' | 'S_SPECIAL' | 'WARN';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
@@ -32,6 +32,7 @@ export const backgroundColorMap: Record<ButtonVarient, string> = {
   SECONDARY: semanticColor.bgBtn.active.secondary,
   TERTIARY: semanticColor.bg.default,
   S_SPECIAL: semanticColor.bgBtn.inactive.default,
+  WARN: semanticColor.bgBtn.active.error,
 };
 
 export const textColorMap: Record<ButtonVarient, string> = {
@@ -39,6 +40,7 @@ export const textColorMap: Record<ButtonVarient, string> = {
   SECONDARY: semanticColor.text.normal.accent,
   TERTIARY: semanticColor.text.normal.sub3,
   S_SPECIAL: semanticColor.text.normal.sub1,
+  WARN: semanticColor.text.state.textError,
 };
 
 export const getButtonStyle = (variant: ButtonVarient, isSelected: boolean = false) => {

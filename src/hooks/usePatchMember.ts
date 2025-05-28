@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { patchMember } from '@/apis/adminMembers';
+import { patchMember } from '@/apis/admin';
 import { FilterType } from '@/types/filter.type';
 import { filtersToParams } from '@/utils/memberParams';
 

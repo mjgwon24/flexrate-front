@@ -17,11 +17,11 @@ type HeaderType =
 interface HeaderProps {
   type?: HeaderType;
   backIcon?: boolean;
-  user?: boolean;
+  isLoggedIn?: boolean;
   hasLoan?: boolean;
 }
 
-const Header = ({ type, backIcon = false, user = false }: HeaderProps) => {
+const Header = ({ type, backIcon = false, isLoggedIn = false }: HeaderProps) => {
   const router = useRouter();
 
   const handleBack = () => {
@@ -33,7 +33,7 @@ const Header = ({ type, backIcon = false, user = false }: HeaderProps) => {
   };
 
   const renderRightIcons = () => {
-    if (type === '우리금융그룹' && user) {
+    if (type === '우리금융그룹' && isLoggedIn) {
       return (
         <HeaderRightContainer>
           <Image src="/icons/alert_36.svg" width={36} height={36} alt="알림" />
@@ -42,7 +42,7 @@ const Header = ({ type, backIcon = false, user = false }: HeaderProps) => {
       );
     }
 
-    if (type === '알림함' && user) {
+    if (type === '알림함' && isLoggedIn) {
       return (
         <HeaderRightContainer>
           <Image src="/icons/webee_36.svg" width={36} height={36} alt="마이페이지" />
