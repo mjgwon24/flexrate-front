@@ -1,6 +1,12 @@
 'use client';
 
 import { useFunnel } from '@use-funnel/browser';
+import { useRouter } from 'next/navigation';
+
+import { useClearFunnelContext } from '@/hooks/useClearFunnelContext';
+import { usePostLoanApplication, usePostLoanReviewApplication } from '@/hooks/useLoanApplication';
+import { useResumeFunnel } from '@/hooks/useResumeFunnel';
+import { useLoanFunnelStore } from '@/stores/LoanFunnelStore';
 
 import Header from '../Header/Header';
 import ProgressBar from '../ProgressBar/ProgressBar';
@@ -18,14 +24,13 @@ import {
 } from './LoanApplicationFunnel.style';
 import { PurposeStep } from './PurposeStep/PurposeStep';
 import ReviewResultAndLoanApplication from './ReviewResultAndLoanApplication/ReviewResultAndLoanApplication';
-import { useRouter } from 'next/navigation';
 
 export type FunnelContextMap = {
   직업정보입력: {
     employmentType: string;
   };
   신용정보입력: {
-    annualIncome: string;
+    annualIncome: number;
     creditGrade: string;
     residenceType: string;
     isBankrupt: boolean;
@@ -40,6 +45,14 @@ export type FunnelContextMap = {
 };
 
 const LoanApplicationFunnel = () => {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') ?? '' : '';
+  const { funnelContext, setFunnelContext } = useLoanFunnelStore();
+  const { mutate: applyReviewLoan } = usePostLoanReviewApplication(token);
+  const { mutate: applyLoan } = usePostLoanApplication(token);
+
+  useClearFunnelContext();
+  useResumeFunnel();
+
   const funnel = useFunnel<FunnelContextMap>({
     id: 'loan-application-funnel',
     initial: {
@@ -85,14 +98,17 @@ const LoanApplicationFunnel = () => {
       <Container>
         <funnel.Render
           직업정보입력={funnel.Render.with({
-            render: ({ context }) => (
+            render: () => (
               <JobStep
-                value={context}
-                onChange={(ctx) => funnel.history.replace('직업정보입력', ctx)}
+                value={funnelContext['직업정보입력'] ?? { employmentType: '' }}
+                onChange={(ctx) => {
+                  funnel.history.replace('직업정보입력', ctx);
+                  setFunnelContext('직업정보입력', ctx);
+                }}
                 onNext={() =>
                   funnel.history.push('신용정보입력', (prev) => ({
                     ...prev,
-                    annualIncome: '',
+                    annualIncome: 0,
                     creditGrade: '',
                     residenceType: '',
                     isBankrupt: false,
@@ -102,10 +118,20 @@ const LoanApplicationFunnel = () => {
             ),
           })}
           신용정보입력={funnel.Render.with({
-            render: ({ context }) => (
+            render: () => (
               <CreditStep
-                value={context}
-                onChange={(ctx) => funnel.history.replace('신용정보입력', ctx)}
+                value={
+                  funnelContext['신용정보입력'] ?? {
+                    annualIncome: 0,
+                    creditGrade: '',
+                    residenceType: '',
+                    isBankrupt: false,
+                  }
+                }
+                onChange={(ctx) => {
+                  funnel.history.replace('신용정보입력', ctx);
+                  setFunnelContext('신용정보입력', ctx);
+                }}
                 onNext={() =>
                   funnel.history.push('대출목적입력', (prev) => ({
                     ...prev,
@@ -116,27 +142,66 @@ const LoanApplicationFunnel = () => {
             ),
           })}
           대출목적입력={funnel.Render.with({
-            render: ({ context }) => (
+            render: () => (
               <PurposeStep
-                value={context}
-                onChange={(ctx) => funnel.history.replace('대출목적입력', ctx)}
+                value={funnelContext['대출목적입력'] ?? { loanPurpose: '' }}
+                onChange={(ctx) => {
+                  funnel.history.replace('대출목적입력', ctx);
+                  setFunnelContext('대출목적입력', ctx);
+                }}
                 onSubmit={async () => {
-                  // ✅ TODO: 대출 심사 결과 요청 api 함수 호출
-                  funnel.history.push('대출신청접수', {
-                    loanAmount: 0,
-                    repaymentMonth: 0,
+                  const request = {
+                    employmentType: funnelContext['직업정보입력']?.employmentType ?? '',
+                    annualIncome: Number(funnelContext['신용정보입력']?.annualIncome ?? 0),
+                    residenceType: funnelContext['신용정보입력']?.residenceType ?? '',
+                    isBankrupt: funnelContext['신용정보입력']?.isBankrupt ?? false,
+                    loanPurpose: funnelContext['대출목적입력']?.loanPurpose ?? '',
+                  };
+
+                  applyReviewLoan(request, {
+                    onSuccess: () => {
+                      funnel.history.push('대출신청접수', {
+                        loanAmount: 0,
+                        repaymentMonth: 1,
+                      });
+                    },
+                    onError: (err) => {
+                      console.error('대출 심사 실패', err);
+                      alert('대출 심사 신청 중 오류가 발생했습니다.');
+                    },
                   });
                 }}
               />
             ),
           })}
           대출신청접수={funnel.Render.with({
-            render: ({ context }) => (
+            render: () => (
               <ReviewResultAndLoanApplication
-                value={context}
-                onChange={(ctx) => funnel.history.replace('대출신청접수', ctx)}
+                value={
+                  funnelContext['대출신청접수'] ?? {
+                    loanAmount: 0,
+                    repaymentMonth: 1,
+                  }
+                }
+                onChange={(ctx) => {
+                  funnel.history.replace('대출신청접수', ctx);
+                  setFunnelContext('대출신청접수', ctx);
+                }}
                 onSubmit={() => {
-                  router.push('/loan-result');
+                  const requestBody = {
+                    loanAmount: funnelContext['대출신청접수']?.loanAmount ?? 0,
+                    repaymentMonth: funnelContext['대출신청접수']?.repaymentMonth ?? 1,
+                  };
+
+                  applyLoan(requestBody, {
+                    onSuccess: () => {
+                      router.push('/loan-result');
+                    },
+                    onError: (err) => {
+                      console.error('대출 신청 실패', err);
+                      alert('대출 신청 중 오류가 발생했습니다.');
+                    },
+                  });
                 }}
               />
             ),

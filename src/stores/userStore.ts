@@ -14,6 +14,7 @@ export type User = {
   email: string;
   recentLoanStatus: LoanStatusType;
   hasCreditScore: boolean;
+  creditScore?: number;
   consumeGoal?: string;
   consumptionType?: ConsumptionType;
 };

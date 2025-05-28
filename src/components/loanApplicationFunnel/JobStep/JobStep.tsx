@@ -1,9 +1,16 @@
-import { FunnelContextMap } from '../LoanApplicationFunnel';
-import { BtnContainer, JobInformationContainer, MainContainer, SubTitle } from './JobStep.style';
-import { EMPLOYMENT_TYPE_OPTIONS } from '@/constants/loan.constant';
 import Accordion from '@/components/Accordion/Accordion';
 import Button from '@/components/Button/Button';
+import {
+  EMPLOYMENT_TYPE,
+  EMPLOYMENT_TYPE_MAP,
+  EMPLOYMENT_TYPE_OPTIONS,
+} from '@/constants/loan.constant';
+import { reverseMap } from '@/utils/signup.util';
+
+import { FunnelContextMap } from '../LoanApplicationFunnel';
 import { Container } from '../LoanApplicationFunnel.style';
+
+import { BtnContainer, JobInformationContainer, MainContainer, SubTitle } from './JobStep.style';
 
 interface Props {
   value: FunnelContextMap['직업정보입력'];
@@ -12,6 +19,8 @@ interface Props {
 }
 
 export const JobStep = ({ value, onChange, onNext }: Props) => {
+  const selectedKorean = reverseMap(EMPLOYMENT_TYPE_MAP, value.employmentType);
+
   return (
     <Container>
       <MainContainer>
@@ -20,13 +29,18 @@ export const JobStep = ({ value, onChange, onNext }: Props) => {
           <Accordion
             options={EMPLOYMENT_TYPE_OPTIONS}
             title="고용 형태"
-            value={value.employmentType}
-            onSelect={(selected) => onChange({ ...value, employmentType: selected })}
+            value={selectedKorean}
+            onSelect={(selected) =>
+              onChange({
+                ...value,
+                employmentType: EMPLOYMENT_TYPE_MAP[selected as EMPLOYMENT_TYPE],
+              })
+            }
           />
         </JobInformationContainer>
       </MainContainer>
       <BtnContainer>
-        <Button text="다음으로" onClick={onNext} />
+        <Button text="다음으로" onClick={onNext} disabled={!value.employmentType} />
       </BtnContainer>
     </Container>
   );
