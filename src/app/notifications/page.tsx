@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useCallback, useRef} from 'react';
+import {useCallback, useRef, useState} from 'react';
 
 import {
     EmptyIcon,
@@ -12,8 +12,19 @@ import {
     Wrapper,
     LoadingSpinner,
     ErrorMessage
-} from "@/app/notifications/page.style";
+} from '@/app/notifications/page.style';
+import Button from "@/components/Button/Button";
 import Header from '@/components/Header/Header';
+import {
+    Overlay,
+    Sheet,
+    Handle,
+    ModalFlexContainer,
+    ModalTitle,
+    ModalSubTitle,
+    TitleContainer,
+    ModalBtnContainer
+} from '@/components/Modal/Modal.style';
 import NotificationItem from '@/components/NotificationItem/NotificationItem';
 import {ChangeBtn} from '@/components/TextField/TextField.style';
 import {useNotifications} from '@/hooks/useNotifications';
@@ -32,10 +43,10 @@ const NotificationPage = () => {
     } = useNotifications();
 
     const observerRef = useRef<IntersectionObserver>();
-    const lastNotificationRef = useRef<HTMLDivElement>(null);
     const user = true;
 
-    // 무한스크롤 구현
+    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+
     const lastNotificationElementRef = useCallback((node: HTMLDivElement) => {
         if (loading) return;
         if (observerRef.current) observerRef.current.disconnect();
@@ -49,19 +60,24 @@ const NotificationPage = () => {
         if (node) observerRef.current.observe(node);
     }, [loading, hasNext, loadMore]);
 
-    const handleDeleteAll = async () => {
+    const openDeleteModal = () => {
         if (notifications.length === 0) return;
+        setDeleteModalOpen(true);
+    };
 
-        if (confirm('모든 알림을 삭제하시겠습니까?')) {
-            await deleteAll();
-        }
+    const closeDeleteModal = () => {
+        setDeleteModalOpen(false);
+    };
+
+    const handleConfirmDelete = async () => {
+        await deleteAll();
+        closeDeleteModal();
     };
 
     const handleNotificationClick = async (id: number) => {
         await markAsRead(id);
     };
 
-    // 에러 발생 시 새로고침 버튼
     const handleRetry = () => {
         refresh();
     };
@@ -69,10 +85,11 @@ const NotificationPage = () => {
     return (
         <Wrapper>
             <Header backIcon type="알림함" isLoggedIn={user}/>
+
             <TopSection>
                 <ChangeBtn
                     style={{marginLeft: 'auto'}}
-                    onClick={handleDeleteAll}
+                    onClick={openDeleteModal}
                     disabled={notifications.length === 0}
                 >
                     전체 삭제
@@ -109,14 +126,12 @@ const NotificationPage = () => {
                     })}
                 </NotificationList>
 
-                {/* 로딩 스피너 */}
                 {loading && notifications.length > 0 && (
                     <LoadingSpinner>
                         <div className="spinner"/>
                     </LoadingSpinner>
                 )}
 
-                {/* 빈 상태 */}
                 {notifications.length === 0 && !loading && !error && (
                     <EmptyState>
                         <EmptyIcon>
@@ -131,7 +146,6 @@ const NotificationPage = () => {
                     </EmptyState>
                 )}
 
-                {/* 초기 로딩 */}
                 {loading && notifications.length === 0 && (
                     <LoadingSpinner>
                         <div className="spinner"/>
@@ -139,6 +153,32 @@ const NotificationPage = () => {
                     </LoadingSpinner>
                 )}
             </MainContainer>
+
+            {/* 하단 슬라이딩 삭제 모달 */}
+            {isDeleteModalOpen && (
+                <Overlay onClick={closeDeleteModal}>
+                    <Sheet
+                        onClick={(e) => e.stopPropagation()}
+                        initial={{y: '100%'}}
+                        animate={{y: 0}}
+                        exit={{y: '100%'}}
+                        transition={{type: 'spring', damping: 25, stiffness: 300}}
+                    >
+                        <Handle/>
+                        <ModalFlexContainer>
+                            <TitleContainer>
+                                <ModalTitle>알림을 전체 삭제할까요?</ModalTitle>
+                                <ModalSubTitle>삭제한 알림은 복구할 수 없어요</ModalSubTitle>
+                            </TitleContainer>
+
+                            <ModalBtnContainer>
+                                <Button varient="TERTIARY" onClick={closeDeleteModal} text={'취소'}/>
+                                <Button varient="PRIMARY" onClick={handleConfirmDelete} text={'전체 삭제할게요'}/>
+                            </ModalBtnContainer>
+                        </ModalFlexContainer>
+                    </Sheet>
+                </Overlay>
+            )}
         </Wrapper>
     );
 };

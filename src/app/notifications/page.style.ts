@@ -123,3 +123,22 @@ export const ErrorMessage = styled.div`
         }
     }
 `;
+
+export const Button = styled.button<{ primary?: boolean }>`
+    flex: 1;
+    padding: 10px 0;
+    border-radius: 8px;
+    font-weight: 500;
+    ${({primary}) =>
+            primary
+                    ? `
+    background-color: #2563eb;
+    color: white;
+    border: none;
+  `
+                    : `
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ccc;
+  `}
+`;
