@@ -129,3 +129,20 @@ export const checkPinRegistered = async (): Promise<boolean> => {
   });
   return response.data;  // true 혹은 false 직접 반환
 };
+
+
+export const logoutUser = async (): Promise<void> => {
+  const refreshToken = localStorage.getItem('refreshToken');
+  if (!refreshToken) throw new Error('Refresh token 없음');
+
+  await apiClient.post(
+    `/api/auth/logout`,
+    null,
+    {
+      params: { refreshToken },
+    }
+  );
+
+  // 로컬스토리지에서 토큰 제거
+  localStorage.removeItem('accessToken');
+};

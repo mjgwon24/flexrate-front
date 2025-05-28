@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
+import { logoutUser } from '@/apis/auth';
+
 import { HeaderContainer, HeaderRightContainer, HeaderTitle, None } from './Header.style';
 
 type HeaderType =
@@ -32,10 +34,15 @@ const Header = ({ type, backIcon = false, isLoggedIn = false }: HeaderProps) => 
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('accessToken');
+  const handleLogout = async () => {
+  try {
+    await logoutUser();
     router.replace('/auth/login');
-  };
+  } catch (error) {
+    console.error('로그아웃 실패:', error);
+    alert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+  }
+};
 
   const renderRightIcons = () => {
     if (type === '우리금융그룹' && isLoggedIn) {
