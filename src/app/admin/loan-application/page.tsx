@@ -233,7 +233,7 @@ const AdminLoanApplicationPage = () => {
             accessToken,
           },
           {
-            onSuccess: (data) => {
+            onSuccess: () => {
               // 성공 메시지 표시
               message.success({ content: '상태가 성공적으로 변경되었습니다.', key: messageKey });
               // 모달 닫기

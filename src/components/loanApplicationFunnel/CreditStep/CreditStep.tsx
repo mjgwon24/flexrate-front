@@ -1,5 +1,14 @@
+'use client';
+
 import Button from '@/components/Button/Button';
+import TextField from '@/components/TextField/TextField';
+import { RESIDENT_TYPE, RESIDENT_TYPE_MAP, RESIDENT_TYPE_OPTIONS } from '@/constants/loan.constant';
+import { useUserStore } from '@/stores/userStore';
+import { reverseMap } from '@/utils/signup.util';
+
 import { FunnelContextMap } from '../LoanApplicationFunnel';
+import { Container } from '../LoanApplicationFunnel.style';
+
 import {
   BtnContainer,
   BtnFlexContainer,
@@ -9,9 +18,6 @@ import {
   MainContainer,
   SubTitle,
 } from './CreditStep.style';
-import { Container } from '../LoanApplicationFunnel.style';
-import TextField from '@/components/TextField/TextField';
-import { RESIDENT_TYPE_OPTIONS } from '@/constants/loan.constant';
 
 interface Props {
   value: FunnelContextMap['신용정보입력'];
@@ -20,7 +26,20 @@ interface Props {
 }
 
 export const CreditStep = ({ value, onChange, onNext }: Props) => {
-  const btns = RESIDENT_TYPE_OPTIONS;
+  const user = useUserStore((state) => state.user);
+  const selectedResidence = reverseMap(RESIDENT_TYPE_MAP, value.residenceType);
+
+  const handleCreditGradeSet = () => {
+    if (user?.creditScore) {
+      onChange({ ...value, creditGrade: user.creditScore.toString() });
+    }
+  };
+
+  const isNextEnabled =
+    value.annualIncome?.toString().trim() !== '' &&
+    /^\d+$/.test(value.annualIncome.toString()) &&
+    value.residenceType !== '' &&
+    typeof value.isBankrupt === 'boolean';
 
   return (
     <Container>
@@ -28,36 +47,48 @@ export const CreditStep = ({ value, onChange, onNext }: Props) => {
         <CreditInformationContainer>
           <SubTitle>신용 정보 입력</SubTitle>
         </CreditInformationContainer>
+
         <FlexContainer>
           <TextField
             value={value.annualIncome}
-            onChange={(updatedValue) => onChange({ ...value, annualIncome: updatedValue })}
+            onChange={(val) => {
+              if (/^\d*$/.test(val)) {
+                onChange({ ...value, annualIncome: Number(val) });
+              }
+            }}
           >
             <TextField.Label>연소득</TextField.Label>
-            <TextField.TextFieldBox />
+            <TextField.TextFieldBox placeholder="숫자만 입력" />
           </TextField>
+
           <TextField
-            value={value.creditGrade}
-            onChange={(updatedValue) => onChange({ ...value, creditGrade: updatedValue })}
+            value={user?.creditScore?.toString() ?? ''}
+            isDisabled
+            onChange={handleCreditGradeSet}
           >
             <TextField.Label>신용 점수</TextField.Label>
-            <TextField.TextFieldBox />
+            <TextField.TextFieldBox type="number" />
           </TextField>
         </FlexContainer>
+
         <BtnFlexContainer>
           <BtnSectionTitle>주거 정보</BtnSectionTitle>
           <FlexContainer>
-            {btns.map((select) => (
+            {RESIDENT_TYPE_OPTIONS.map((option: RESIDENT_TYPE) => (
               <Button
+                key={option}
                 size="XS"
-                text={select}
+                text={option}
                 varient="TERTIARY"
-                selected={select === value.residenceType}
-                onClick={() => onChange({ ...value, residenceType: select })}
+                selected={option === selectedResidence}
+                onClick={() =>
+                  onChange({ ...value, residenceType: RESIDENT_TYPE_MAP[option as RESIDENT_TYPE] })
+                }
               />
             ))}
           </FlexContainer>
         </BtnFlexContainer>
+
         <BtnFlexContainer>
           <BtnSectionTitle>개인 회생자 여부</BtnSectionTitle>
           <FlexContainer>
@@ -78,8 +109,9 @@ export const CreditStep = ({ value, onChange, onNext }: Props) => {
           </FlexContainer>
         </BtnFlexContainer>
       </MainContainer>
+
       <BtnContainer>
-        <Button text="다음으로" onClick={onNext} />
+        <Button text="다음으로" onClick={onNext} disabled={!isNextEnabled} />
       </BtnContainer>
     </Container>
   );

@@ -14,6 +14,7 @@ export type User = {
   email: string;
   recentLoanStatus: LoanStatusType;
   hasCreditScore: boolean;
+  creditScore?: number;
   consumeGoal?: string;
   consumptionType?: ConsumptionType;
 };
@@ -36,7 +37,7 @@ export const useUserStore = create<UserStore>()(
     }),
     {
       name: 'user-storage',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
     }
   )
 );
