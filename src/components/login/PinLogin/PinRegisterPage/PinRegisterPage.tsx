@@ -8,7 +8,12 @@ import PinEmailForm from '@/components/login/PinLogin/PinEmailForm/PinEmailForm'
 
 import { BackButton, BtnContainer, Container, Title } from './PinRegister.style'
 
-const PinRegisterPage = ({ onBack }: { onBack: () => void }): JSX.Element => {
+
+interface PinRegisterPageProps {
+  onBack: () => void;  // onBack 함수가 필수로 전달되어야 합니다.
+}
+
+const PinRegisterPage = ({ onBack }: PinRegisterPageProps) => {
 
   const [emailStatus, setEmailStatus] = useState<string>('')
 

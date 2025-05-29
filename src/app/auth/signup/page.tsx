@@ -24,6 +24,11 @@ const SignupPage = () => {
     initial: { step: '이메일인증', context: { email: '' } },
   });
 
+  const handleBack = () => {
+    console.log('뒤로 가기');
+    // 원하는 동작 수행 (예: 페이지 이동, 상태 변경 등)
+  };
+
   return (
     <Wrapper>
       <Header backIcon={funnel.step !== '이메일인증'} />
@@ -55,7 +60,7 @@ const SignupPage = () => {
         })}
         간편비밀번호설정={funnel.Render.with({
           render: () => (
-            <PinRegisterPage />
+            <PinRegisterPage onBack={handleBack} />
           ),
         })}
         내정보입력={funnel.Render.with({
