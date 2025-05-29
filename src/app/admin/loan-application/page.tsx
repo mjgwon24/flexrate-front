@@ -1,25 +1,57 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { useQueryClient } from '@tanstack/react-query';
-import { Input, InputNumber, Select, Space, Button, DatePicker, Modal, Form, message } from 'antd';
+import { Input, InputNumber, Select, Space, Button, DatePicker, Form, message } from 'antd';
 import { isAxiosError } from 'axios';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 
+import { getLoanApplicationDetail } from '@/apis/admin';
+import { SubContainer } from '@/app/mypage/page.style';
 import Conditionbar from '@/components/admin/Conditionbar/Conditionbar';
 import DataTable from '@/components/admin/DataTable/DataTable';
+import LoanStatusChangeModal from '@/components/admin/LoanStatusChangeModal/LoanStatusChangeModal';
+import FlexrateButton from '@/components/Button/Button';
+import { FlexContainer } from '@/components/loanApplicationFunnel/CreditStep/CreditStep.style';
+import TextField from '@/components/TextField/TextField';
+import {
+  STATUS_LABEL,
+  EMPLOYMENT_TYPE_LABEL,
+  RESIDENCE_TYPE_LABEL,
+  BANKRUPT_LABEL,
+  LOAN_PURPOSE_LABEL,
+} from '@/constants/loan.constant';
 import {
   LoanApplicationTableRow,
   useLoanApplicationsQuery,
 } from '@/hooks/useLoanApplicationsQuery';
 import { usePatchLoanStatus } from '@/hooks/usePatchLoanStatus';
 import { useLoanFilterStore } from '@/stores/loanFilterStore';
+import type { LoanDetailsApiResponse } from '@/types/admin.type';
 import type { LoanFilterType } from '@/types/loan.filter.type';
+import { formatYMD } from '@/utils/dateFormat';
 import { filtersToLoanApplicationParams } from '@/utils/loanApplicationParams';
+import { displayValue } from '@/utils/nullDisplay';
 
-import { PageContainer, ContentColumn, FilterRow, FilterLabel } from './page.style';
+import {
+  PageContainer,
+  ContentColumn,
+  FilterRow,
+  FilterLabel,
+  ModalTitle,
+  ModalInfoContainer,
+  ModalInfoKeyColumn,
+  InfoLabel,
+  InfoValue,
+  ModalInfoValueColumn,
+  ModalSubTitle,
+  ModalColumnContainer,
+  ModalRowContainer,
+  InfoBottomText,
+  ErrorInfo,
+} from './page.style';
 
 const PAGE_SIZE = 8;
 
@@ -35,9 +67,10 @@ const LOAN_APPLICATION_COLUMN_METAS = [
     options: [
       { value: 'PRE_APPLIED', label: '신청 접수' },
       { value: 'PENDING', label: '심사중' },
-      { value: 'REJECTED', label: '거절됨' },
-      { value: 'EXECUTED', label: '실행됨' },
+      { value: 'REJECTED', label: '거절' },
+      { value: 'EXECUTED', label: '실행중' },
       { value: 'COMPLETED', label: '상환 완료' },
+      { value: 'NONE', label: '초기' },
     ],
   },
   {
@@ -79,6 +112,16 @@ const LOAN_APPLICATION_COLUMN_METAS = [
   { title: '', dataIndex: 'userId', key: 'userId', width: 60, editable: false },
 ] as const;
 
+const CHANGEABLE_STATUSES = [
+  'PRE_APPLIED',
+  'PENDING',
+  'EXECUTED',
+  'COMPLETED',
+  'NONE',
+  'REJECTED',
+] as const;
+type ChangeableStatus = (typeof CHANGEABLE_STATUSES)[number];
+
 /**
  * 관리자 페이지 - 대출 신청 현황 메뉴
  * @since 2025.05.18
@@ -95,7 +138,14 @@ const AdminLoanApplicationPage = () => {
     record: LoanApplicationTableRow;
     newStatus: string;
   } | null>(null);
+  const [detail, setDetail] = useState<LoanDetailsApiResponse | null>(null);
   const [page, setPage] = useState(1);
+  const isChangeable =
+    detail &&
+    detail.applicationStatus &&
+    CHANGEABLE_STATUSES.includes(detail?.applicationStatus as ChangeableStatus);
+  const [reason, setReason] = useState('');
+  const [reasonError, setReasonError] = useState('');
 
   const loanFilterStore = useLoanFilterStore();
   const {
@@ -163,37 +213,42 @@ const AdminLoanApplicationPage = () => {
     }));
   };
 
-  // 대출 상태 변경 핸들러
-  const handleStatusChange = (
-    newValue: string,
-    dataIndex?: string,
-    record?: LoanApplicationTableRow
-  ) => {
-    if (!record?.applicationId || !accessToken || dataIndex !== 'status') {
-      console.error('상태 변경 실패: 필수 정보 누락', { record, accessToken, dataIndex });
-      return;
+  const handleStatusChange = useCallback(
+    (_: string, dataIndex?: string, record?: LoanApplicationTableRow) => {
+      if (!record?.applicationId || !accessToken || dataIndex !== 'status') {
+        console.error('상태 변경 실패: 필수 정보 누락', { record, accessToken, dataIndex });
+        return;
+      }
+
+      setPendingStatusChange({
+        record,
+        newStatus: record.status,
+      });
+
+      setIsModalVisible(true);
+      setReason('');
+      setReasonError('');
+    },
+    [accessToken]
+  );
+
+  // 모달 데이터 패치
+  useEffect(() => {
+    if (isModalVisible && pendingStatusChange?.record?.applicationId && accessToken) {
+      getLoanApplicationDetail(pendingStatusChange.record.applicationId, accessToken)
+        .then(setDetail)
+        .catch(() => setDetail(null));
     }
-
-    // 상태 변경을 바로 실행하지 않고 모달을 표시하기 위해 정보 저장
-    setPendingStatusChange({
-      record,
-      newStatus: newValue,
-    });
-
-    // 폼 초기화
-    statusChangeForm.resetFields();
-
-    // 모달 표시
-    setIsModalVisible(true);
-  };
+    if (!isModalVisible) {
+      setDetail(null);
+    }
+  }, [isModalVisible, pendingStatusChange?.record?.applicationId, accessToken]);
 
   // 모달 취소 핸들러
   const handleModalCancel = () => {
     setIsModalVisible(false);
     setPendingStatusChange(null);
 
-    // 중요: 상태 변경이 취소되었으므로 테이블을 원래 상태로 되돌려야 함
-    // 데이터를 다시 불러오거나 상태를 복원하는 로직 필요
     const params = filtersToLoanApplicationParams(filters, page, PAGE_SIZE);
     queryClient.invalidateQueries({
       queryKey: ['loanApplications', JSON.stringify(params), accessToken],
@@ -201,49 +256,45 @@ const AdminLoanApplicationPage = () => {
   };
 
   // 모달 확인 핸들러
-  const handleModalOk = () => {
-    if (!pendingStatusChange) {
+  const handleModalOk = (newStatus: string) => {
+    if (!reason.trim()) {
+      setReasonError('변경 사유를 입력해주세요');
+      return;
+    }
+    setReasonError('');
+
+    if (!detail || !accessToken) {
       setIsModalVisible(false);
       return;
     }
 
     statusChangeForm
       .validateFields()
-      .then((values) => {
-        const { reason } = values;
-        const { record, newStatus } = pendingStatusChange;
-
-        if (!record?.applicationId || !accessToken) {
-          console.error('상태 변경 실패: 필수 정보 누락', { record, accessToken });
-          return;
-        }
-
+      .then(() => {
         // 로딩 메시지 표시
         const messageKey = 'statusChangeLoading';
         message.loading({ content: '상태 변경 중...', key: messageKey, duration: 0 });
 
-        // 상태 변경 요청 실행
         patchStatusMutation.mutate(
           {
-            applicationId: record.applicationId,
-            payload: {
-              status: newStatus,
-              reason: reason,
-            },
+            applicationId: detail.applicationId,
+            payload: { status: newStatus, reason },
             accessToken,
           },
           {
-            onSuccess: (data) => {
-              // 성공 메시지 표시
+            onSuccess: () => {
               message.success({ content: '상태가 성공적으로 변경되었습니다.', key: messageKey });
-              // 모달 닫기
               setIsModalVisible(false);
               setPendingStatusChange(null);
+              queryClient.invalidateQueries({
+                queryKey: [
+                  'loanApplications',
+                  JSON.stringify(filtersToLoanApplicationParams(filters, page, PAGE_SIZE)),
+                  accessToken,
+                ],
+              });
             },
             onError: (error) => {
-              console.error('상태 변경 실패:', error);
-              // 에러 메시지 표시
-              const messageKey = 'statusChangeLoading';
               let errorMessage = '알 수 없는 오류가 발생했습니다.';
 
               if (isAxiosError(error)) {
@@ -255,7 +306,7 @@ const AdminLoanApplicationPage = () => {
                 key: messageKey,
               });
 
-              // 오류 발생 시 데이터 다시 로드하여 UI 상태 복원
+              // 오류 발생 시 데이터 다시 로드
               const params = filtersToLoanApplicationParams(filters, page, PAGE_SIZE);
               queryClient.invalidateQueries({
                 queryKey: ['loanApplications', JSON.stringify(params), accessToken],
@@ -341,11 +392,12 @@ const AdminLoanApplicationPage = () => {
                 onChange={(e) => handleTempFilterChange('status', e)}
                 options={[
                   { value: 'ALL', label: '전체' },
-                  { value: 'PRE_APPLIED', label: '신청 접수' },
+                  { value: 'PRE_APPLIED', label: '신청 접수중' },
                   { value: 'PENDING', label: '심사중' },
-                  { value: 'REJECTED', label: '거절됨' },
-                  { value: 'EXECUTED', label: '실행됨' },
+                  { value: 'REJECTED', label: '거절' },
+                  { value: 'EXECUTED', label: '실행중' },
                   { value: 'COMPLETED', label: '상환 완료' },
+                  { value: 'NONE', label: '초기' },
                 ]}
                 style={{ width: 100 }}
               />
@@ -477,25 +529,228 @@ const AdminLoanApplicationPage = () => {
           }}
         />
 
-        {/* 상태 변경 확인 모달 */}
-        <Modal
-          title="대출 상태 변경"
-          open={isModalVisible}
-          onOk={handleModalOk}
-          onCancel={handleModalCancel}
-          okText="확인"
-          cancelText="취소"
-        >
-          <Form form={statusChangeForm} layout="vertical">
-            <Form.Item
-              name="reason"
-              label="변경 사유"
-              rules={[{ required: true, message: '변경 사유를 입력해주세요' }]}
-            >
-              <Input.TextArea rows={4} placeholder="상태 변경 사유를 입력해주세요" />
-            </Form.Item>
-          </Form>
-        </Modal>
+        <LoanStatusChangeModal isOpen={isModalVisible} onOutsideClick={handleModalCancel}>
+          <ModalColumnContainer>
+            <ModalTitle>대출 상태 변경</ModalTitle>
+
+            <ModalRowContainer>
+              <ModalInfoContainer>
+                <ModalInfoKeyColumn>
+                  <InfoLabel>신청자:</InfoLabel>
+                  <InfoLabel>현재 상태:</InfoLabel>
+                </ModalInfoKeyColumn>
+
+                <ModalInfoValueColumn>
+                  <InfoValue>{displayValue(detail?.applicantName)}</InfoValue>
+                  <InfoValue>
+                    {displayValue(
+                      detail?.applicationStatus ? STATUS_LABEL[detail.applicationStatus] : null
+                    )}
+                  </InfoValue>
+                </ModalInfoValueColumn>
+              </ModalInfoContainer>
+
+              <ModalInfoContainer>
+                <ModalInfoKeyColumn>
+                  <InfoLabel>소비 성향:</InfoLabel>
+                  <InfoLabel>소비 목표:</InfoLabel>
+                </ModalInfoKeyColumn>
+
+                <ModalInfoValueColumn>
+                  <InfoValue>{displayValue(detail?.consumptionType)}</InfoValue>
+                  <InfoValue>{displayValue(detail?.consumeGoal)}</InfoValue>
+                </ModalInfoValueColumn>
+              </ModalInfoContainer>
+            </ModalRowContainer>
+          </ModalColumnContainer>
+
+          <ModalColumnContainer>
+            <ModalSubTitle>대출 심사 결과</ModalSubTitle>
+
+            <ModalRowContainer>
+              <ModalInfoContainer>
+                <ModalInfoKeyColumn>
+                  <InfoLabel>대출 신청 일자:</InfoLabel>
+                  <InfoLabel>금리 범위:</InfoLabel>
+                  <InfoLabel>초기 대출 금리:</InfoLabel>
+                  <InfoLabel>최근 금리:</InfoLabel>
+                </ModalInfoKeyColumn>
+
+                <ModalInfoValueColumn>
+                  <InfoValue>
+                    {displayValue(detail?.appliedAt, (v) => `${formatYMD(String(v))}`)}
+                  </InfoValue>
+                  <InfoValue>
+                    {displayValue(
+                      detail?.interestRateMin !== undefined && detail?.interestRateMax !== undefined
+                        ? `연 ${detail.interestRateMin}% ~ ${detail.interestRateMax}%`
+                        : null
+                    )}
+                  </InfoValue>
+                  <InfoValue>
+                    {displayValue(detail?.initialInterestRate, (v) => `연 ${v}%`)}
+                  </InfoValue>
+                  <InfoValue>
+                    {displayValue(detail?.lastInterestRate, (v) => {
+                      if (v === 0) {
+                        return `-`;
+                      }
+                      return `${Number(v)}% (최종 갱신 ${formatYMD(detail?.lastInterestDate)})`;
+                    })}
+                  </InfoValue>
+                </ModalInfoValueColumn>
+              </ModalInfoContainer>
+
+              <ModalInfoContainer>
+                <ModalInfoKeyColumn>
+                  <InfoLabel>대출 가능 한도:</InfoLabel>
+                  <InfoLabel>요청 대출 금액:</InfoLabel>
+                  <InfoLabel>요청 상환 기간:</InfoLabel>
+                </ModalInfoKeyColumn>
+
+                <ModalInfoValueColumn>
+                  <InfoValue>
+                    {displayValue(detail?.approvedMaxAmount, (v) => `${v?.toLocaleString()}원`)}
+                  </InfoValue>
+                  <InfoValue>
+                    {displayValue(detail?.requestedAmount, (v) => `${v?.toLocaleString()}원`)}
+                  </InfoValue>
+                  <InfoValue>
+                    {displayValue(detail?.repaymentMonths, (v) => {
+                      const start = formatYMD(detail?.repaymentStartDate);
+                      const end = formatYMD(detail?.repaymentEndDate);
+
+                      if (start === '-' && end === '-') {
+                        return `-`;
+                      }
+                      return `${start} ~ ${end} (${v}개월)`;
+                    })}
+                  </InfoValue>
+                </ModalInfoValueColumn>
+              </ModalInfoContainer>
+            </ModalRowContainer>
+          </ModalColumnContainer>
+
+          <ModalColumnContainer>
+            <ModalSubTitle>대출 신청 정보</ModalSubTitle>
+
+            <ModalRowContainer>
+              <ModalInfoContainer>
+                <ModalInfoKeyColumn>
+                  <InfoLabel>고용 형태:</InfoLabel>
+                  <InfoLabel>연소득:</InfoLabel>
+                  <InfoLabel>주거 형태:</InfoLabel>
+                </ModalInfoKeyColumn>
+
+                <ModalInfoValueColumn>
+                  <InfoValue>
+                    {displayValue(EMPLOYMENT_TYPE_LABEL[detail?.employmentType ?? 'ETC'])}
+                  </InfoValue>
+                  <InfoValue>
+                    {displayValue(detail?.annualIncome, (v) => `${v?.toLocaleString()}원`)}
+                  </InfoValue>
+                  <InfoValue>
+                    {displayValue(RESIDENCE_TYPE_LABEL[detail?.residenceType ?? 'MONTHLY'])}
+                  </InfoValue>
+                </ModalInfoValueColumn>
+              </ModalInfoContainer>
+
+              <ModalInfoContainer>
+                <ModalInfoKeyColumn>
+                  <InfoLabel>개인회생 여부:</InfoLabel>
+                  <InfoLabel>대출 목적:</InfoLabel>
+                </ModalInfoKeyColumn>
+
+                <ModalInfoValueColumn>
+                  <InfoValue>{BANKRUPT_LABEL(detail?.isBankrupt)}</InfoValue>
+                  <InfoValue>
+                    {displayValue(LOAN_PURPOSE_LABEL[detail?.loanPurpose ?? 'ETC'])}
+                  </InfoValue>
+                </ModalInfoValueColumn>
+              </ModalInfoContainer>
+            </ModalRowContainer>
+          </ModalColumnContainer>
+
+          {isChangeable ? (
+            <>
+              <SubContainer>
+                <TextField
+                  value={reason}
+                  onChange={(v: string) => {
+                    setReason(v);
+                    if (reasonError) setReasonError('');
+                  }}
+                  isDisabled={false}
+                >
+                  <TextField.Label>변경 사유</TextField.Label>
+                  <TextField.TextFieldBox placeholder="변경 사유 입력" />
+                  {reasonError && <ErrorInfo>{reasonError}</ErrorInfo>}
+                </TextField>
+              </SubContainer>
+
+              <FlexContainer>
+                {detail?.applicationStatus === 'PRE_APPLIED' && (
+                  <FlexrateButton
+                    text="초기 상태로 변경"
+                    varient="PRIMARY"
+                    onClick={() => handleModalOk('NONE')}
+                  />
+                )}
+                {detail?.applicationStatus === 'PENDING' && (
+                  <>
+                    <FlexrateButton
+                      text="대출 거절"
+                      varient="WARN"
+                      onClick={() => handleModalOk('REJECTED')}
+                    />
+                    <FlexrateButton
+                      text="대출 승인"
+                      varient="PRIMARY"
+                      onClick={() => handleModalOk('EXECUTED')}
+                    />
+                  </>
+                )}
+                {detail?.applicationStatus === 'EXECUTED' && (
+                  <>
+                    <FlexrateButton
+                      text="대출 중도 취소"
+                      varient="WARN"
+                      onClick={() => handleModalOk('REJECTED')}
+                    />
+                    <FlexrateButton
+                      text="상환 완료"
+                      varient="PRIMARY"
+                      onClick={() => handleModalOk('COMPLETED')}
+                    />
+                  </>
+                )}
+                {detail?.applicationStatus === 'COMPLETED' && (
+                  <FlexrateButton
+                    text="초기 상태로 변경"
+                    varient="PRIMARY"
+                    onClick={() => handleModalOk('NONE')}
+                  />
+                )}
+                {detail?.applicationStatus === 'NONE' && (
+                  <FlexrateButton
+                    text="신청 접수중으로 변경"
+                    varient="PRIMARY"
+                    onClick={() => handleModalOk('PRE_APPLIED')}
+                  />
+                )}
+                {detail?.applicationStatus === 'REJECTED' && (
+                  <FlexrateButton
+                    text="초기 상태로 변경"
+                    varient="PRIMARY"
+                    onClick={() => handleModalOk('NONE')}
+                  />
+                )}
+              </FlexContainer>
+            </>
+          ) : (
+            <InfoBottomText>변경 가능한 상태가 아닙니다</InfoBottomText>
+          )}
+        </LoanStatusChangeModal>
       </ContentColumn>
     </PageContainer>
   );

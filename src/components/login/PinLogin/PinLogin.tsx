@@ -60,25 +60,19 @@ const PinLogin = () => {
   useEffect(() => {
     const pinStr = pin.join('');
     if (pinStr.length === PIN_LENGTH && !pin.includes('')) {
-        const doLogin = async () => {
-          setLoading(true);
-          try {
-            const pinStr = pin.join('');
-            const response = await loginWithPin({ pin: pinStr }); 
-
-            const { accessToken } = response;
-            localStorage.setItem('accessToken', accessToken);  // ✅ 저장
-            router.push('/');
-            console.log("PIN 로그인 성공");
-            
-          } catch (error) {
-            console.error('PIN 로그인 실패:', error);
-            alert('PIN이 올바르지 않거나 등록되지 않았습니다.');
-            setPin(Array(PIN_LENGTH).fill(''));
-          } finally {
-            setLoading(false);
-          }
-        };
+      const doLogin = async () => {
+        setLoading(true);
+        try {
+          const response = await loginWithPin({pin: pinStr}) as unknown as { user: { name: string } };
+          alert(`로그인 성공! 환영합니다, ${response.user.name}님.`);
+          // TODO: 로그인 성공 처리 (토큰 저장, 페이지 이동 등)
+        } catch (error) {
+          alert('로그인 실패: PIN이 올바르지 않거나 오류가 발생했습니다.');
+          setPin(Array(PIN_LENGTH).fill('')); // PIN 초기화
+        } finally {
+          setLoading(false);
+        }
+      };
       doLogin();
     }
   }, [pin, router]);

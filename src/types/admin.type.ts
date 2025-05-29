@@ -14,7 +14,7 @@ export interface RawMember {
 
 export interface RawLoanApplication {
   id: number;
-  status: 'PRE_APPLIED' | 'PENDING' | 'REJECTED' | 'EXECUTED' | 'COMPLETED';
+  status: 'PRE_APPLIED' | 'PENDING' | 'REJECTED' | 'EXECUTED' | 'COMPLETED' | 'NONE';
   appliedAt: string;
   applicant: string;
   applicantId: number;
@@ -27,6 +27,30 @@ export interface RawLoanApplication {
 export interface LoanApiResponse {
   paginationInfo: PaginationInfo;
   loans: RawLoanApplication[];
+}
+
+export interface LoanDetailsApiResponse {
+  applicationId: number;
+  applicantName: string;
+  consumptionType: string | null;
+  consumeGoal: string | null;
+  applicationStatus: string | null;
+  requestedAmount: number | null;
+  repaymentStartDate: string | null;
+  repaymentEndDate: string | null;
+  repaymentMonths: number | null;
+  appliedAt: string | null;
+  approvedMaxAmount: number | null;
+  initialInterestRate: number | null;
+  interestRateMin: number | null;
+  interestRateMax: number | null;
+  lastInterestRate: number | null;
+  lastInterestDate: string | null;
+  employmentType: string | null;
+  annualIncome: number | null;
+  residenceType: string | null;
+  isBankrupt: boolean | null;
+  loanPurpose: string | null;
 }
 
 export interface PaginationInfo {
