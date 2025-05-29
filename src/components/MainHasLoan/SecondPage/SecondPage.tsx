@@ -1,4 +1,10 @@
+import Image from 'next/image';
+
 import LoanDashboard from '@/components/main/LoanDashboard/LoanDashboard';
+import { useMainFirstPage } from '@/hooks/useMainFirstPage';
+import { useMainSecondPage } from '@/hooks/useMainSecondPage';
+import { splitYMD } from '@/utils/dateFormat';
+
 import {
   BgContainer,
   Card,
@@ -9,112 +15,112 @@ import {
   SubTitle,
   Wrapper,
 } from '../FirstPage/FirstPage.style';
+
 import {
   CardFlexContainer,
-  DescriptionContainer,
-  FlexContainer,
-  GreenText,
   GridContainer,
   MediumTitle,
   MediumTitleWrapper,
 } from './SecondPage.style';
-import Image from 'next/image';
 
 const SecondPage = () => {
+  const { interestCurrent } = useMainFirstPage();
+  const { mainData } = useMainSecondPage();
+  const nextDate = mainData?.nextPaymentDate
+    ? new Date(mainData.nextPaymentDate).toISOString().slice(0, 10)
+    : undefined;
+
+  const {
+    year: nextRepaymentYear,
+    month: nextRepaymentMonth,
+    day: nextRepaymentDay,
+  } = splitYMD({ dateString: nextDate });
+
+  const {
+    year: startYear,
+    month: startMonth,
+    day: startDay,
+  } = splitYMD({ dateString: mainData?.startDate });
+
+  const recentDateFormatted = mainData?.recentRepaymentDate
+    ? new Date(mainData.recentRepaymentDate).toISOString().slice(0, 10).replace(/-/g, '.')
+    : '-';
+
   return (
-    <Wrapper>
-      <BgContainer color="white">
-        <CardFlexContainer>
-          <Card color="gray">
-            <MediumTitleWrapper>
-              <MediumTitle $isStrong={true}>
-                2020<MediumTitle>년</MediumTitle>
-              </MediumTitle>
-              <br />
-              <MediumTitle $isStrong={true}>
-                12<MediumTitle>월</MediumTitle>
-              </MediumTitle>
-              <MediumTitle $isStrong={true}>
-                10<MediumTitle>일</MediumTitle>
-              </MediumTitle>
-            </MediumTitleWrapper>
-            <CardContentContainer>
-              <SubTitle>
-                이번 달<br />
-                대출금 이자
-              </SubTitle>
-            </CardContentContainer>
-          </Card>
-          <Card color="gray">
-            <CardTitle>
-              0<SmallTitle>회차</SmallTitle>
-            </CardTitle>
-            <CardContentContainer>
-              <SubTitle>대출금 납부 회차</SubTitle>
-              <Description type="sub2">2023.09.15 오후 5시</Description>
-            </CardContentContainer>
-          </Card>
-        </CardFlexContainer>
-        <LoanDashboard />
-      </BgContainer>
-      <BgContainer color="gray">
-        <GridContainer>
-          <Card>
-            <MediumTitleWrapper>
-              <MediumTitle $isStrong={true}>
-                2020<MediumTitle>년</MediumTitle>
-              </MediumTitle>
-              <br />
-              <MediumTitle $isStrong={true}>
-                12<MediumTitle>월</MediumTitle>
-              </MediumTitle>
-              <MediumTitle $isStrong={true}>
-                10<MediumTitle>일</MediumTitle>
-              </MediumTitle>
-            </MediumTitleWrapper>
-            <CardContentContainer>
-              <SubTitle>대출 시작일</SubTitle>
-            </CardContentContainer>
-          </Card>
-          <Card>
-            <CardTitle>
-              9<SmallTitle>회차</SmallTitle>
-            </CardTitle>
-            <CardContentContainer>
-              <SubTitle>금리 변경 횟수</SubTitle>
-            </CardContentContainer>
-          </Card>
-          <Card>
-            <CardTitle>
-              9<SmallTitle>회차</SmallTitle>
-            </CardTitle>
-            <CardContentContainer>
-              <SubTitle>상환 횟수</SubTitle>
-              <DescriptionContainer>
-                <Description type="sub2">280,000원</Description>
-                <Description type="sub3">2023.09.15 오후 5시</Description>
-              </DescriptionContainer>
-            </CardContentContainer>
-          </Card>
-          <Card>
-            <CardTitle>
-              3<SmallTitle>회차</SmallTitle>
-            </CardTitle>
-            <CardContentContainer>
-              <SubTitle>연체 횟수</SubTitle>
-              <DescriptionContainer>
-                <FlexContainer>
-                  <Description type="sub2">280,000원</Description>
-                  <Image src={'/icons/greenUpArrow.svg'} width={18} height={18} alt="위 화살표" />
-                  <GreenText>3%</GreenText>
-                </FlexContainer>
-                <Description type="sub2">2023.09.15 오후 5시</Description>
-              </DescriptionContainer>
-            </CardContentContainer>
-          </Card>
-        </GridContainer>
-      </BgContainer>
-    </Wrapper>
+    mainData && (
+      <Wrapper>
+        <BgContainer color="white">
+          <LoanDashboard mainData={mainData} currentRate={interestCurrent?.currentRate ?? 0} />
+          <CardFlexContainer>
+            <Card color="gray">
+              <MediumTitleWrapper>
+                <MediumTitle $isStrong={true}>
+                  {nextRepaymentYear}
+                  <MediumTitle>년</MediumTitle>
+                </MediumTitle>
+                <br />
+                <MediumTitle $isStrong={true}>
+                  {nextRepaymentMonth}
+                  <MediumTitle>월</MediumTitle>
+                </MediumTitle>
+                <MediumTitle $isStrong={true}>
+                  {nextRepaymentDay}
+                  <MediumTitle>일</MediumTitle>
+                </MediumTitle>
+              </MediumTitleWrapper>
+              <CardContentContainer>
+                <SubTitle>
+                  이번 달<br />
+                  대출금 상환 일자
+                </SubTitle>
+              </CardContentContainer>
+            </Card>
+            <Card color="gray">
+              <CardTitle>
+                0<SmallTitle>회차</SmallTitle>
+              </CardTitle>
+              <CardContentContainer>
+                <SubTitle>대출금 납부 회차</SubTitle>
+                <Description type="sub2">{recentDateFormatted}</Description>
+              </CardContentContainer>
+            </Card>
+          </CardFlexContainer>
+        </BgContainer>
+        <BgContainer color="gray">
+          <GridContainer>
+            <Card>
+              <MediumTitleWrapper>
+                <MediumTitle $isStrong={true}>
+                  {startYear}
+                  <MediumTitle>년</MediumTitle>
+                </MediumTitle>
+                <br />
+                <MediumTitle $isStrong={true}>
+                  {startMonth}
+                  <MediumTitle>월</MediumTitle>
+                </MediumTitle>
+                <MediumTitle $isStrong={true}>
+                  {startDay}
+                  <MediumTitle>일</MediumTitle>
+                </MediumTitle>
+              </MediumTitleWrapper>
+              <CardContentContainer>
+                <SubTitle>대출 시작일</SubTitle>
+              </CardContentContainer>
+            </Card>
+            <Card>
+              <CardTitle>
+                {mainData?.loanRepaymentTransactionNum}
+                <SmallTitle>회차</SmallTitle>
+              </CardTitle>
+              <CardContentContainer>
+                <SubTitle>금리 변경 횟수</SubTitle>
+              </CardContentContainer>
+            </Card>
+          </GridContainer>
+        </BgContainer>
+      </Wrapper>
+    )
   );
 };
 
