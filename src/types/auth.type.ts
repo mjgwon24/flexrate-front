@@ -8,6 +8,7 @@ export interface SignupRequest {
   birthDate: string;
   consumptionType: string;
   consumeGoal: string;
+  pin?: string;
 }
 
 export interface SignupResponse {

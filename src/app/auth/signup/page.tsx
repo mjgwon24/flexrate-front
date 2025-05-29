@@ -17,6 +17,7 @@ import PasswordForm from '@/components/signup/PasswordForm/PasswordForm';
 import { ConsumptionTypeKey } from '@/constants/auth.constant';
 import { SignupSteps } from '@/types/funnel.type';
 import { characterMap } from '@/utils/signup.util';
+import AddPinLogin from '@/components/login/PinLogin/AddPinLogin/AddPinLogin';
 
 const SignupPage = () => {
   const funnel = useFunnel<SignupSteps>({
@@ -59,8 +60,11 @@ const SignupPage = () => {
           ),
         })}
         간편비밀번호설정={funnel.Render.with({
-          render: () => (
-            <PinRegisterPage onBack={handleBack} />
+          render: ({ context }) => (
+            <AddPinLogin
+            email={context.email}
+            onComplete={() => funnel.history.push('내정보입력', (prev) => ({ ...prev, ...context }))}
+            />
           ),
         })}
         내정보입력={funnel.Render.with({
