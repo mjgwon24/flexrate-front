@@ -60,7 +60,7 @@ const PinLogin = () => {
       const doLogin = async () => {
         setLoading(true);
         try {
-          const response = await loginWithPin(memberId, pinStr);
+          const response = await loginWithPin(memberId, pinStr) as unknown as { user: { name: string } };
           alert(`로그인 성공! 환영합니다, ${response.user.name}님.`);
           // TODO: 로그인 성공 처리 (토큰 저장, 페이지 이동 등)
         } catch (error) {
