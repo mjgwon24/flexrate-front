@@ -102,15 +102,13 @@ export interface LoginResponseDTO {
   challenge: string;
 }
 
-export const loginWithPin = async (data: { pin: string }): Promise<LoginResponseDTO> => {
+export const loginWithPin = async (data: { pin: string }): Promise<LoginResponse> => {
   const token = localStorage.getItem('accessToken');
-  const response = await apiClient.post(
-    '/api/auth/login/pin',  // 여기 경로를 정확히 맞춰주세요
+  const response = await apiClient.post<LoginResponse>(
+    '/api/auth/login/pin',
     data,
     {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     }
   );
   return response.data;

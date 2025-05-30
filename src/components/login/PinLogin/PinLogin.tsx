@@ -58,24 +58,30 @@ const PinLogin = () => {
   };
 
   useEffect(() => {
-    const pinStr = pin.join('');
-    if (pinStr.length === PIN_LENGTH && !pin.includes('')) {
-      const doLogin = async () => {
-        setLoading(true);
-        try {
-          const response = await loginWithPin({pin: pinStr}) as unknown as { user: { name: string } };
-          alert(`로그인 성공! 환영합니다, ${response.user.name}님.`);
-          // TODO: 로그인 성공 처리 (토큰 저장, 페이지 이동 등)
-        } catch (error) {
-          alert('로그인 실패: PIN이 올바르지 않거나 오류가 발생했습니다.');
-          setPin(Array(PIN_LENGTH).fill('')); // PIN 초기화
-        } finally {
-          setLoading(false);
-        }
-      };
-      doLogin();
-    }
-  }, [pin, router]);
+  const pinStr = pin.join('');
+  if (pinStr.length === PIN_LENGTH && !pin.includes('')) {
+    const doLogin = async () => {
+      setLoading(true);
+      try {
+        const response = await loginWithPin({ pin: pinStr });
+        // 로그인 성공 시 토큰 저장
+        localStorage.setItem('accessToken', response.accessToken);
+        localStorage.setItem('refreshToken', response.refreshToken);
+
+        alert(`로그인 성공! 환영합니다, ${response.username}님.`);
+        // TODO: 로그인 성공 후 페이지 이동 또는 상태 업데이트
+        router.push('/');  // 예: 홈 페이지로 이동
+      } catch (error) {
+        console.error(error);
+        alert('로그인 실패: PIN이 올바르지 않거나 오류가 발생했습니다.');
+        setPin(Array(PIN_LENGTH).fill('')); // PIN 초기화
+      } finally {
+        setLoading(false);
+      }
+    };
+    doLogin();
+  }
+}, [pin, router]);
 
   if (showAddPin) {
     return (
