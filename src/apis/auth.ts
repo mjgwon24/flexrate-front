@@ -60,7 +60,9 @@ export const getConsumptionType = async (): Promise<ConsumptionTypeKey> => {
 
 // 로그인 API
 export const loginUser = async (data: LoginRequest): Promise<LoginResponse> => {
-  const response = await apiClient.post('/api/auth/login/password', data);
+  const response = await apiClient.post('/api/auth/login/password', data, {
+    withCredentials: true,
+  });
   return response.data;
 };
 
@@ -71,4 +73,16 @@ export const loginWithPin = async (memberId: number, pin: string): Promise<Login
     pin,
   });
   return response.data;
+};
+
+// 액세스 토큰 재발급 API
+export const postAuthToken = async () => {
+  const response = await apiClient.post<{ accessToken: string }>(
+    '/api/auth/token',
+    {},
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data.accessToken;
 };
