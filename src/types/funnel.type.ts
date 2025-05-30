@@ -46,5 +46,6 @@ export type SignupSteps = {
     agreement: boolean;
     consumptionType?: ConsumptionTypeKey;
     consumptionGoal?: string;
+    pin?: string;
   };
 };

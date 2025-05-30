@@ -22,26 +22,18 @@ const ConsumptionGoalStep = ({
         const signupData = {
           email: context.email,
           password: context.password,
+          method: context.method,
           sex: context.sex as 'MALE' | 'FEMALE',
           name: context.name,
           birthDate: context.birthDate,
           consumptionType: context.consumptionType as ConsumptionType,
           consumeGoal: selectedGoal,
+          ...(context.method === '간편비밀번호' && context.pin ? { pin: context.pin } : {}),
         };
 
-        signupMutation.mutate(signupData, {
-          onSuccess: (data) => {
-            if (data?.accessToken) {
-              localStorage.setItem('accessToken', data.accessToken);
-              console.log('로컬스토리지에 저장됨:', data.accessToken);
-            } else {
-              console.warn('회원가입 응답에 엑세스토큰이 없습니다.');
-            }
-          },
-          onError: (error) => {
-            console.error('회원가입 오류:', error);
-          },
-        });
+        console.log('최종 회원가입 데이터:', signupData);
+        
+        signupMutation.mutate(signupData);
       }}
     />
   );

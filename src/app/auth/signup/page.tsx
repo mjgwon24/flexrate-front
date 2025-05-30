@@ -7,7 +7,7 @@ import { useFunnel } from '@use-funnel/browser';
 
 import Header from '@/components/Header/Header';
 import { Wrapper } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
-import PinRegisterPage from '@/components/login/PinLogin/PinRegisterPage/PinRegisterPage';
+import AddPinLogin from '@/components/login/PinLogin/AddPinLogin/AddPinLogin';
 import Agreement from '@/components/signup/AgreeForConsumptionType/AgreeForConsumptionType';
 import ConsumptionGoalStep from '@/components/signup/ConsumptionGoalStep/ConsumptionGoalStep';
 import ConsumptionResult from '@/components/signup/ConsumptionResult/ConsumptionResult';
@@ -17,18 +17,12 @@ import PasswordForm from '@/components/signup/PasswordForm/PasswordForm';
 import { ConsumptionTypeKey } from '@/constants/auth.constant';
 import { SignupSteps } from '@/types/funnel.type';
 import { characterMap } from '@/utils/signup.util';
-import AddPinLogin from '@/components/login/PinLogin/AddPinLogin/AddPinLogin';
 
 const SignupPage = () => {
   const funnel = useFunnel<SignupSteps>({
     id: 'signup',
     initial: { step: '이메일인증', context: { email: '' } },
   });
-
-  const handleBack = () => {
-    console.log('뒤로 가기');
-    // 원하는 동작 수행 (예: 페이지 이동, 상태 변경 등)
-  };
 
   return (
     <Wrapper>
@@ -62,11 +56,18 @@ const SignupPage = () => {
         간편비밀번호설정={funnel.Render.with({
           render: ({ context }) => (
             <AddPinLogin
-            email={context.email}
-            onComplete={() => funnel.history.push('내정보입력', (prev) => ({ ...prev, ...context }))}
+              email={context.email}
+              onComplete={(pinStr) =>
+                funnel.history.push('내정보입력', (prev) => ({
+                  ...prev,
+                  ...context,
+                  pin: pinStr,
+                }))
+              }
             />
           ),
         })}
+
         내정보입력={funnel.Render.with({
           render: ({ context }) => (
             <InfoForm
@@ -122,7 +123,6 @@ const SignupPage = () => {
         소비목적결과={funnel.Render.with({
           render: ({ context }) => {
             const character = characterMap[context.consumptionType as ConsumptionTypeKey];
-
             return <ConsumptionGoalStep context={context} character={character} />;
           },
         })}

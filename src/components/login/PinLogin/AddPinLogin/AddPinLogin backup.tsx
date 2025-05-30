@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 
-// import { registerPin } from '@/apis/auth';
+import { registerPin } from '@/apis/auth';
 
 import {
   Container,
@@ -88,9 +88,33 @@ const AddPinLogin = ({ email, onComplete }: AddPinLoginProps) => {
         return;
       }
 
+      // PIN 일치, 등록 시도
+      const doRegister = async () => {
+        setLoading(true);
+        try {
+          const token = localStorage.getItem('accessToken');
+          if (!token) {
+            alert('회원 정보가 없습니다. 다시 로그인해 주세요.');
+            setLoading(false);
+            return;
+          }
+          await registerPin({
+            pin: pinStr,
+          });
 
-      onComplete(pinStr); // 회원가입 DTO에 PIN을 넘김
-
+          alert('PIN 등록 완료!');
+          onComplete(pinStr);
+        } catch (error) {
+          console.error(error);
+          alert('PIN 등록 실패. 다시 시도해 주세요.');
+          setPin(Array(PIN_LENGTH).fill(''));
+          setConfirmPin(Array(PIN_LENGTH).fill(''));
+          setStep('input');
+        } finally {
+          setLoading(false);
+        }
+      };
+      doRegister();
     }
   }, [confirmPin, email, pin, onComplete, step]);
 

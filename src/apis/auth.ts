@@ -145,5 +145,5 @@ export const logoutUser = async (): Promise<void> => {
 
   // 로컬스토리지에서 토큰 제거
   localStorage.removeItem('accessToken');
-  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
 };
