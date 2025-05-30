@@ -50,7 +50,7 @@ import {
   ModalColumnContainer,
   ModalRowContainer,
   InfoBottomText,
-  ErrorInfo,
+  ErrorInfo, DivideMargin,
 } from './page.style';
 
 const PAGE_SIZE = 8;
@@ -578,7 +578,7 @@ const AdminLoanApplicationPage = () => {
 
                 <ModalInfoValueColumn>
                   <InfoValue>
-                    {displayValue(detail?.appliedAt, (v) => `${formatYMD(String(v))}`)}
+                    {displayValue(detail?.appliedAt, (v) => `${formatYMD({ dateString: v?.toString() })}`)}
                   </InfoValue>
                   <InfoValue>
                     {displayValue(
@@ -595,7 +595,7 @@ const AdminLoanApplicationPage = () => {
                       if (v === 0) {
                         return `-`;
                       }
-                      return `${Number(v)}% (최종 갱신 ${formatYMD(detail?.lastInterestDate)})`;
+                      return `${Number(v)}% (최종 갱신 ${formatYMD({ dateString: detail?.lastInterestDate || undefined })})`;
                     })}
                   </InfoValue>
                 </ModalInfoValueColumn>
@@ -617,8 +617,8 @@ const AdminLoanApplicationPage = () => {
                   </InfoValue>
                   <InfoValue>
                     {displayValue(detail?.repaymentMonths, (v) => {
-                      const start = formatYMD(detail?.repaymentStartDate);
-                      const end = formatYMD(detail?.repaymentEndDate);
+                      const start = formatYMD(detail?.repaymentStartDate ? { dateString: detail.repaymentStartDate } : undefined);
+                      const end = formatYMD(detail?.repaymentEndDate ? { dateString: detail.repaymentEndDate } : undefined);
 
                       if (start === '-' && end === '-') {
                         return `-`;
@@ -673,6 +673,7 @@ const AdminLoanApplicationPage = () => {
 
           {isChangeable ? (
             <>
+              <DivideMargin />
               <SubContainer>
                 <TextField
                   value={reason}
