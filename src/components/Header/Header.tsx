@@ -37,7 +37,13 @@ const Header = ({ type, backIcon = false, isLoggedIn = false }: HeaderProps) => 
       return (
         <HeaderRightContainer>
           <Image src="/icons/alert_36.svg" width={36} height={36} alt="알림" />
-          <Image src="/icons/webee_36.svg" width={36} height={36} alt="마이페이지" />
+          <Image
+            src="/icons/webee_36.svg"
+            width={36}
+            height={36}
+            alt="마이페이지"
+            onClick={() => router.push('/mypage')}
+          />
         </HeaderRightContainer>
       );
     }
