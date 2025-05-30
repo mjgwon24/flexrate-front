@@ -55,7 +55,7 @@ const ReviewResultAndLoanApplication = ({ value, onChange, onSubmit }: ReviewRes
               <TableItemValue>{result.screeningDate}</TableItemValue>
             </TableItem>
             <TableItem>
-              <TableItemKey>대출 가능 한도</TableItemKey>
+              <TableItemKey>남은 대출 금액</TableItemKey>
               <TableItemValue>
                 <TableItemValue $isStrong={true}>{loanLimit}</TableItemValue>원
               </TableItemValue>

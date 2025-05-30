@@ -82,7 +82,7 @@ const LOAN_APPLICATION_COLUMN_METAS = [
   },
   { title: '신청자', dataIndex: 'applicantName', key: 'applicantName', width: 90, editable: false },
   {
-    title: '대출 가능 한도',
+    title: '남은 대출 금액',
     dataIndex: 'loanLimit',
     key: 'loanLimit',
     width: 120,
@@ -426,7 +426,7 @@ const AdminLoanApplicationPage = () => {
             </FilterRow>
 
             <FilterRow>
-              <FilterLabel>대출 가능 한도</FilterLabel>
+              <FilterLabel>남은 대출 금액</FilterLabel>
               <InputNumber
                 min={0}
                 max={5000000}
