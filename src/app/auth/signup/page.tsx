@@ -7,13 +7,13 @@ import { useFunnel } from '@use-funnel/browser';
 
 import Header from '@/components/Header/Header';
 import { Wrapper } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
-import AddPinLogin from '@/components/login/PinLogin/AddPinLogin/AddPinLogin';
 import Agreement from '@/components/signup/AgreeForConsumptionType/AgreeForConsumptionType';
 import ConsumptionGoalStep from '@/components/signup/ConsumptionGoalStep/ConsumptionGoalStep';
 import ConsumptionResult from '@/components/signup/ConsumptionResult/ConsumptionResult';
 import EmailForm from '@/components/signup/EmailForm/EmailForm';
 import { InfoForm } from '@/components/signup/InfoForm/InfoForm';
 import PasswordForm from '@/components/signup/PasswordForm/PasswordForm';
+import SignupPinForm from '@/components/signup/SignupPinForm/SignupPinForm';
 import { ConsumptionTypeKey } from '@/constants/auth.constant';
 import { SignupSteps } from '@/types/funnel.type';
 import { characterMap } from '@/utils/signup.util';
@@ -55,18 +55,17 @@ const SignupPage = () => {
         })}
         간편비밀번호설정={funnel.Render.with({
           render: ({ context }) => (
-            <AddPinLogin
-              email={context.email}
-              onComplete={(pinStr) =>
-                funnel.history.push('내정보입력', (prev) => ({
-                  ...prev,
-                  ...context,
-                  pin: pinStr,
-                }))
-              }
-            />
-          ),
-        })}
+            <SignupPinForm
+              onComplete={(pinStr: string) =>
+                void funnel.history.push('내정보입력', (prev) => ({
+                ...prev,
+                ...context,
+                pin: pinStr,
+          }))
+        }
+      />
+    ),
+  })}
 
         내정보입력={funnel.Render.with({
           render: ({ context }) => (

@@ -2,8 +2,6 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 
-import { registerPin } from '@/apis/auth';
-
 import {
   Container,
   Title,
@@ -11,7 +9,7 @@ import {
   Dot,
   KeypadWrapper,
   KeyButton,
-} from './AddPinLogin.style';
+} from '@/components/login/PinLogin/AddPinLogin/AddPinLogin.style'; // 스타일 그대로 재사용
 
 const PIN_LENGTH = 6;
 
@@ -24,12 +22,11 @@ const shuffleArray = (array: number[]) => {
   return arr;
 };
 
-type AddPinLoginProps = {
-  email: string; // 사용하지 않지만 유지 (혹시 UI에 필요하면)
+type SignupPinFormProps = {
   onComplete: (pinStr: string) => void;
 };
 
-const AddPinLogin = ({ email, onComplete }: AddPinLoginProps) => {
+const SignupPinForm = ({ onComplete }: SignupPinFormProps) => {
   const [pin, setPin] = useState<string[]>(Array(PIN_LENGTH).fill(''));
   const [confirmPin, setConfirmPin] = useState<string[]>(Array(PIN_LENGTH).fill(''));
   const [step, setStep] = useState<'input' | 'confirm'>('input');
@@ -79,20 +76,12 @@ const AddPinLogin = ({ email, onComplete }: AddPinLoginProps) => {
         return;
       }
 
+      // PIN 일치 시 부모 컴포넌트에 PIN 전달
       setLoading(true);
       setTimeout(() => {
-        registerPin({ pin: pinStr })
-          .then(() => {
-            alert('PIN 등록 완료!');
-            setLoading(false);
-            onComplete(pinStr);
-          })
-          .catch((error) => {
-            console.error('PIN 등록 실패:', error);
-            alert('PIN 등록에 실패했습니다.');
-            setLoading(false);
-          });
-      }, 800); // 0.8초 딜레이
+        onComplete(pinStr);
+        setLoading(false);
+      }, 300); // 약간의 딜레이만 줌
     }
   }, [confirmPin, pin, step, onComplete]);
 
@@ -129,4 +118,4 @@ const AddPinLogin = ({ email, onComplete }: AddPinLoginProps) => {
   );
 };
 
-export default AddPinLogin;
+export default SignupPinForm;
