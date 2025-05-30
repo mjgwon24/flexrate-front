@@ -7,6 +7,7 @@ import { getLoanApplications } from '@/apis/admin';
 import { RawLoanApplication } from '@/types/admin.type';
 import { LoanFilterType } from '@/types/loan.filter.type';
 import { filtersToLoanApplicationParams } from '@/utils/loanApplicationParams';
+import { displayValue } from '@/utils/nullDisplay';
 
 const PAGE_SIZE = 8;
 
@@ -71,18 +72,6 @@ function getLoanType(type: RawLoanApplication['type']) {
 }
 
 /**
- * 금액 포맷팅 함수
- * @param amount 금액
- */
-function formatCurrency(amount: number) {
-  return new Intl.NumberFormat('ko-KR', {
-    style: 'currency',
-    currency: 'KRW',
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
-
-/**
  * 이자율 포맷팅 함수
  * @param rate 이자율
  */
@@ -143,7 +132,7 @@ export const useLoanApplicationsQuery = (
           status: getLoanStatus(loan.status),
           applicationDate: dayjs(loan.appliedAt).format('YYYY-MM-DD'),
           applicantName: loan.applicant,
-          loanLimit: formatCurrency(loan.availableLimit),
+          loanLimit: displayValue(loan.availableLimit, (v) => `${v?.toLocaleString()}원`),
           initialInterestRate: formatInterestRate(loan.initialRate),
           previousLoanCount: loan.prevLoanCount,
           loanType: getLoanType(loan.type),

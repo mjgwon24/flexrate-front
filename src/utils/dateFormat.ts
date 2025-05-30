@@ -1,4 +1,7 @@
-export const formatYMD = ({ dateString }: { dateString?: string | null }): string => {
+export const formatYMD = (
+  param?: { dateString?: string | null }
+): string => {
+  const { dateString } = param || {};
   if (!dateString) return '-';
 
   const date = new Date(dateString);
