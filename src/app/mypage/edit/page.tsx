@@ -83,7 +83,7 @@ const EditPage = () => {
           <SubContainer>
             <TextField value={''} onChange={() => {}} isDisabled={true}>
               <TextField.Label>이름</TextField.Label>
-              <TextField.TextFieldBox placeholder={user?.name} />
+              <TextField.TextFieldBox placeholder={user?.username} />
             </TextField>
           </SubContainer>
 

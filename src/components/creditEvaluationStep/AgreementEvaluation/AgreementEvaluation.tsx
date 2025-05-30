@@ -9,12 +9,17 @@ import CircularChart from '@/components/CircularChart/CircularChart';
 import { Container, Title } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
 import { Description } from '@/components/loanApplicationFunnel/ReviewResultAndLoanApplication/ReviewResultAndLoanApplication.style';
 import { useCreditScoreEvaluate } from '@/hooks/useCreditScore';
+import { useSelectLoanProduct } from '@/hooks/useSelectLoanProduct';
 import { useUserStore } from '@/stores/userStore';
 
 import { BtnContainer, TextContainer, Wrapper } from './AgreementEvaluation.style';
 
+const PRODUCT_ID = 1;
+
 const AgreementEvaluation = () => {
   const user = useUserStore((state) => state.user);
+  const setUser = useUserStore((state) => state.setUser);
+  const { mutate } = useSelectLoanProduct();
 
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -28,6 +33,19 @@ const AgreementEvaluation = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (
+      user &&
+      creditResult?.creditScore != null &&
+      user.creditScore !== creditResult.creditScore
+    ) {
+      setUser({
+        ...user,
+        creditScore: creditResult.creditScore,
+      });
+    }
+  }, [user, creditResult?.creditScore, setUser]);
 
   return (
     <Wrapper>
@@ -52,7 +70,12 @@ const AgreementEvaluation = () => {
               <Button
                 text="대출 신청하기"
                 varient="PRIMARY"
-                onClick={() => router.push('/loan-application')}
+                onClick={() => {
+                  if (user?.recentLoanStatus === 'NONE') {
+                    mutate(PRODUCT_ID);
+                  }
+                  router.push('/loan-application');
+                }}
               />
             </BtnContainer>
           </>

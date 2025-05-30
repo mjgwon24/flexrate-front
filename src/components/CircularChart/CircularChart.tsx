@@ -73,8 +73,6 @@ const CircularChart = ({ loading = false, score, rank }: CircularChartProps) => 
     labels: ['KCB'],
   };
 
-  const series = [67];
-
   return (
     <Wrapper
       animate={

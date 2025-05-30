@@ -25,6 +25,6 @@ const Home = () => {
 export default Home;
 
 const Container = styled.div`
-  height: 94vh;
+  height: 98vh;
   overflow-y: auto;
 `;

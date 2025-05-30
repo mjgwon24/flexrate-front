@@ -12,7 +12,7 @@ type EditableCellProps = {
   record: Record<string, unknown>;
   index: number;
   children: ReactNode;
-  handleChange: (value: string) => void;
+  handleChange: (value: string, dataIndex?: string, record?: Record<string, unknown>) => void;
 } & TdHTMLAttributes<HTMLTableCellElement>;
 
 /**
@@ -22,6 +22,7 @@ type EditableCellProps = {
  * @param dataIndex 테이블 데이터 인덱스
  * @param inputType 입력 타입 (text, select, date)
  * @param options 셀렉트 옵션 (select 타입일 경우)
+ * @param record 현재 행 데이터
  * @param children 자식 요소
  * @param handleChange 셀 값 변경 핸들러
  * @param restProps 기타 HTML 속성
@@ -35,10 +36,26 @@ const EditableCell = ({
   dataIndex,
   inputType,
   options,
+  record,
   children,
   handleChange,
   ...restProps
 }: EditableCellProps) => {
+
+  // 상태 컬럼일 시 select 대신 클릭만 처리
+  if (dataIndex === 'status') {
+    return (
+      <td {...restProps}
+        style={{ cursor: 'pointer', textAlign: 'center' }}
+        onClick={() => {
+          handleChange(record.status as string, dataIndex, record);
+        }}
+      >
+        {children}
+      </td>
+    );
+  }
+
   const renderInputNode = () => {
     switch (inputType) {
       case 'text':
