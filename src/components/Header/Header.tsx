@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -92,6 +90,8 @@ const Header = ({ type, backIcon = false, isLoggedIn = false, onLogoutClick }: H
           alt="뒤로가기"
           onClick={handleBack}
         />
+      ) : type === '우리금융그룹' && !isLoggedIn ? (
+        <RightNone />
       ) : (
         <None />
       )}

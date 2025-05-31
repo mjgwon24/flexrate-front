@@ -1,5 +1,3 @@
-import { headers } from 'next/headers';
-
 import { ConsumptionTypeKey } from '@/constants/auth.constant';
 import {
   ConsumptionTypeResponse,
