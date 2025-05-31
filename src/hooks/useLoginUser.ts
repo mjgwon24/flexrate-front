@@ -19,7 +19,6 @@ export const useLoginUser = () => {
       const loginRes = await loginUser(form);
 
       localStorage.setItem('accessToken', loginRes.accessToken);
-      localStorage.setItem('refreshToken', loginRes.refreshToken);
 
       const [loanStatus, creditResult] = await Promise.all([
         getCustomerLoanStatus(loginRes.accessToken),
