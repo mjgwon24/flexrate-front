@@ -1,3 +1,5 @@
+import { headers } from 'next/headers';
+
 import { ConsumptionTypeKey } from '@/constants/auth.constant';
 import {
   ConsumptionTypeResponse,
@@ -71,4 +73,13 @@ export const loginWithPin = async (memberId: number, pin: string): Promise<Login
     pin,
   });
   return response.data;
+};
+
+export const logout = async (token: string) => {
+  const { data } = await apiClient.post(
+    '/api/auth/logout',
+    {},
+    { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
+  );
+  return data;
 };
