@@ -1,33 +1,14 @@
-import axios from 'axios';
 import { EventSourcePolyfill } from 'event-source-polyfill';
 
-export enum NotificationType {
-  INTEREST_RATE_CHANGE = 'INTEREST_RATE_CHANGE',
-  LOAN_APPROVAL = 'LOAN_APPROVAL',
-  LOAN_REJECTED = 'LOAN_REJECTED',
-  MATURITY_NOTICE = 'MATURITY_NOTICE',
-}
+import {
+  Notification as AppNotification,
+  NotificationCountResponse,
+  NotificationResponse,
+} from '@/types/notification.type';
 
-export interface Notification {
-  id: number;
-  content: string;
-  sentAt: string;
-  isRead: boolean;
-  type: NotificationType;
-}
-
-export interface NotificationResponse {
-  notifications: Notification[];
-  hasNext: boolean;
-}
-
-export interface NotificationCountResponse {
-  unreadCount: number;
-}
+import { apiClient } from './client';
 
 class NotificationAPI {
-  private baseURL = 'http://localhost:8080/api/notification';
-
   private getAuthHeaders() {
     const accessToken = localStorage.getItem('accessToken');
     if (!accessToken) {
@@ -37,20 +18,23 @@ class NotificationAPI {
   }
 
   // SSE 연결 설정 (쿼리 파라미터로만 인증)
-  connectSSE(onNotification: (notification: Notification) => void): EventSource {
+  connectSSE(onNotification: (notification: AppNotification) => void): EventSource {
     const accessToken = localStorage.getItem('accessToken');
 
     if (!accessToken) {
       throw new Error('Access token이 없습니다. SSE 연결 불가');
     }
 
-    const eventSource = new EventSourcePolyfill(`${this.baseURL}/subscribe?token=${accessToken}`, {
-      withCredentials: true,
-    });
+    const eventSource = new EventSourcePolyfill(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/notification/subscribe?token=${accessToken}`,
+      {
+        withCredentials: true,
+      }
+    );
 
     eventSource.addEventListener('notification', (event) => {
       const messageEvent = event as MessageEvent; // 타입 단언
-      const notification: Notification = JSON.parse(messageEvent.data);
+      const notification: AppNotification = JSON.parse(messageEvent.data);
       onNotification(notification);
     });
 
@@ -70,7 +54,7 @@ class NotificationAPI {
     const params = lastNotificationId ? { lastNotificationId } : {};
 
     try {
-      const { data } = await axios.get<NotificationResponse>(this.baseURL, {
+      const { data } = await apiClient.get<NotificationResponse>('/api/notification', {
         headers: this.getAuthHeaders(),
         params,
       });
@@ -83,7 +67,7 @@ class NotificationAPI {
   // 읽음 처리
   async markAsRead(notificationId: number): Promise<void> {
     try {
-      await axios.post(`${this.baseURL}/read/${notificationId}`, null, {
+      await apiClient.post(`/api/notification/read/${notificationId}`, null, {
         headers: this.getAuthHeaders(),
       });
     } catch (error) {
@@ -94,7 +78,7 @@ class NotificationAPI {
   // 전체 삭제
   async deleteAll(): Promise<void> {
     try {
-      await axios.delete(this.baseURL, {
+      await apiClient.delete('/api/notification', {
         headers: this.getAuthHeaders(),
       });
     } catch (error) {
@@ -105,9 +89,12 @@ class NotificationAPI {
   // 읽지 않은 알림 개수
   async getUnreadCount(): Promise<NotificationCountResponse> {
     try {
-      const { data } = await axios.get<NotificationCountResponse>(`${this.baseURL}/unread-count`, {
-        headers: this.getAuthHeaders(),
-      });
+      const { data } = await apiClient.get<NotificationCountResponse>(
+        `/api/notification/unread-count`,
+        {
+          headers: this.getAuthHeaders(),
+        }
+      );
       return data;
     } catch (error) {
       throw new Error('읽지 않은 알림 개수 조회 실패');
