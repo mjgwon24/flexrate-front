@@ -22,13 +22,12 @@ const ConsumptionGoalStep = ({
         const signupData = {
           email: context.email,
           password: context.password,
-          method: context.method,
           sex: context.sex as 'MALE' | 'FEMALE',
           name: context.name,
           birthDate: context.birthDate,
           consumptionType: context.consumptionType as ConsumptionType,
           consumeGoal: selectedGoal,
-          ...(context.method === '간편비밀번호' && context.pin ? { pin: context.pin } : {}),
+          ...(context.pin ? { pin: context.pin } : {}),
         };
 
         console.log('최종 회원가입 데이터:', signupData);

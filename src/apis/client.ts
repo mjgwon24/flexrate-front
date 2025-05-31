@@ -10,8 +10,6 @@ export const apiClient = axios.create({
   },
 });
 
-<<<<<<< HEAD
-=======
 const getAccessToken = () => localStorage.getItem('accessToken');
 const setAccessToken = (token: string) => localStorage.setItem('accessToken', token);
 
@@ -52,4 +50,3 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
->>>>>>> 29fcf3b1269e5e09036267761482c31d07beadd5

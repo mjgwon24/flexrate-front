@@ -64,16 +64,15 @@ const PinLogin = () => {
       setLoading(true);
       try {
         const response = await loginWithPin({ pin: pinStr });
-        // 로그인 성공 시 토큰 저장
         localStorage.setItem('accessToken', response.accessToken);
         localStorage.setItem('refreshToken', response.refreshToken);
 
-        alert(`로그인 성공! 환영합니다, ${response.username}님.`);
+        alert(`인증되었습니다! ${response.username}님.`);
         // TODO: 로그인 성공 후 페이지 이동 또는 상태 업데이트
         router.push('/');  // 예: 홈 페이지로 이동
       } catch (error) {
         console.error(error);
-        alert('로그인 실패: PIN이 올바르지 않거나 오류가 발생했습니다.');
+        alert('PIN이 올바르지 않거나 오류가 발생했습니다.');
         setPin(Array(PIN_LENGTH).fill('')); // PIN 초기화
       } finally {
         setLoading(false);
@@ -111,7 +110,7 @@ const PinLogin = () => {
 
   return (
     <Container>
-      <Title>간편 비밀번호 로그인</Title>
+      <Title>PIN번호 입력</Title>
       <DotWrapper>
         {pin.map((digit, i) => (
           <Dot key={i} filled={digit !== ''} />

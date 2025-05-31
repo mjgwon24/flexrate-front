@@ -68,9 +68,6 @@ export const loginUser = async (data: LoginRequest): Promise<LoginResponse> => {
   return response.data;
 };
 
-
-
-
 // PIN 등록 API
 interface PinRegisterRequest {
   pin: string;
@@ -80,7 +77,7 @@ export const registerPin = async (data: PinRegisterRequest): Promise<string> => 
   const token = localStorage.getItem('accessToken');
   console.log('Register PIN token:', token);
   if (!token) {
-  throw new Error('Access token is missing, 로그인 필요');
+    throw new Error('Access token is missing, 로그인 필요');
   }
   const response = await apiClient.post(
     '/api/auth/login/pin/register',
@@ -94,17 +91,19 @@ export const registerPin = async (data: PinRegisterRequest): Promise<string> => 
   return response.data;
 };
 
-<<<<<<< HEAD
+// 액세스 토큰 재발급 API
+export const postAuthToken = async () => {
+  const response = await apiClient.post<{ accessToken: string }>(
+    '/api/auth/token',
+    {},
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data.accessToken;
+};
 
-// 엑세스토큰 로그인
-export interface LoginResponseDTO {
-  userId: number;
-  email: string;
-  accessToken: string;
-  refreshToken: string;
-  challenge: string;
-}
-
+// 로그인 PIN API
 export const loginWithPin = async (data: { pin: string }): Promise<LoginResponse> => {
   const token = localStorage.getItem('accessToken');
   const response = await apiClient.post<LoginResponse>(
@@ -116,7 +115,6 @@ export const loginWithPin = async (data: { pin: string }): Promise<LoginResponse
   );
   return response.data;
 };
-
 
 // PIN 등록여부 조회 API
 export const checkPinRegistered = async (): Promise<boolean> => {
@@ -131,36 +129,7 @@ export const checkPinRegistered = async (): Promise<boolean> => {
   return response.data;  // true 혹은 false 직접 반환
 };
 
-
-export const logoutUser = async (): Promise<void> => {
-  const refreshToken = localStorage.getItem('refreshToken');
-  if (!refreshToken) throw new Error('Refresh token 없음');
-
-  await apiClient.post(
-    `/api/auth/logout`,
-    null,
-    {
-      params: { refreshToken },
-    }
-  );
-
-  // 로컬스토리지에서 토큰 제거
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
-};
-=======
-// 액세스 토큰 재발급 API
-export const postAuthToken = async () => {
-  const response = await apiClient.post<{ accessToken: string }>(
-    '/api/auth/token',
-    {},
-    {
-      withCredentials: true,
-    }
-  );
-  return response.data.accessToken;
-};
-
+// 로그아웃 API
 export const logout = async (token: string) => {
   const { data } = await apiClient.post(
     '/api/auth/logout',
@@ -169,4 +138,3 @@ export const logout = async (token: string) => {
   );
   return data;
 };
->>>>>>> 29fcf3b1269e5e09036267761482c31d07beadd5
