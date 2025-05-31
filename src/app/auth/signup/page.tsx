@@ -4,7 +4,6 @@ import React from 'react';
 
 import { useFunnel } from '@use-funnel/browser';
 
-
 import Header from '@/components/Header/Header';
 import { Wrapper } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
 import Agreement from '@/components/signup/AgreeForConsumptionType/AgreeForConsumptionType';
@@ -41,13 +40,11 @@ const SignupPage = () => {
           render: ({ context }) => (
             <PasswordForm
               email={context.email}
-              onNext={({ password, method }) => {
-                const nextStep = method === '간편비밀번호' ? '간편비밀번호설정' : '내정보입력';
-                funnel.history.push(nextStep, (prev) => ({
+              onNext={({ password }) => {
+                funnel.history.push('간편비밀번호설정', (prev) => ({
                   ...prev,
                   ...context,
                   password,
-                  method,
                 }));
               }}
             />
@@ -58,15 +55,14 @@ const SignupPage = () => {
             <SignupPinForm
               onComplete={(pinStr: string) =>
                 void funnel.history.push('내정보입력', (prev) => ({
-                ...prev,
-                ...context,
-                pin: pinStr,
-          }))
-        }
-      />
-    ),
-  })}
-
+                  ...prev,
+                  ...context,
+                  pin: pinStr,
+                }))
+              }
+            />
+          ),
+        })}
         내정보입력={funnel.Render.with({
           render: ({ context }) => (
             <InfoForm
@@ -79,7 +75,6 @@ const SignupPage = () => {
                 birthDate: string;
                 name: string;
               }) => {
-                // 유저 정보 입력 후 소비 성향 체크 단계로 이동
                 void funnel.history.push('소비성향체크', (prev) => ({
                   ...prev,
                   ...context,
@@ -92,11 +87,12 @@ const SignupPage = () => {
           ),
         })}
         소비성향체크={funnel.Render.with({
-          render: () => (
+          render: ({ context }) => (
             <Agreement
               onNext={() =>
                 funnel.history.push('소비성향결과', (prev) => ({
-                  ...(prev as SignupSteps['소비성향결과']),
+                  ...prev,
+                  ...context,
                   agreement: true,
                 }))
               }
@@ -104,20 +100,19 @@ const SignupPage = () => {
           ),
         })}
         소비성향결과={funnel.Render.with({
-          render: ({ context }) => {
-            return (
-              <ConsumptionResult
-                userName={context.name ?? '사용자'}
-                onNext={(consumptionTypeKey) =>
-                  funnel.history.push('소비목적결과', (prev) => ({
-                    ...(prev as SignupSteps['소비목적결과']),
-                    consumptionType: consumptionTypeKey as ConsumptionTypeKey,
-                    consumptionGoal: '',
-                  }))
-                }
-              />
-            );
-          },
+          render: ({ context }) => (
+            <ConsumptionResult
+              userName={context.name ?? '사용자'}
+              onNext={(consumptionTypeKey) =>
+                funnel.history.push('소비목적결과', (prev) => ({
+                  ...prev,
+                  ...context,
+                  consumptionType: consumptionTypeKey as ConsumptionTypeKey,
+                  consumptionGoal: '',
+                }))
+              }
+            />
+          ),
         })}
         소비목적결과={funnel.Render.with({
           render: ({ context }) => {

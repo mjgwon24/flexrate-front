@@ -8,13 +8,7 @@ import Image from 'next/image';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import BottomSheet from '@/components/BottomSheet/BottomSheet';
 import Button from '@/components/Button/Button';
-import {
-  BtnWrapper,
-  Question,
-  SheetBtn,
-} from '@/components/login/LoginSelector/LoginSelector.style';
 import TextField from '@/components/TextField/TextField';
 
 import { Container, FormContainer, BtnContainer } from './../EmailForm/EmailForm.style';
@@ -38,7 +32,7 @@ type FormData = z.infer<typeof schema>;
 
 interface PasswordFormProps {
   email: string;
-  onNext: (data: { password: string; method: string }) => void;
+  onNext: (data: { password: string }) => void;
 }
 
 const PasswordForm = ({ email, onNext }: PasswordFormProps) => {
@@ -73,16 +67,11 @@ const PasswordForm = ({ email, onNext }: PasswordFormProps) => {
 
   const onSubmit = (data: FormData) => {
     tempPassword.current = data.password;
-    setShowSelector(true);
+    handleSelectMethod();
   };
 
-  const handleSelectMethod = (method: '간편비밀번호' | '지문' | '일반') => {
-
-    if (method === '간편비밀번호' || method === '일반') {
-      onNext({ password: tempPassword.current, method });
-    } else {
-      alert('지문 인증은 아직 지원하지 않습니다.');
-    }
+  const handleSelectMethod = () => {
+      onNext({ password: tempPassword.current });
   };
 
   return (
@@ -139,34 +128,6 @@ const PasswordForm = ({ email, onNext }: PasswordFormProps) => {
           <Button type="submit" text="다음으로" disabled={!isValid} />
         </BtnContainer>
       </FormContainer>
-
-      {showSelector && (
-        <BottomSheet isOpen={true}>
-          <Question>어떤 방법으로 로그인할까요?</Question>
-          <BtnWrapper>
-            <SheetBtn onClick={() => handleSelectMethod('간편비밀번호')}>
-              <BottomSheetBtnContainer>
-                <Image src={'/imgs/lock.svg'} width={36} height={36} alt="간편 비밀번호" />
-                간편 비밀번호
-              </BottomSheetBtnContainer>
-            </SheetBtn>
-
-            <SheetBtn onClick={() => handleSelectMethod('지문')}>
-              <BottomSheetBtnContainer>
-                <Image src={'/icons/finger_36.svg'} width={36} height={36} alt="지문 인증" />
-                지문 인증
-              </BottomSheetBtnContainer>
-            </SheetBtn>
-
-            <SheetBtn onClick={() => handleSelectMethod('일반')}>
-              <BottomSheetBtnContainer>
-                <Image src={'/icons/webee_36.svg'} width={36} height={36} alt="일반 로그인" />
-                일반 로그인
-              </BottomSheetBtnContainer>
-            </SheetBtn>
-          </BtnWrapper>
-        </BottomSheet>
-      )}
     </Container>
   );
 };

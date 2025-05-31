@@ -8,6 +8,7 @@ import { typoStyleMap } from '@/styles/typos';
 
 export const Wrapper = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -109,5 +110,8 @@ export const BtnContainer = styled.div`
   width: calc(100% - 44px);
   position: absolute;
   bottom: 0;
-  margin-bottom: 50px;
+  @media (max-height: 670px) {
+    margin-bottom: 50px;
+  }
+  margin-bottom: 100px;
 `;

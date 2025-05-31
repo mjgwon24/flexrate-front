@@ -2,7 +2,9 @@ import { useState } from 'react';
 
 import Image from 'next/image';
 
+import { useInitUser } from '@/hooks/useInitUser';
 import { useSlideTouch } from '@/hooks/useSlideTouch';
+import { useUserStore } from '@/stores/userStore';
 
 import FirstPage from './FirstPage/FirstPage';
 import {
@@ -17,9 +19,10 @@ import {
 import SecondPage from './SecondPage/SecondPage';
 
 const MainHasLoan = () => {
+  useInitUser();
+  const user = useUserStore((state) => state.user);
   const [index, setIndex] = useState(0);
   const totalSlides = 2;
-
   const {
     onTouchStart,
     onTouchMove,
@@ -67,7 +70,7 @@ const MainHasLoan = () => {
         onMouseLeave={onMouseLeave}
       >
         <Slide>
-          <FirstPage />
+          <FirstPage user={user} />
         </Slide>
         <Slide>
           <SecondPage />

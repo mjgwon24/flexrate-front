@@ -97,3 +97,8 @@ export const ErrorInfo = styled.div`
   padding-left: 0.5rem;
   margin-top: 0.2rem;
 `;
+
+export const DivideMargin = styled.div`
+  margin: 1rem 0;
+  width: 100%;
+`;

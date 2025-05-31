@@ -1,6 +1,7 @@
+import styled from '@emotion/styled';
+
 import { primitiveColor, semanticColor } from '@/styles/colors';
 import { typoStyleMap } from '@/styles/typos';
-import styled from '@emotion/styled';
 
 export const MediumTitleWrapper = styled.span`
   ${typoStyleMap['title2']};
