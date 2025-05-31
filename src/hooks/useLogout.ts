@@ -13,7 +13,7 @@ export const useLogout = () => {
         await logout(token);
       }
     },
-    onSuccess: () => {
+    onSettled: () => {
       localStorage.removeItem('accessToken');
       useUserStore.getState().clearUser();
       router.replace('/');
