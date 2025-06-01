@@ -1,9 +1,13 @@
 'use client';
 
+import { useEffect, useMemo, useState } from 'react';
+
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
+import BottomSheet from '@/components/BottomSheet/BottomSheet';
 import Button from '@/components/Button/Button';
 import Header from '@/components/Header/Header';
 import {
@@ -12,29 +16,16 @@ import {
   Wrapper,
 } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
 import { BtnContainer } from '@/components/signup/EmailForm/EmailForm.style';
+import {
+  useAvailableConsumptionMonth,
+  useConsumptionReport,
+  useConsumptionStatistic,
+} from '@/hooks/useConsumptionReport';
 import { primitiveColor, semanticColor } from '@/styles/colors';
 import { typoStyleMap } from '@/styles/typos';
+import { categoryMap, stats } from '@/types/consumption.type';
 
-const categoryMap: Record<string, string> = {
-  FOOD: '식비',
-  LIVING: '주거/생활',
-  LEISURE: '여가/취미',
-  TRANSPORT: '교통',
-  COMMUNICATION: '통신',
-  EDUCATION: '교육',
-  HEALTH: '의료/건강',
-  ETC: '기타',
-};
-
-const dummyStats = [
-  { category: 'HEALTH', amount: 120000, percentage: 80 },
-  { category: 'FOOD', amount: 90000, percentage: 60 },
-  { category: 'LEISURE', amount: 30000, percentage: 20 },
-  { category: 'TRANSPORT', amount: 20000, percentage: 10 },
-  { category: 'COMMUNICATION', amount: 15000, percentage: 5 },
-];
-
-const getTopStats = (stats: typeof dummyStats) => {
+const getTopStats = (stats: stats[]) => {
   if (!stats || stats.length === 0) return [];
   return stats.sort((a, b) => b.percentage - a.percentage).slice(0, 3);
 };
@@ -45,19 +36,16 @@ const getCircleSize = (percentage: number, max: number) => {
   return (percentage / max) * (maxSize - minSize) + minSize;
 };
 
-const getCircleStyle = (size: number) => {
+const getCircleStyle = (size: number, index: number) => {
   return {
-    rotate: size >= 180 ? 10 : size >= 160 ? -10 : 10,
+    rotate: index === 1 ? -20 : size >= 180 ? 10 : size >= 160 ? -10 : 10,
     bgColor:
-      size >= 180
-        ? semanticColor.bg.primary
-        : size >= 160
+      index === 1
         ? primitiveColor.blue[100]
+        : size >= 180
+        ? semanticColor.bg.primary
         : primitiveColor.blue[700],
-    color:
-      size >= 180 || size < 160
-        ? semanticColor.text.normal.onPrimary
-        : semanticColor.text.normal.accent,
+    color: index !== 1 ? semanticColor.text.normal.onPrimary : semanticColor.text.normal.accent,
     zIndex: size >= 180 ? 2 : size >= 160 ? 1 : 0,
   };
 };
@@ -70,26 +58,67 @@ const circleLayouts = [
 
 const ConsumptionReport = () => {
   const router = useRouter();
-  const topStats = getTopStats(dummyStats);
+  const [isDateModalOpen, setIsDateModalOpen] = useState(false);
+  const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') ?? '' : '';
+
+  const { data: monthsData } = useAvailableConsumptionMonth(token);
+  const months = useMemo(() => {
+    return monthsData ? [...monthsData].sort((a, b) => (a > b ? -1 : 1)) : [];
+  }, [monthsData]);
+
+  const initialDate = useMemo(() => {
+    if (!months || months.length === 0) return null;
+    const [year, month] = months[0].split('-');
+    return { year, month };
+  }, [months]);
+
+  const [selectedDate, setSelectedDate] = useState<{ year: string; month: string } | null>(null);
+
+  useEffect(() => {
+    if (initialDate && !selectedDate) {
+      setSelectedDate(initialDate);
+    }
+  }, [initialDate, selectedDate]);
+
+  const yearMonth =
+    selectedDate && selectedDate.year && selectedDate.month
+      ? `${selectedDate.year}-${selectedDate.month}`
+      : '';
+
+  const { data: reports } = useConsumptionReport(token, yearMonth);
+  const { data: statistic } = useConsumptionStatistic(token, yearMonth);
+
+  const handleDateModal = () => {
+    setIsDateModalOpen(!isDateModalOpen);
+  };
+
+  if (!selectedDate || !reports || !statistic) return null;
+
+  const topStats = getTopStats(statistic.stats);
 
   return (
     <Wrapper>
-      <Header backIcon={true} type="소비 습관 리포트" />
+      <Header type="소비 습관 리포트" />
       <Container>
-        <Title>
-          <TitleStrong>1월</TitleStrong> 카테고리별 소비 통계
-        </Title>
+        <DateContainer onClick={() => handleDateModal()}>
+          <Image src={'/icons/left_slide_arrow.svg'} width={14} height={14} alt="왼쪽 화살표" />
+          {selectedDate.year}년 {selectedDate.month}월
+          <Image src={'/icons/right_slide_arrow.svg'} width={14} height={14} alt="오른쪽 화살표" />
+        </DateContainer>
+
+        <Title>카테고리별 소비 통계</Title>
         <Description>
           최근 소비 패턴을 분석해,
           <br />더 나은 금융 습관을 제안합니다
         </Description>
+
         <CircleWrapper>
-          <CircleContainer>
+          <CircleContainer key={yearMonth}>
             {topStats.map((stat, index) => {
               const delay = index * 0.2;
               const size = getCircleSize(stat.percentage, topStats[0].percentage);
               const { top, left } = circleLayouts[index];
-              const style = getCircleStyle(size);
+              const style = getCircleStyle(size, index);
 
               return (
                 <StyledCircle
@@ -111,6 +140,7 @@ const ConsumptionReport = () => {
                     y: 0,
                     opacity: 1,
                     scale: 1,
+                    rotate: style.rotate,
                   }}
                   transition={{
                     type: 'spring',
@@ -131,22 +161,39 @@ const ConsumptionReport = () => {
 
         <ReportContainer>
           <Title>소비 분석 개선 리포트</Title>
-          <Description>
-            최근 소비 내용을 살펴보면, 꼭 필요한 생활비와 자기계발에 균형 있게 지출하고 계신 모습이
-            인상적이에요. 특히 자기계발에 투자하는 비율이 높아서, 단순한 소비보다는 앞으로를 위한
-            사용에 가치를 두고 계시다는 느낌이 들어요!
-            <br />
-            <br />
-            다만 가끔 외식이나 취미 쪽에서 예산보다 조금 더 쓰는 경향이 보이는데요, 이런 부분은
-            월초에 ‘자유롭게 써도 되는 예산’을 따로 정해두면 마음도 편하고 소비 후 아쉬움도 덜 수
-            있을 것 같아요. 지금처럼 균형 있는 소비를 유지하신다면 앞으로도 큰 걱정 없이 잘
-            관리해나가실 수 있을 거예요!
-          </Description>
+          <Description>{reports[0].summary}</Description>
         </ReportContainer>
+
         <BtnContainer>
           <Button size="XL" text="메인 페이지로 이동" onClick={() => router.push('/')} />
         </BtnContainer>
       </Container>
+
+      <BottomSheet isOpen={isDateModalOpen} onClose={() => setIsDateModalOpen(false)}>
+        <BottonSheetTitle>월 선택하기</BottonSheetTitle>
+        <BottonSheetContent>
+          {months.map((r) => {
+            const [year, month] = r.split('-');
+            const isSelected = selectedDate.year === year && selectedDate.month === month;
+            return (
+              <DateListContainer
+                key={r}
+                onClick={() => {
+                  setSelectedDate({ year, month });
+                  setIsDateModalOpen(false);
+                }}
+              >
+                <DateText>
+                  {year}년 {month}월
+                </DateText>
+                {isSelected && (
+                  <Image src={'/icons/checked_36.svg'} width={36} height={36} alt="checked" />
+                )}
+              </DateListContainer>
+            );
+          })}
+        </BottonSheetContent>
+      </BottomSheet>
     </Wrapper>
   );
 };
@@ -160,8 +207,15 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const TitleStrong = styled.span`
-  color: ${semanticColor.text.normal.accent};
+const DateContainer = styled.div`
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  ${typoStyleMap['title2']};
+  color: ${semanticColor.text.normal.primary};
+  gap: 20px;
+  margin-bottom: 20px;
 `;
 
 const CircleWrapper = styled.div`
@@ -198,7 +252,9 @@ interface StyledCircleProps {
   $color: string;
 }
 
-const StyledCircle = styled(motion.div)<StyledCircleProps>`
+const StyledCircle = styled(motion.div, {
+  shouldForwardProp: (prop) => !['$rotate', '$zIndex', '$bgColor', '$color'].includes(prop),
+})<StyledCircleProps>`
   position: absolute;
   top: ${({ top }) => `${top}px`};
   left: ${({ left }) => `${left}px`};
@@ -214,7 +270,6 @@ const StyledCircle = styled(motion.div)<StyledCircleProps>`
   background-color: ${({ $bgColor }) => $bgColor};
   color: ${({ $color }) => $color};
   z-index: ${({ $zIndex }) => $zIndex};
-  transform: rotate(${({ $rotate }) => $rotate}deg);
 `;
 
 const Percentage = styled.div`
@@ -227,4 +282,31 @@ const Category = styled.div`
 
 const Account = styled.div`
   ${typoStyleMap['caption1_m']};
+`;
+
+const BottonSheetTitle = styled.div`
+  padding: 12px 0px;
+  ${typoStyleMap['title3']};
+  color: ${semanticColor.text.normal.primary};
+`;
+
+const BottonSheetContent = styled.div`
+  padding: 0 0 40px 0;
+  height: 240px;
+  overflow-y: scroll;
+`;
+
+const DateListContainer = styled.div`
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+`;
+
+const DateText = styled.div`
+  ${typoStyleMap['body1_m']};
+  color: ${semanticColor.text.normal.sub1};
+  height: 35px;
+  padding-top: 8px;
 `;
