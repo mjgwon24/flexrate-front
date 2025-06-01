@@ -86,3 +86,12 @@ export const postAuthToken = async () => {
   );
   return response.data.accessToken;
 };
+
+export const logout = async (token: string) => {
+  const { data } = await apiClient.post(
+    '/api/auth/logout',
+    {},
+    { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
+  );
+  return data;
+};
