@@ -21,6 +21,7 @@ import {
   useConsumptionReport,
   useConsumptionStatistic,
 } from '@/hooks/useConsumptionReport';
+import { useUserStore } from '@/stores/userStore';
 import { primitiveColor, semanticColor } from '@/styles/colors';
 import { typoStyleMap } from '@/styles/typos';
 import { categoryMap, stats } from '@/types/consumption.type';
@@ -57,6 +58,7 @@ const circleLayouts = [
 ];
 
 const ConsumptionReport = () => {
+  const user = useUserStore((state) => state.user);
   const router = useRouter();
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') ?? '' : '';
@@ -98,7 +100,7 @@ const ConsumptionReport = () => {
 
   return (
     <Wrapper>
-      <Header type="소비 습관 리포트" />
+      <Header type="소비 습관 리포트" isLoggedIn={!!user} />
       <Container>
         <DateContainer onClick={() => handleDateModal()}>
           <Image src={'/icons/left_slide_arrow.svg'} width={14} height={14} alt="왼쪽 화살표" />
