@@ -1,5 +1,6 @@
-import { postVerifyEmailCode } from '@/apis/auth';
 import { useMutation } from '@tanstack/react-query';
+
+import { postVerifyEmailCode } from '@/apis/auth';
 
 export const useVerifyEmailCode = (onSuccessCallback: (email: string) => void) => {
   return useMutation({
