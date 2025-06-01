@@ -1,5 +1,3 @@
-import { LargeNumberLike } from 'crypto';
-
 export const categoryMap: Record<string, string> = {
   FOOD: '식비',
   LIVING: '주거/생활',
