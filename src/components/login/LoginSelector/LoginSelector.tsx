@@ -21,7 +21,6 @@ import {
 type LoginSelectorProps = {
   onSelectPassword: () => void;
   onSelectFace: () => void;
-  onSelectPin: () => void;
 };
 
 const LoginSelector = ({ onSelectFace, onSelectPassword }: LoginSelectorProps) => {
