@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 
 import { Wrapper } from '@/app/mypage/page.style';
 import { Title } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
-import { useUserStore, User } from '@/stores/userStore';
+import { useUserStore } from '@/stores/userStore';
 
 interface Props {
   email: string;
@@ -12,17 +12,14 @@ interface Props {
 
 export const CompleteStep = ({ email }: Props) => {
   const router = useRouter();
-  const setUser = useUserStore((state) => state.setUser); // 또는 updateEmail 등
+  const setUser = useUserStore((state) => state.setUser);
 
   useEffect(() => {
     sessionStorage.setItem('pendingEmail', email);
 
-    // 이메일을 전역 userStore에 반영
-    // setUser((prev: User) => ({ ...prev, email }));
-
     const timer = setTimeout(() => {
       router.replace('/mypage/edit');
-    }, 1000); // 1초 후 이동
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [email, setUser, router]);
