@@ -62,7 +62,7 @@ const FirstPage = ({ user }: { user: User | null }) => {
         </UserProductContainer>
       </BgContainer>
       <BgContainer color="gray">
-        <Banner type={user?.consumptionType} borderNone={true} />
+        <Banner type={user?.consumptionType} borderNone={true} isWithReport={true} />
         <AreaChart />
         <CardFlexContainer>
           <Card>
