@@ -9,11 +9,7 @@ import {
   Dot,
   KeypadWrapper,
   KeyButton,
-<<<<<<< HEAD
-} from '@/components/login/PinLogin/PinLogin.style'; // 스타일 그대로 재사용
-=======
 } from '@/components/login/PinLogin/AddPinLogin/AddPinLogin.style'; // 스타일 그대로 재사용
->>>>>>> 9df3f429688425314450c4f39c1d427b7abacf99
 
 const PIN_LENGTH = 6;
 
