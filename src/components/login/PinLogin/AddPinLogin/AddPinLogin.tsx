@@ -2,16 +2,11 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 
+import Image from 'next/image';
+
 import { registerPin } from '@/apis/auth';
 
-import {
-  Container,
-  Title,
-  DotWrapper,
-  Dot,
-  KeypadWrapper,
-  KeyButton,
-} from './AddPinLogin.style';
+import { Container, Dot, DotWrapper, KeyButton, KeypadWrapper, Title } from '../PinLogin.style';
 
 const PIN_LENGTH = 6;
 
@@ -107,11 +102,7 @@ const AddPinLogin = ({ email, onComplete }: AddPinLoginProps) => {
 
       <KeypadWrapper>
         {shuffledNumbers.map((num) => (
-          <KeyButton
-            key={num}
-            onClick={() => handleKeyClick(num.toString())}
-            disabled={loading}
-          >
+          <KeyButton key={num} onClick={() => handleKeyClick(num.toString())} disabled={loading}>
             {num}
           </KeyButton>
         ))}
@@ -121,8 +112,14 @@ const AddPinLogin = ({ email, onComplete }: AddPinLoginProps) => {
         <KeyButton onClick={() => handleKeyClick('0')} disabled={loading}>
           0
         </KeyButton>
-        <KeyButton onClick={() => handleKeyClick('del')} disabled={loading}>
-          ←
+        <KeyButton>
+          <Image
+            src={'/icons/deletePad.svg'}
+            onClick={() => handleKeyClick('del')}
+            alt="삭제하기"
+            width={27}
+            height={20}
+          />
         </KeyButton>
       </KeypadWrapper>
     </Container>
