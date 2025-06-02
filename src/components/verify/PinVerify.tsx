@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 import { verifyPin } from '@/apis/auth';
@@ -10,12 +11,12 @@ import { useLoanFunnelStore } from '@/stores/LoanFunnelStore';
 
 import {
   Container,
-  Title,
-  DotWrapper,
   Dot,
-  KeypadWrapper,
+  DotWrapper,
   KeyButton,
-} from './PinVerify.style';
+  KeypadWrapper,
+  Title,
+} from '../signup/SignupPinForm/SignupPinForm.style';
 
 const PIN_LENGTH = 6;
 
@@ -32,7 +33,6 @@ const PinVerify = () => {
   const router = useRouter();
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') ?? '' : '';
 
-  // 대출 신청 정보 전역 상태에서 가져오기
   const { funnelContext } = useLoanFunnelStore();
 
   const { mutate: applyLoan } = usePostLoanApplication(token);
@@ -40,7 +40,6 @@ const PinVerify = () => {
   const [pin, setPin] = useState<string[]>(Array(PIN_LENGTH).fill(''));
   const [loading, setLoading] = useState(false);
 
-  // 숫자 버튼 무작위 섞기
   const shuffledNumbers = useMemo(() => shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]), []);
 
   const handleKeyClick = (key: string) => {
@@ -69,9 +68,6 @@ const PinVerify = () => {
         try {
           const isValid = await verifyPin(pinStr);
           if (isValid) {
-            alert('PIN 인증 성공!');
-
-            // PIN 인증 성공 후 대출 신청 API 호출
             const requestBody = {
               loanAmount: funnelContext['대출신청접수']?.loanAmount ?? 0,
               repaymentMonth: funnelContext['대출신청접수']?.repaymentMonth ?? 1,
@@ -124,8 +120,14 @@ const PinVerify = () => {
         <KeyButton onClick={() => handleKeyClick('0')} disabled={loading}>
           0
         </KeyButton>
-        <KeyButton onClick={() => handleKeyClick('del')} disabled={loading}>
-          ←
+        <KeyButton>
+          <Image
+            src={'/icons/deletePad.svg'}
+            onClick={() => handleKeyClick('del')}
+            alt="삭제하기"
+            width={27}
+            height={20}
+          />
         </KeyButton>
       </KeypadWrapper>
     </Container>

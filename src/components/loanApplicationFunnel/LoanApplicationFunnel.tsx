@@ -48,7 +48,6 @@ const LoanApplicationFunnel = () => {
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') ?? '' : '';
   const { funnelContext, setFunnelContext } = useLoanFunnelStore();
   const { mutate: applyReviewLoan } = usePostLoanReviewApplication(token);
-  const { mutate: applyLoan } = usePostLoanApplication(token);
 
   useClearFunnelContext();
   useResumeFunnel();
@@ -188,26 +187,7 @@ const LoanApplicationFunnel = () => {
                   setFunnelContext('대출신청접수', ctx);
                 }}
                 onSubmit={() => {
-
-
                   router.push('/pin/verify');
-
-
-
-                  // const requestBody = {
-                  //   loanAmount: funnelContext['대출신청접수']?.loanAmount ?? 0,
-                  //   repaymentMonth: funnelContext['대출신청접수']?.repaymentMonth ?? 1,
-                  // };
-                  
-                  // applyLoan(requestBody, {
-                  //   onSuccess: () => {
-                  //     router.push('/loan-result');
-                  //   },
-                  //   onError: (err) => {
-                  //     console.error('대출 신청 실패', err);
-                  //     alert('대출 신청 중 오류가 발생했습니다.');
-                  //   },
-                  // });
                 }}
               />
             ),

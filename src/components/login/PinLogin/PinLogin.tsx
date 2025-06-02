@@ -2,11 +2,18 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 import { verifyPin } from '@/apis/auth';
-
-import { Container, Title, DotWrapper, Dot, KeypadWrapper, KeyButton } from './PinLogin.style';
+import {
+  Container,
+  Dot,
+  DotWrapper,
+  KeyButton,
+  KeypadWrapper,
+  Title,
+} from '@/components/signup/SignupPinForm/SignupPinForm.style';
 
 const PIN_LENGTH = 6;
 
@@ -93,8 +100,14 @@ const PinLogin = () => {
         <KeyButton onClick={() => handleKeyClick('0')} disabled={loading}>
           0
         </KeyButton>
-        <KeyButton onClick={() => handleKeyClick('del')} disabled={loading}>
-          ←
+        <KeyButton>
+          <Image
+            src={'/icons/deletePad.svg'}
+            onClick={() => handleKeyClick('del')}
+            alt="삭제하기"
+            width={27}
+            height={20}
+          />
         </KeyButton>
       </KeypadWrapper>
     </Container>
