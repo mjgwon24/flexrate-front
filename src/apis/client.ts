@@ -26,19 +26,29 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalConfig = error.config;
 
-    if (error.response?.status === 401 && originalConfig && !originalConfig._retry) {
+    const status = error.response?.status;
+    const message = error.response?.data?.message;
+
+    if (status === 401 && message === '유효하지 않은 리프레시 토큰입니다.') {
+      localStorage.removeItem('accessToken');
+      window.location.href = '/auth/login';
+      return Promise.reject(error);
+    }
+
+    if (status === 401 && originalConfig && !originalConfig._retry) {
       originalConfig._retry = true;
 
       try {
         const newAccessToken = await postAuthToken();
         setAccessToken(newAccessToken);
 
-        return apiClient({
+        return apiClient.request({
           ...originalConfig,
           headers: {
-            ...originalConfig.headers,
             Authorization: `Bearer ${newAccessToken}`,
+            ...(originalConfig.headers || {}),
           },
+          data: originalConfig.data,
         });
       } catch (e) {
         localStorage.removeItem('accessToken');

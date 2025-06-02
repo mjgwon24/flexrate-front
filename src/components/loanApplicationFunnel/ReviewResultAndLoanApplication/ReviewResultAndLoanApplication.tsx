@@ -45,7 +45,6 @@ const ReviewResultAndLoanApplication = ({ value, onChange, onSubmit }: ReviewRes
   const loanLimit = result ? formatNumberComma(result?.loanLimit) : '';
 
   const handleSubmit = () => {
-    
     router.push('/pin/login');
   };
 

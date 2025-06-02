@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
+import { patchEmailChange } from '@/apis/auth';
 import { BtnContainer, MainContainer, SubContainer, Wrapper } from '@/app/mypage/page.style';
 import Button from '@/components/Button/Button';
 import Header from '@/components/Header/Header';
@@ -12,7 +13,6 @@ import { Container } from '@/components/loanApplicationFunnel/LoanApplicationFun
 import TextField from '@/components/TextField/TextField';
 import { useInitUser } from '@/hooks/useInitUser';
 import { User, useUserStore } from '@/stores/userStore';
-import { patchEmailChange } from '@/apis/auth';
 
 const EditPage = () => {
   const router = useRouter();
