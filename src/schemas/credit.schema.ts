@@ -5,8 +5,10 @@ export const creditSchemas = {
     agreePrivacy: z.boolean().refine((val) => val === true, {
       message: '개인정보 제공에 동의해주세요.',
     }),
-    agreeService: z.boolean().refine((val) => val === true, {
-      message: '서비스 이용 약관에 동의해주세요.',
+    agreeMyDataTerms: z.boolean().refine((val) => val === true, {
+      message: '마이데이터 이용 약관에 동의해주세요.',
     }),
+    agreeThird: z.boolean(),
+    agreeCreditScoreGuide: z.boolean(),
   }),
 };
