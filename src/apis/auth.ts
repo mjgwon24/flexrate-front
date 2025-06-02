@@ -27,7 +27,6 @@ export const getMyPageUser = async () => {
 // 회원가입 API는 공통 인스턴스 사용
 export const postSignupUser = async (data: SignupRequest): Promise<SignupResponse> => {
   const response = await apiClient.post('/api/auth/signup/password', data);
-  console.log('Signup tokens:', response.data.accessToken, response.data.refreshToken);
   return response.data;
 };
 
@@ -69,25 +68,16 @@ export const loginUser = async (data: LoginRequest): Promise<LoginResponse> => {
 };
 
 // PIN 등록 API
-interface PinRegisterRequest {
-  pin: string;
-}
-
-export const registerPin = async (data: PinRegisterRequest): Promise<string> => {
+export const registerPin = async (data: { pin: string }): Promise<string> => {
   const token = localStorage.getItem('accessToken');
-  console.log('Register PIN token:', token);
   if (!token) {
     throw new Error('Access token is missing, 로그인 필요');
   }
-  const response = await apiClient.post(
-    '/api/auth/login/pin/register',
-    data,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await apiClient.post('/api/auth/login/pin/register', data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 };
 
@@ -106,27 +96,21 @@ export const postAuthToken = async () => {
 // 로그인 PIN API
 export const loginWithPin = async (data: { pin: string }): Promise<LoginResponse> => {
   const token = localStorage.getItem('accessToken');
-  const response = await apiClient.post<LoginResponse>(
-    '/api/auth/login/pin',
-    data,
-    {
-      headers: { Authorization: `Bearer ${token}` },
-    }
-  );
+  const response = await apiClient.post<LoginResponse>('/api/auth/login/pin', data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   return response.data;
 };
 
 // PIN 등록여부 조회 API
 export const checkPinRegistered = async (): Promise<boolean> => {
   const token = localStorage.getItem('accessToken');
-  console.log('서버로 엑세스토큰 전송:', token);
-
   const response = await apiClient.get<boolean>('/api/auth/login/pin/registered', {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  return response.data;  // true 혹은 false 직접 반환
+  return response.data;
 };
 
 // 로그아웃 API
