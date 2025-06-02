@@ -238,6 +238,7 @@ const CircleContainer = styled.div`
 
 const ReportContainer = styled.div`
   margin-top: 52px;
+  margin-bottom: 90px;
   padding-bottom: 90px;
   display: flex;
   flex-direction: column;
