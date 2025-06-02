@@ -41,7 +41,7 @@ const AgreementCredit = ({ onNext }: AgreementCreditProps) => {
   const agreeThird = watch('agreeThird');
   const agreeMyDataTerms = watch('agreeMyDataTerms');
   const agreeCreditScoreGuide = watch('agreeCreditScoreGuide');
-  const allChecked = agreePrivacy;
+  const allChecked = agreePrivacy  && agreeMyDataTerms && agreeThird && agreeCreditScoreGuide;
 
   const handleAllChange = (nextChecked: boolean) => {
     setValue('agreePrivacy', nextChecked, { shouldValidate: true });
