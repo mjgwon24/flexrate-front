@@ -93,6 +93,10 @@ const Header = ({ type, backIcon = false, isLoggedIn = false, onLogoutClick }: H
       );
     }
 
+    if (type === '소비 습관 리포트' && isLoggedIn) {
+      return <None />;
+    }
+
     return <RightNone />;
   };
 

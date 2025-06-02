@@ -11,13 +11,12 @@ export const useInitUser = () => {
   const prevUser = useUserStore.getState().user;
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (!token || !prevUser) {
+    if (!prevUser) {
       setUser(null);
       return;
     }
 
-    getMyPageUser(token)
+    getMyPageUser()
       .then((data) => {
         setUser({
           ...prevUser,
