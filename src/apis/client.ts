@@ -49,7 +49,6 @@ apiClient.interceptors.response.use(
             ...(originalConfig.headers || {}),
           },
           data: originalConfig.data,
-          _retry: false,
         });
       } catch (e) {
         localStorage.removeItem('accessToken');
