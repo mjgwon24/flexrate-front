@@ -20,7 +20,6 @@ import { apiClient } from './client';
 // 마이페이지 정보 조회 API
 export const getMyPageUser = async () => {
   const { data } = await apiClient.get(`/api/members/mypage`);
-
   return data;
 };
 
@@ -129,7 +128,7 @@ export const verifyPin = async (pin: string): Promise<boolean> => {
   if (!token) throw new Error('Access token is missing');
 
   const response = await apiClient.post<boolean>(
-    '/api/auth/login/pin/verify',
+    '/api/auth/pin/verify',
     { pin },
     {
       headers: { Authorization: `Bearer ${token}` },

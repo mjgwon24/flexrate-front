@@ -6,6 +6,9 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 import { verifyPin } from '@/apis/auth';
+import { usePostLoanApplication } from '@/hooks/useLoanApplication';
+import { useLoanFunnelStore } from '@/stores/LoanFunnelStore';
+
 import {
   Container,
   Dot,
@@ -13,7 +16,7 @@ import {
   KeyButton,
   KeypadWrapper,
   Title,
-} from '@/components/signup/SignupPinForm/SignupPinForm.style';
+} from '../signup/SignupPinForm/SignupPinForm.style';
 
 const PIN_LENGTH = 6;
 
@@ -26,8 +29,13 @@ const shuffleArray = (array: number[]) => {
   return arr;
 };
 
-const PinLogin = () => {
+const PinVerify = () => {
   const router = useRouter();
+  const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') ?? '' : '';
+
+  const { funnelContext } = useLoanFunnelStore();
+
+  const { mutate: applyLoan } = usePostLoanApplication(token);
 
   const [pin, setPin] = useState<string[]>(Array(PIN_LENGTH).fill(''));
   const [loading, setLoading] = useState(false);
@@ -60,16 +68,28 @@ const PinLogin = () => {
         try {
           const isValid = await verifyPin(pinStr);
           if (isValid) {
-            alert('PIN 인증 성공!');
-            // TODO: PIN 검증 성공 후 원하는 동작 (예: 페이지 이동)
-            router.push('/loan-result');
+            const requestBody = {
+              loanAmount: funnelContext['대출신청접수']?.loanAmount ?? 0,
+              repaymentMonth: funnelContext['대출신청접수']?.repaymentMonth ?? 1,
+            };
+
+            applyLoan(requestBody, {
+              onSuccess: () => {
+                router.push('/loan-result');
+              },
+              onError: (error) => {
+                alert('대출 신청 중 오류가 발생했습니다.');
+                console.error(error);
+                setPin(Array(PIN_LENGTH).fill(''));
+              },
+            });
           } else {
             alert('PIN이 올바르지 않습니다.');
             setPin(Array(PIN_LENGTH).fill(''));
           }
         } catch (error) {
-          console.error(error);
-          alert('오류가 발생했습니다.');
+          console.error('PIN 인증 중 오류 발생:', error);
+          alert('오류가 발생했습니다. 다시 시도해주세요.');
           setPin(Array(PIN_LENGTH).fill(''));
         } finally {
           setLoading(false);
@@ -77,7 +97,7 @@ const PinLogin = () => {
       };
       doVerify();
     }
-  }, [pin, router]);
+  }, [pin, router, applyLoan, funnelContext]);
 
   return (
     <Container>
@@ -114,4 +134,4 @@ const PinLogin = () => {
   );
 };
 
-export default PinLogin;
+export default PinVerify;
