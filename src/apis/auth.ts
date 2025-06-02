@@ -138,3 +138,18 @@ export const logout = async (token: string) => {
   );
   return data;
 };
+
+// PIN 검증 API
+export const verifyPin = async (pin: string): Promise<boolean> => {
+  const token = localStorage.getItem('accessToken');
+  if (!token) throw new Error('Access token is missing');
+
+  const response = await apiClient.post<boolean>(
+    '/api/auth/login/pin/verify',
+    { pin },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return response.data;
+};
