@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import Logo from '@/assets/img/logo(green).png';
+import Logo from '@/assets/img/logo(blue).png';
 import { useInitUser } from '@/hooks/useInitUser';
 import { useUserStore } from '@/stores/userStore';
 

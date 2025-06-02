@@ -2,14 +2,9 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 
-import {
-  Container,
-  Title,
-  DotWrapper,
-  Dot,
-  KeypadWrapper,
-  KeyButton,
-} from '@/components/login/PinLogin/AddPinLogin/AddPinLogin.style'; // 스타일 그대로 재사용
+import Image from 'next/image';
+
+import { Container, Dot, DotWrapper, KeyButton, KeypadWrapper, Title } from './SignupPinForm.style';
 
 const PIN_LENGTH = 6;
 
@@ -76,12 +71,11 @@ const SignupPinForm = ({ onComplete }: SignupPinFormProps) => {
         return;
       }
 
-      // PIN 일치 시 부모 컴포넌트에 PIN 전달
       setLoading(true);
       setTimeout(() => {
         onComplete(pinStr);
         setLoading(false);
-      }, 300); // 약간의 딜레이만 줌
+      }, 300);
     }
   }, [confirmPin, pin, step, onComplete]);
 
@@ -96,22 +90,24 @@ const SignupPinForm = ({ onComplete }: SignupPinFormProps) => {
 
       <KeypadWrapper>
         {shuffledNumbers.map((num) => (
-          <KeyButton
-            key={num}
-            onClick={() => handleKeyClick(num.toString())}
-            disabled={loading}
-          >
+          <KeyButton key={num} onClick={() => handleKeyClick(num.toString())} disabled={loading}>
             {num}
           </KeyButton>
         ))}
-        <KeyButton onClick={() => handleKeyClick('reset')} disabled={loading}>
+        <KeyButton onClick={() => handleKeyClick('reset')} disabled={loading} $isText={true}>
           전체삭제
         </KeyButton>
         <KeyButton onClick={() => handleKeyClick('0')} disabled={loading}>
           0
         </KeyButton>
-        <KeyButton onClick={() => handleKeyClick('del')} disabled={loading}>
-          ←
+        <KeyButton>
+          <Image
+            src={'/icons/deletePad.svg'}
+            onClick={() => handleKeyClick('del')}
+            alt="삭제하기"
+            width={27}
+            height={20}
+          />
         </KeyButton>
       </KeypadWrapper>
     </Container>

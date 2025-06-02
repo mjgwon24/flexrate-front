@@ -6,14 +6,7 @@ import { useRouter } from 'next/navigation';
 
 import { verifyPin } from '@/apis/auth';
 
-import {
-  Container,
-  Title,
-  DotWrapper,
-  Dot,
-  KeypadWrapper,
-  KeyButton,
-} from './PinLogin.style';
+import { Container, Title, DotWrapper, Dot, KeypadWrapper, KeyButton } from './PinLogin.style';
 
 const PIN_LENGTH = 6;
 

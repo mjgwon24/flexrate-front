@@ -11,7 +11,7 @@ export const HeaderContainer = styled.div`
 `;
 
 export const Wrapper = styled.div`
-  height: 85vh;
+  height: 96vh;
   overflow-y: auto;
 `;
 
