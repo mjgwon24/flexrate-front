@@ -71,12 +71,11 @@ const SignupPinForm = ({ onComplete }: SignupPinFormProps) => {
         return;
       }
 
-      // PIN 일치 시 부모 컴포넌트에 PIN 전달
       setLoading(true);
       setTimeout(() => {
         onComplete(pinStr);
         setLoading(false);
-      }, 300); // 약간의 딜레이만 줌
+      }, 300);
     }
   }, [confirmPin, pin, step, onComplete]);
 

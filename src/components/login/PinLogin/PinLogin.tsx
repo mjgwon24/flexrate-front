@@ -2,20 +2,13 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 
-import { useRouter } from 'next/navigation';  // 1. import 추가
+import { useRouter } from 'next/navigation';
 
 import { loginWithPin } from '@/apis/auth';
 import AddPinLogin from '@/components/login/PinLogin/AddPinLogin/AddPinLogin';
 import PinEmailForm from '@/components/login/PinLogin/PinEmailForm/PinEmailForm';
 
-import {
-  Container,
-  Title,
-  DotWrapper,
-  Dot,
-  KeypadWrapper,
-  KeyButton,
-} from './PinLogin.style';
+import { Container, Title, DotWrapper, Dot, KeypadWrapper, KeyButton } from './PinLogin.style';
 
 const PIN_LENGTH = 6;
 
@@ -29,7 +22,7 @@ const shuffleArray = (array: number[]) => {
 };
 
 const PinLogin = () => {
-  const router = useRouter();  // 2. router 선언
+  const router = useRouter();
 
   const [pin, setPin] = useState<string[]>(Array(PIN_LENGTH).fill(''));
   const [loading, setLoading] = useState(false);
@@ -58,29 +51,28 @@ const PinLogin = () => {
   };
 
   useEffect(() => {
-  const pinStr = pin.join('');
-  if (pinStr.length === PIN_LENGTH && !pin.includes('')) {
-    const doLogin = async () => {
-      setLoading(true);
-      try {
-        const response = await loginWithPin({ pin: pinStr });
-        localStorage.setItem('accessToken', response.accessToken);
-        localStorage.setItem('refreshToken', response.refreshToken);
+    const pinStr = pin.join('');
+    if (pinStr.length === PIN_LENGTH && !pin.includes('')) {
+      const doLogin = async () => {
+        setLoading(true);
+        try {
+          const response = await loginWithPin({ pin: pinStr });
+          localStorage.setItem('accessToken', response.accessToken);
+          localStorage.setItem('refreshToken', response.refreshToken);
 
-        alert(`인증되었습니다!`);
-        // TODO: 로그인 성공 후 페이지 이동 또는 상태 업데이트
-        router.push('/');  // 예: 홈 페이지로 이동
-      } catch (error) {
-        console.error(error);
-        alert('PIN이 올바르지 않거나 오류가 발생했습니다.');
-        setPin(Array(PIN_LENGTH).fill('')); // PIN 초기화
-      } finally {
-        setLoading(false);
-      }
-    };
-    doLogin();
-  }
-}, [pin, router]);
+          alert(`인증되었습니다!`);
+          router.push('/');
+        } catch (error) {
+          console.error(error);
+          alert('PIN이 올바르지 않거나 오류가 발생했습니다.');
+          setPin(Array(PIN_LENGTH).fill(''));
+        } finally {
+          setLoading(false);
+        }
+      };
+      doLogin();
+    }
+  }, [pin, router]);
 
   if (showAddPin) {
     return (
@@ -103,7 +95,6 @@ const PinLogin = () => {
           setShowPinEmailForm(false);
           setShowAddPin(true);
         }}
-        // onCancel={() => setShowPinEmailForm(false)}
       />
     );
   }

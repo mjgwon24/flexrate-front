@@ -20,11 +20,11 @@ const shuffleArray = (array: number[]) => {
 };
 
 type AddPinLoginProps = {
-  email: string; // 사용하지 않지만 유지 (혹시 UI에 필요하면)
+  email: string;
   onComplete: (pinStr: string) => void;
 };
 
-const AddPinLogin = ({ email, onComplete }: AddPinLoginProps) => {
+const AddPinLogin = ({ onComplete }: AddPinLoginProps) => {
   const [pin, setPin] = useState<string[]>(Array(PIN_LENGTH).fill(''));
   const [confirmPin, setConfirmPin] = useState<string[]>(Array(PIN_LENGTH).fill(''));
   const [step, setStep] = useState<'input' | 'confirm'>('input');
@@ -87,7 +87,7 @@ const AddPinLogin = ({ email, onComplete }: AddPinLoginProps) => {
             alert('PIN 등록에 실패했습니다.');
             setLoading(false);
           });
-      }, 800); // 0.8초 딜레이
+      }, 800);
     }
   }, [confirmPin, pin, step, onComplete]);
 

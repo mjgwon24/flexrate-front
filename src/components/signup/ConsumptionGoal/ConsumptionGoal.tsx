@@ -17,7 +17,6 @@ import { BtnContainer, Container, Title } from '../EmailForm/EmailForm.style';
 
 import { GoalOptionButton, Options } from './ConsumptionGoal.style';
 
-// Props 타입 정의: 전달받은 소비 성향(consumptionType)에 맞는 목표 옵션을 보여주고 선택된 값을 상위로 전달
 interface ConsumptionGoalProps {
   consumptionType: CharacterInfo;
   onComplete: (selectedGoal: string) => void;
@@ -25,8 +24,6 @@ interface ConsumptionGoalProps {
 
 const ConsumptionGoal = ({ consumptionType, onComplete }: ConsumptionGoalProps) => {
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
-
-  // 선택된 소비 성향에 따라 표시할 소비 목표 옵션 가져오기
   const { options } = consumptionGoalMap[consumptionType.key];
 
   return (

@@ -49,11 +49,7 @@ const Header = ({ type, backIcon = false, isLoggedIn = false, onLogoutClick }: H
     if (type === '우리금융그룹' && isLoggedIn) {
       return (
         <HeaderRightContainer>
-          <NotificationBadge
-            unreadCount={unreadCount}
-            onClick={notifications}
-            showCount={true} // 숫자 표시
-          />
+          <NotificationBadge unreadCount={unreadCount} onClick={notifications} showCount={true} />
           <Image
             src="/icons/webee_36.svg"
             width={36}

@@ -16,12 +16,9 @@ import {
   Title,
 } from './LoginSelector.style';
 
-// API 호출 함수 임포트 위치에 맞게 수정 필요
-
 type LoginSelectorProps = {
   onSelectPassword: () => void;
   onSelectFace: () => void;
-  onSelectPin: () => void;
 };
 
 const LoginSelector = ({ onSelectFace, onSelectPassword }: LoginSelectorProps) => {
