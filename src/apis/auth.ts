@@ -27,7 +27,6 @@ export const getMyPageUser = async (token: string) => {
 // 회원가입 API는 공통 인스턴스 사용
 export const postSignupUser = async (data: SignupRequest): Promise<SignupResponse> => {
   const response = await apiClient.post('/api/auth/signup/password', data);
-  console.log('Signup tokens:', response.data.accessToken, response.data.refreshToken);
   return response.data;
 };
 

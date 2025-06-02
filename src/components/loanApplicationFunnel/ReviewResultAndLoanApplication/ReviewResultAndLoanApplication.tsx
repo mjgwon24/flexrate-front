@@ -38,14 +38,15 @@ interface ReviewResultProps {
 
 const ReviewResultAndLoanApplication = ({ value, onChange, onSubmit }: ReviewResultProps) => {
   const router = useRouter();
-  const token = typeof window !== undefined ? localStorage.getItem('accessToken') ?? '' : '';
+  const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') ?? '' : '';
+
   const { data: result } = useGetLoanReivewApplication(token);
 
   const loanLimit = result ? formatNumberComma(result?.loanLimit) : '';
 
   const handleSubmit = () => {
-    // onSubmit();
-    router.push('/pin/login');  // PIN 인증 페이지로 이동 (경로는 상황에 맞게 수정)
+    
+    router.push('/pin/login');
   };
 
   return (
