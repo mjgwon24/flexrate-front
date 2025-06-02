@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import { ConsumptionTypeKey } from '@/constants/auth.constant';
 import {
   ConsumptionTypeResponse,
@@ -16,11 +18,8 @@ import { apiClient } from './client';
  */
 
 // 마이페이지 정보 조회 API
-export const getMyPageUser = async (token: string) => {
-  const { data } = await apiClient.get(`/api/members/mypage`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
+export const getMyPageUser = async () => {
+  const { data } = await apiClient.get(`/api/members/mypage`);
   return data;
 };
 
@@ -83,8 +82,8 @@ export const registerPin = async (data: { pin: string }): Promise<string> => {
 
 // 액세스 토큰 재발급 API
 export const postAuthToken = async () => {
-  const response = await apiClient.post<{ accessToken: string }>(
-    '/api/auth/token',
+  const response = await axios.post<{ accessToken: string }>(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/auth/token`,
     {},
     {
       withCredentials: true,
