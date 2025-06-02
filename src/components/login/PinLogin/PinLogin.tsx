@@ -67,7 +67,7 @@ const PinLogin = () => {
         localStorage.setItem('accessToken', response.accessToken);
         localStorage.setItem('refreshToken', response.refreshToken);
 
-        alert(`인증되었습니다! ${response.username}님.`);
+        alert(`인증되었습니다!`);
         // TODO: 로그인 성공 후 페이지 이동 또는 상태 업데이트
         router.push('/');  // 예: 홈 페이지로 이동
       } catch (error) {
