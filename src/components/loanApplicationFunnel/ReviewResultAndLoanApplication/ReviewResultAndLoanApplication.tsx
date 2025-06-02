@@ -44,7 +44,7 @@ const ReviewResultAndLoanApplication = ({ value, onChange, onSubmit }: ReviewRes
   const loanLimit = result ? formatNumberComma(result?.loanLimit) : '';
 
   const handleSubmit = () => {
-    onSubmit();             // 기존 제출 동작 실행
+    // onSubmit();
     router.push('/pin/login');  // PIN 인증 페이지로 이동 (경로는 상황에 맞게 수정)
   };
 
