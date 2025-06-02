@@ -53,6 +53,7 @@ export const patchEmailChange = async (token: string, email: string) => {
   return data;
 };
 
+// 소비성향 조회
 export const getConsumptionType = async (): Promise<ConsumptionTypeKey> => {
   const response = await apiClient.get<ConsumptionTypeResponse>('/api/auth/consumption-type');
   return response.data.consumptionType;
@@ -66,11 +67,16 @@ export const loginUser = async (data: LoginRequest): Promise<LoginResponse> => {
   return response.data;
 };
 
-// PIN 로그인 API
-export const loginWithPin = async (memberId: number, pin: string): Promise<LoginResponse> => {
-  const response = await apiClient.post('/api/auth/login/pin', {
-    memberId,
-    pin,
+// PIN 등록 API
+export const registerPin = async (data: { pin: string }): Promise<string> => {
+  const token = localStorage.getItem('accessToken');
+  if (!token) {
+    throw new Error('Access token is missing, 로그인 필요');
+  }
+  const response = await apiClient.post('/api/auth/login/pin/register', data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
   return response.data;
 };
@@ -87,6 +93,27 @@ export const postAuthToken = async () => {
   return response.data.accessToken;
 };
 
+// 로그인 PIN API
+export const loginWithPin = async (data: { pin: string }): Promise<LoginResponse> => {
+  const token = localStorage.getItem('accessToken');
+  const response = await apiClient.post<LoginResponse>('/api/auth/login/pin', data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+// PIN 등록여부 조회 API
+export const checkPinRegistered = async (): Promise<boolean> => {
+  const token = localStorage.getItem('accessToken');
+  const response = await apiClient.get<boolean>('/api/auth/login/pin/registered', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+// 로그아웃 API
 export const logout = async (token: string) => {
   const { data } = await apiClient.post(
     '/api/auth/logout',
@@ -94,4 +121,19 @@ export const logout = async (token: string) => {
     { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
   );
   return data;
+};
+
+// PIN 검증 API
+export const verifyPin = async (pin: string): Promise<boolean> => {
+  const token = localStorage.getItem('accessToken');
+  if (!token) throw new Error('Access token is missing');
+
+  const response = await apiClient.post<boolean>(
+    '/api/auth/login/pin/verify',
+    { pin },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return response.data;
 };

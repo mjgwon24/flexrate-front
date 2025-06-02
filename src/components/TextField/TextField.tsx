@@ -37,14 +37,13 @@ const TextFieldBox = ({ type, placeholder }: { type?: string; placeholder?: stri
   const [focused, setFocused] = useState(false);
 
   const inputType = getInputType({ isError, isDisabled, value }) ?? 'INACTIVE';
-  const displayValue = value === '0' ? '' : value;
 
   return (
     <S.InputWrapper>
       <S.StyledInput
         id="text-field"
         type={type}
-        value={displayValue}
+        value={value}
         onChange={(e) => onChange(e.target.value)}
         $inputType={inputType}
         disabled={isDisabled}

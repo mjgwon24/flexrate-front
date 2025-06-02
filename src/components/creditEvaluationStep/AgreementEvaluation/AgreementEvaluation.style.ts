@@ -21,4 +21,5 @@ export const BtnContainer = styled.div`
   gap: 16px;
   position: absolute;
   bottom: 0;
+  margin-bottom: 50px;
 `;

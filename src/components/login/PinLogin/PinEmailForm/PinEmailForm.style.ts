@@ -7,10 +7,13 @@ export const Container = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
+  min-height: 640px;
 `;
 
 export const Title = styled.div`
-  padding: 12px 22px;
+  padding: 10px 22px;
+  margin-top: 8px;
   ${typoStyleMap['head1']};
   color: ${semanticColor.text.normal.primary};
 `;
@@ -18,7 +21,7 @@ export const Title = styled.div`
 export const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
-  margin-top: 34px;
+  margin-top: 32px;
   padding: 0px 22px;
   gap: 12px;
 `;
@@ -26,6 +29,7 @@ export const FormContainer = styled.form`
 export const BtnContainer = styled.div`
   width: calc(100% - 44px);
   position: absolute;
-  bottom: 0;
-  margin-bottom: 50px;
+  bottom: 43px;
+  left: 22px;
+  height: 0px;
 `;

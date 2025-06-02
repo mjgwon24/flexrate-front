@@ -27,8 +27,8 @@ const ConsumptionGoalStep = ({
           birthDate: context.birthDate,
           consumptionType: context.consumptionType as ConsumptionType,
           consumeGoal: selectedGoal,
+          ...(context.pin ? { pin: context.pin } : {}),
         };
-
         signupMutation.mutate(signupData);
       }}
     />

@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import Button from '@/components/Button/Button';
 import TextField from '@/components/TextField/TextField';
 import { useGetLoanReivewApplication } from '@/hooks/useLoanApplication';
@@ -34,11 +36,16 @@ interface ReviewResultProps {
   onSubmit: () => void;
 }
 
-const ReviewResultAndLoanApplication = ({ value, onChange, onSubmit }: ReviewResultProps) => {
+const ReviewResultAndLoanApplication = ({ value, onChange }: ReviewResultProps) => {
+  const router = useRouter();
   const token = typeof window !== undefined ? localStorage.getItem('accessToken') ?? '' : '';
   const { data: result } = useGetLoanReivewApplication(token);
 
   const loanLimit = result ? formatNumberComma(result?.loanLimit) : '';
+
+  const handleSubmit = () => {
+    router.push('/pin/login');
+  };
 
   return (
     result && (
@@ -124,7 +131,7 @@ const ReviewResultAndLoanApplication = ({ value, onChange, onSubmit }: ReviewRes
           </LoanApplicationContainer>
         </MainContainer>
         <BtnContainer>
-          <Button text="대출 신청하기" onClick={onSubmit} />
+          <Button text="대출 신청하기" onClick={handleSubmit} />
         </BtnContainer>
       </Container>
     )

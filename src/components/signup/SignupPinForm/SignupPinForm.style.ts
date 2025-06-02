@@ -10,55 +10,58 @@ export const Container = styled.div`
 `;
 
 export const Title = styled.h2`
-  margin: 120px 0 7px;
+  margin: 120px 0 40px;
   ${typoStyleMap['head1']};
   color: ${semanticColor.text.normal.primary};
+
+  @media (max-height: 670px) {
+    margin: 70px 0 40px;
+  }
 `;
 
 export const DotWrapper = styled.div`
   display: flex;
-  gap: 21px;
-  margin-bottom: 76px;
+  gap: 25px;
+  margin-bottom: 30px;
 `;
 
 export const Dot = styled.div<{ filled: boolean }>`
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background-color: ${({ filled }) =>
     filled ? semanticColor.bg.primary : semanticColor.bg.subtle};
 `;
 
 export const KeypadWrapper = styled.div`
-  width: 100%;
+  position: fixed;
+  bottom: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 14px;
   padding: 35px 0px;
   background-color: ${semanticColor.bg.primary};
-  margin-top: 128px;
+  margin-top: 150px;
 
-  @media (min-width: 600px) {
-    max-width: none;
-    margin: 250px 0 0;
+  width: 768px;
+  @media screen and (max-width: 768px) {
+    width: 100%;
   }
 `;
 
-export const KeyButton = styled.button`
-  height: 55px;
-  ${typoStyleMap['title2']};
+export const KeyButton = styled.button<{ $isText?: boolean }>`
+  height: 60px;
+  ${({ $isText }) => ($isText ? typoStyleMap['title3'] : typoStyleMap['head1'])};
   color: ${semanticColor.text.normal.onPrimary};
   background: transparent;
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  font-size: 24px;
 
   &:active {
     background: rgba(255, 255, 255, 0.2);
   }
 `;
-
 
 export const RegisterButtonWrapper = styled.div`
   background-color: transparent;
@@ -68,7 +71,7 @@ export const RegisterButtonWrapper = styled.div`
 
 export const RegisterButton = styled.button`
   background-color: transparent;
-  color: #000000;
+  color: ${semanticColor.text.normal.primary};
   font-size: 14px;
   border: none;
   cursor: pointer;
