@@ -1,6 +1,5 @@
 'use client';
 
-import styled from '@emotion/styled';
 import Image from 'next/image';
 
 import { ImageLabelContainer, Label, ShowMore, Wrapper } from './CheckBox.style';
@@ -10,6 +9,7 @@ interface SvgCheckboxProps {
   checked: boolean;
   label: string;
   showMoreText?: string;
+  showMoreUrl?: string;
   disabled?: boolean;
   onChange: (checked: boolean) => void;
 }
@@ -19,6 +19,7 @@ const CheckBox = ({
   checked,
   label,
   showMoreText,
+  showMoreUrl,
   disabled = false,
   onChange,
 }: SvgCheckboxProps) => {
@@ -37,7 +38,20 @@ const CheckBox = ({
           {label}
         </Label>
       </ImageLabelContainer>
-      {showMoreText && <ShowMore>{showMoreText}</ShowMore>}
+      {showMoreText && showMoreUrl ? (
+        <ShowMore>
+          <a
+            href={showMoreUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={e => e.stopPropagation()}
+          >
+            {showMoreText}
+          </a>
+        </ShowMore>
+      ) : (
+        showMoreText && <ShowMore>{showMoreText}</ShowMore>
+      )}
     </Wrapper>
   );
 };

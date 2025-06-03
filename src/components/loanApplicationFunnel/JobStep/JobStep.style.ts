@@ -1,6 +1,7 @@
+import styled from '@emotion/styled';
+
 import { semanticColor } from '@/styles/colors';
 import { typoStyleMap } from '@/styles/typos';
-import styled from '@emotion/styled';
 
 export const MainContainer = styled.div`
   position: relative;
@@ -38,4 +39,5 @@ export const BtnContainer = styled.div`
   width: calc(100% - 44px);
   position: absolute;
   bottom: 0;
+  margin-bottom: 50px;
 `;

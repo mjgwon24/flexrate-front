@@ -141,7 +141,6 @@ const IntroduceHome = () => {
                 varient="TERTIARY"
                 onClick={() => {
                   setModalType(null);
-                  router.push('/loan-application');
                 }}
               />
               <Button

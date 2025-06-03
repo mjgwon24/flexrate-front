@@ -3,7 +3,16 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
-import { HeaderContainer, HeaderRightContainer, HeaderTitle, None } from './Header.style';
+import NotificationBadge from '@/components/NotificationBadge/NotificationBadge';
+import { useUnreadNotificationCount } from '@/hooks/useUnreadNotificationCount';
+
+import {
+  HeaderContainer,
+  HeaderRightContainer,
+  HeaderTitle,
+  None,
+  RightNone,
+} from './Header.style';
 
 type HeaderType =
   | '신용 점수 평가'
@@ -19,10 +28,14 @@ interface HeaderProps {
   backIcon?: boolean;
   isLoggedIn?: boolean;
   hasLoan?: boolean;
+  onLogoutClick?: () => void;
 }
 
-const Header = ({ type, backIcon = false, isLoggedIn = false }: HeaderProps) => {
+const Header = ({ type, backIcon = false, isLoggedIn = false, onLogoutClick }: HeaderProps) => {
   const router = useRouter();
+  const { unreadCount } = useUnreadNotificationCount();
+  const notifications = () => router.push('/notifications');
+  const mypage = () => router.push('/mypage');
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -36,8 +49,14 @@ const Header = ({ type, backIcon = false, isLoggedIn = false }: HeaderProps) => 
     if (type === '우리금융그룹' && isLoggedIn) {
       return (
         <HeaderRightContainer>
-          <Image src="/icons/alert_36.svg" width={36} height={36} alt="알림" />
-          <Image src="/icons/webee_36.svg" width={36} height={36} alt="마이페이지" />
+          <NotificationBadge unreadCount={unreadCount} onClick={notifications} showCount={true} />
+          <Image
+            src="/icons/webee_36.svg"
+            width={36}
+            height={36}
+            alt="마이페이지"
+            onClick={mypage}
+          />
         </HeaderRightContainer>
       );
     }
@@ -45,12 +64,36 @@ const Header = ({ type, backIcon = false, isLoggedIn = false }: HeaderProps) => 
     if (type === '알림함' && isLoggedIn) {
       return (
         <HeaderRightContainer>
-          <Image src="/icons/webee_36.svg" width={36} height={36} alt="마이페이지" />
+          <Image
+            src="/icons/webee_36.svg"
+            width={36}
+            height={36}
+            alt="마이페이지"
+            onClick={mypage}
+          />
         </HeaderRightContainer>
       );
     }
 
-    return <None />;
+    if (type === '마이페이지' && isLoggedIn) {
+      return (
+        <HeaderRightContainer>
+          <Image
+            src="/icons/logout_36.svg"
+            width={36}
+            height={36}
+            alt="로그아웃"
+            onClick={onLogoutClick}
+          />
+        </HeaderRightContainer>
+      );
+    }
+
+    if (type === '소비 습관 리포트' && isLoggedIn) {
+      return <None />;
+    }
+
+    return <RightNone />;
   };
 
   return (
@@ -63,6 +106,8 @@ const Header = ({ type, backIcon = false, isLoggedIn = false }: HeaderProps) => 
           alt="뒤로가기"
           onClick={handleBack}
         />
+      ) : type === '우리금융그룹' && !isLoggedIn ? (
+        <RightNone />
       ) : (
         <None />
       )}

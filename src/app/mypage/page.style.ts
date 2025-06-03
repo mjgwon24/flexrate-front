@@ -59,3 +59,24 @@ export const BtnContainer = styled.div`
   position: absolute;
   bottom: 0;
 `;
+
+export const TitleContainer = styled.div`
+  padding: 12px 22px;
+`;
+
+export const Title = styled.div`
+  ${typoStyleMap['title2']};
+  color: ${semanticColor.text.normal.primary};
+`;
+
+export const SubText = styled.div`
+  ${typoStyleMap['body2_m']};
+  color: ${semanticColor.text.normal.sub2};
+`;
+
+export const ModalBtnContainer = styled.div`
+  padding: 0px 22px;
+  display: flex;
+  gap: 8px;
+  margin-top: 70px;
+`;

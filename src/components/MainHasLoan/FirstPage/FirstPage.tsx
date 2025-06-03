@@ -1,4 +1,13 @@
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+
+import AreaChart from '@/components/AreaChart/AreaChart';
 import Banner from '@/components/Banner/Banner';
+import { useMainFirstPage } from '@/hooks/useMainFirstPage';
+import { useMainSecondPage } from '@/hooks/useMainSecondPage';
+import { User } from '@/stores/userStore';
+import { formatKoreanMoneyUnit } from '@/utils/formatKoreanMoneyUnit';
+
 import {
   BgContainer,
   Body2,
@@ -21,56 +30,65 @@ import {
   UserProductContentContainer,
   Wrapper,
 } from './FirstPage.style';
-import AreaChart from '@/components/AreaChart/AreaChart';
-import Image from 'next/image';
 
-const FirstPage = () => {
+const FirstPage = ({ user }: { user: User | null }) => {
+  const router = useRouter();
+  const { interestCurrent, creditScore } = useMainFirstPage();
+  const { mainData } = useMainSecondPage();
+
+  const totalAmount =
+    mainData?.totalAmount != null ? formatKoreanMoneyUnit(mainData.totalAmount) : '-';
+
   return (
     <Wrapper>
       <BgContainer color="white">
         <MainTitleContainer>
-          <Title2>서채연님,</Title2>
+          <Title2>{user?.username}님,</Title2>
           <Body2>
-            현재 <Body3>300만원</Body3> 대출 상품을 이용 중입니다.
+            현재 <Body3>{totalAmount}</Body3> 대출 상품을 이용 중입니다.
           </Body2>
         </MainTitleContainer>
         <UserProductContainer>
           <ProductTitle>나의 대출 상품</ProductTitle>
           <UserProductContentContainer>
             <Title2 isStrong={true}>
-              Flex rate<Title2>신용대출</Title2>
+              Flexrate<Title2>신용대출</Title2>
             </Title2>
             <Tags>
-              <SmallTag>1년</SmallTag>
-              <SmallTag>300만원</SmallTag>
+              <SmallTag>{mainData?.repaymentMonth}개월</SmallTag>
+              <SmallTag>{totalAmount}</SmallTag>
             </Tags>
           </UserProductContentContainer>
         </UserProductContainer>
       </BgContainer>
       <BgContainer color="gray">
-        <Banner type="CONSERVATIVE" borderNone={true} />
+        <Banner type={user?.consumptionType} borderNone={true} isWithReport={true} />
         <AreaChart />
         <CardFlexContainer>
           <Card>
             <CardTitle>
-              12<SmallTitle>%</SmallTitle>
+              {interestCurrent?.currentRate}
+              <SmallTitle>%</SmallTitle>
             </CardTitle>
             <CardContentContainer>
               <SubTitle>오늘의 대출금리</SubTitle>
               <FlexContainer>
                 <Description type="sub2">어제 대비</Description>
                 <Image src={'/icons/greenUpArrow.svg'} alt="위 화살표" width={18} height={18} />
-                <PercentageText>3%</PercentageText>
+                <PercentageText>{interestCurrent?.changeRatePercent.toFixed(2)}%</PercentageText>
               </FlexContainer>
             </CardContentContainer>
           </Card>
           <Card>
             <CardTitle>
-              640<SmallTitle>점</SmallTitle>
+              {creditScore?.creditScore}
+              <SmallTitle>점</SmallTitle>
             </CardTitle>
             <CardContentContainer>
               <SubTitle>신용 평가 점수</SubTitle>
-              <Description type="sub2">평가 다시 받기 -&gt;</Description>
+              <Description type="sub2" onClick={() => router.push('/credit-evaluation')}>
+                평가 다시 받기 -&gt;
+              </Description>
             </CardContentContainer>
           </Card>
         </CardFlexContainer>

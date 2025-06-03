@@ -90,6 +90,7 @@ export const semanticColor = {
     active: {
       primary: primitiveColor.blue.primary,
       secondary: primitiveColor.blue[50],
+      tertiary: primitiveColor.blue[100],
       error: primitiveColor.red[50],
       wt: primitiveColor.background.wt,
       bk: primitiveColor.background.bk,

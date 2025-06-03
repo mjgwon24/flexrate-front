@@ -2,18 +2,18 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 
-import { loginWithPin } from '@/apis/auth';
- 
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+
+import { verifyPin } from '@/apis/auth';
 import {
   Container,
-  Title,
-  DotWrapper,
   Dot,
-  KeypadWrapper,
+  DotWrapper,
   KeyButton,
-} from './PinLogin.style';
-
-// API 함수 import (실제 경로에 맞게 조정 필요)
+  KeypadWrapper,
+  Title,
+} from '@/components/signup/SignupPinForm/SignupPinForm.style';
 
 const PIN_LENGTH = 6;
 
@@ -27,16 +27,15 @@ const shuffleArray = (array: number[]) => {
 };
 
 const PinLogin = () => {
+  const router = useRouter();
+
   const [pin, setPin] = useState<string[]>(Array(PIN_LENGTH).fill(''));
   const [loading, setLoading] = useState(false);
-
-  // TODO: 실제 memberId는 로그인 상태나 Context에서 받아오기
-  const memberId = 123; 
 
   const shuffledNumbers = useMemo(() => shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]), []);
 
   const handleKeyClick = (key: string) => {
-    if (loading) return; // 로딩 중엔 입력 막기
+    if (loading) return;
 
     const newPin = [...pin];
 
@@ -53,30 +52,36 @@ const PinLogin = () => {
     setPin(newPin);
   };
 
-  // PIN이 다 채워지면 자동으로 로그인 시도
   useEffect(() => {
     const pinStr = pin.join('');
     if (pinStr.length === PIN_LENGTH && !pin.includes('')) {
-      const doLogin = async () => {
+      const doVerify = async () => {
         setLoading(true);
         try {
-          const response = await loginWithPin(memberId, pinStr) as unknown as { user: { name: string } };
-          alert(`로그인 성공! 환영합니다, ${response.user.name}님.`);
-          // TODO: 로그인 성공 처리 (토큰 저장, 페이지 이동 등)
+          const isValid = await verifyPin(pinStr);
+          if (isValid) {
+            alert('PIN 인증 성공!');
+            // TODO: PIN 검증 성공 후 원하는 동작 (예: 페이지 이동)
+            router.push('/loan-result');
+          } else {
+            alert('PIN이 올바르지 않습니다.');
+            setPin(Array(PIN_LENGTH).fill(''));
+          }
         } catch (error) {
-          alert('로그인 실패: PIN이 올바르지 않거나 오류가 발생했습니다.');
-          setPin(Array(PIN_LENGTH).fill('')); // PIN 초기화
+          console.error(error);
+          alert('오류가 발생했습니다.');
+          setPin(Array(PIN_LENGTH).fill(''));
         } finally {
           setLoading(false);
         }
       };
-      doLogin();
+      doVerify();
     }
-  }, [pin, memberId]);
+  }, [pin, router]);
 
   return (
     <Container>
-      <Title>간편 비밀번호 로그인</Title>
+      <Title>PIN 번호 검증</Title>
       <DotWrapper>
         {pin.map((digit, i) => (
           <Dot key={i} filled={digit !== ''} />
@@ -89,9 +94,21 @@ const PinLogin = () => {
             {num}
           </KeyButton>
         ))}
-        <KeyButton onClick={() => handleKeyClick('reset')} disabled={loading}>전체삭제</KeyButton>
-        <KeyButton onClick={() => handleKeyClick('0')} disabled={loading}>0</KeyButton>
-        <KeyButton onClick={() => handleKeyClick('del')} disabled={loading}>←</KeyButton>
+        <KeyButton onClick={() => handleKeyClick('reset')} disabled={loading}>
+          전체삭제
+        </KeyButton>
+        <KeyButton onClick={() => handleKeyClick('0')} disabled={loading}>
+          0
+        </KeyButton>
+        <KeyButton>
+          <Image
+            src={'/icons/deletePad.svg'}
+            onClick={() => handleKeyClick('del')}
+            alt="삭제하기"
+            width={27}
+            height={20}
+          />
+        </KeyButton>
       </KeypadWrapper>
     </Container>
   );

@@ -28,6 +28,11 @@ export const None = styled.div`
   height: 36px;
 `;
 
+export const RightNone = styled.div`
+  width: 36px;
+  height: 36px;
+`;
+
 export const HeaderTitle = styled.div`
   margin: 0 auto;
   ${typoStyleMap['title3']};

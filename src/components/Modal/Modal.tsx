@@ -7,7 +7,7 @@ import { AnimatePresence } from 'framer-motion';
 import { Overlay, Sheet, Handle } from './Modal.style';
 
 interface ModalProps {
-  type: 'PRE_APPLIED' | 'NONE_CREDIT';
+  type?: 'PRE_APPLIED' | 'NONE_CREDIT' | 'LOGOUT';
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;

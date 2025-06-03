@@ -4,6 +4,7 @@ import { ConsumptionType } from '@/stores/userStore';
 import { semanticColor } from '@/styles/colors';
 
 export interface BannerProps {
+  isWithReport?: boolean;
   type?: ConsumptionType;
   borderNone?: boolean;
 }

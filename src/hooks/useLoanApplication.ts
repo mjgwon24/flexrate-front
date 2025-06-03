@@ -37,7 +37,6 @@ export const usePostLoanApplication = (token: string) => {
     mutationFn: (data) => postLoanApplication(token, data),
 
     onSuccess: (data) => {
-      console.log('대출 신청 성공:', data);
       router.push('/loan-result');
     },
 

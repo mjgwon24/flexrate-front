@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
@@ -13,17 +13,25 @@ import {
   TableItemKey,
   TableItemValue,
   BtnContainer,
+  TitleContainer,
+  Title,
+  SubText,
+  ModalBtnContainer,
 } from '@/app/mypage/page.style';
 import Banner from '@/components/Banner/Banner';
 import Button from '@/components/Button/Button';
 import Header from '@/components/Header/Header';
 import { Container } from '@/components/loanApplicationFunnel/LoanApplicationFunnel.style';
+import Modal from '@/components/Modal/Modal';
 import { useInitUser } from '@/hooks/useInitUser';
+import { useLogout } from '@/hooks/useLogout';
 import type { User } from '@/stores/userStore';
 import { useUserStore } from '@/stores/userStore';
 
 const MyPage = () => {
   const router = useRouter();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const { mutate: logoutMutate } = useLogout();
 
   const handleClick = () => {
     router.push('/mypage/edit');
@@ -39,9 +47,18 @@ const MyPage = () => {
   useInitUser();
   const user: User | null = useUserStore((state) => state.user);
 
+  const handleLogout = () => {
+    logoutMutate();
+  };
+
   return (
     <Wrapper>
-      <Header type="마이페이지" backIcon={true} />
+      <Header
+        type="마이페이지"
+        backIcon={true}
+        isLoggedIn={!!user}
+        onLogoutClick={() => setIsLogoutModalOpen(true)}
+      />
 
       <Container>
         <MainContainer>
@@ -68,6 +85,16 @@ const MyPage = () => {
           <Button text="정보 변경하기" onClick={handleClick} />
         </BtnContainer>
       </Container>
+      <Modal type="LOGOUT" isOpen={isLogoutModalOpen} onClose={() => setIsLogoutModalOpen(false)}>
+        <TitleContainer>
+          <Title>로그아웃</Title>
+          <SubText>flexrate에서 로그아웃 하시겠어요?</SubText>
+        </TitleContainer>
+        <ModalBtnContainer>
+          <Button text="돌아가기" varient="TERTIARY" onClick={() => setIsLogoutModalOpen(false)} />
+          <Button text="로그아웃하기" varient="PRIMARY" onClick={handleLogout} />
+        </ModalBtnContainer>
+      </Modal>
     </Wrapper>
   );
 };

@@ -1,6 +1,7 @@
+import styled from '@emotion/styled';
+
 import { primitiveColor, semanticColor } from '@/styles/colors';
 import { typoStyleMap } from '@/styles/typos';
-import styled from '@emotion/styled';
 
 export const Wrapper = styled.div`
   display: flex;
@@ -64,7 +65,7 @@ export const SmallTag = styled.div`
 `;
 
 export const BgContainer = styled.div<{ color: string }>`
-  padding: 16px 22px;
+  padding: 16px 22px 30px 22px;
   background-color: ${({ color }) =>
     color === 'gray' ? primitiveColor.background.cardBg : semanticColor.bg.default};
 `;
@@ -116,6 +117,7 @@ export const FlexContainer = styled.div`
 `;
 
 export const Description = styled.div<{ type: string }>`
+  cursor: pointer;
   ${typoStyleMap['caption1_m']};
   color: ${({ type }) =>
     type === 'sub2' ? semanticColor.text.normal.sub2 : semanticColor.text.normal.sub3};
