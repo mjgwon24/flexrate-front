@@ -5,8 +5,14 @@ import React, { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 
 import { registerPin } from '@/apis/auth';
-
-import { Container, Dot, DotWrapper, KeyButton, KeypadWrapper, Title } from '../PinLogin.style';
+import {
+  Container,
+  Dot,
+  DotWrapper,
+  KeyButton,
+  KeypadWrapper,
+  Title,
+} from '@/components/signup/SignupPinForm/SignupPinForm.style';
 
 const PIN_LENGTH = 6;
 

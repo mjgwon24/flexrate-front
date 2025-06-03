@@ -101,7 +101,7 @@ const PinVerify = () => {
 
   return (
     <Container>
-      <Title>PIN 번호 검증</Title>
+      <Title>PIN 번호 입력</Title>
       <DotWrapper>
         {pin.map((digit, i) => (
           <Dot key={i} filled={digit !== ''} />
