@@ -7,7 +7,7 @@ import {
   Badge,
   SmallBadge,
 } from '@/components/NotificationBadge/NotificationBadge.style';
-import { NotificationBadgeProps } from '@/types/notification.badge.type';
+import { NotificationBadgeProps } from '@/types/notification.type';
 
 const NotificationBadge = ({ unreadCount, onClick, showCount = true }: NotificationBadgeProps) => {
   return (
