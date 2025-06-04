@@ -25,24 +25,27 @@ const LoginSelector = ({ onSelectFace, onSelectPassword }: LoginSelectorProps) =
   const router = useRouter();
 
   const handleSelectPin = async () => {
-    const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) {
-      alert('로그인이 필요합니다.');
-      router.push('/auth/login');
-      return;
-    }
 
-    try {
-      const data = await checkPinRegistered();
-      if (data) {
-        router.push('/pin/login');
-      } else {
-        router.push('/pin/register');
-      }
-    } catch (error) {
-      console.error('PIN 확인 실패:', error);
-      alert('오류가 발생했습니다.');
-    }
+    alert('간편 비밀번호 기능은 현재 개발 중입니다.');
+    
+    // const accessToken = localStorage.getItem('accessToken');
+    // if (!accessToken) {
+    //   alert('로그인이 필요합니다.');
+    //   router.push('/auth/login');
+    //   return;
+    // }
+
+    // try {
+    //   const data = await checkPinRegistered();
+    //   if (data) {
+    //     router.push('/pin/login');
+    //   } else {
+    //     router.push('/pin/register');
+    //   }
+    // } catch (error) {
+    //   console.error('PIN 확인 실패:', error);
+    //   alert('오류가 발생했습니다.');
+    // }
   };
 
   return (
