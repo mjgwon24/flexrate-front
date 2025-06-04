@@ -34,7 +34,7 @@ const Container = styled.div`
 
 const Title = styled.div`
   margin: 0px 0px 80px 0px;
-  ${typoStyleMap['title1']};
+  ${typoStyleMap['head1']};
   color: ${semanticColor.text.normal.primary};
 `;
 
