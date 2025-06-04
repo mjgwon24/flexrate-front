@@ -88,28 +88,27 @@ const SignupPinForm = ({ onComplete }: SignupPinFormProps) => {
         ))}
       </DotWrapper>
 
-      <KeypadWrapper>
-        {shuffledNumbers.map((num) => (
-          <KeyButton key={num} onClick={() => handleKeyClick(num.toString())} disabled={loading}>
-            {num}
-          </KeyButton>
-        ))}
-        <KeyButton onClick={() => handleKeyClick('reset')} disabled={loading} $isText={true}>
-          전체삭제
+    <KeypadWrapper>
+      {shuffledNumbers.map((num) => (
+        <KeyButton key={num} onClick={() => handleKeyClick(num.toString())} disabled={loading}>
+          {num}
         </KeyButton>
-        <KeyButton onClick={() => handleKeyClick('0')} disabled={loading}>
-          0
-        </KeyButton>
-        <KeyButton>
-          <Image
-            src={'/icons/deletePad.svg'}
-            onClick={() => handleKeyClick('del')}
-            alt="삭제하기"
-            width={27}
-            height={20}
-          />
-        </KeyButton>
-      </KeypadWrapper>
+      ))}
+      <KeyButton onClick={() => handleKeyClick('reset')} disabled={loading}>
+        전체삭제
+      </KeyButton>
+      <KeyButton onClick={() => handleKeyClick('0')} disabled={loading}>
+        0
+      </KeyButton>
+      <KeyButton onClick={() => handleKeyClick('del')} disabled={loading}>
+        <Image
+          src={'/icons/deletePad.svg'}
+          alt="삭제하기"
+          width={27}
+          height={20}
+        />
+      </KeyButton>
+    </KeypadWrapper>
     </Container>
   );
 };
