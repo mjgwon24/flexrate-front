@@ -23,7 +23,6 @@ const Header = () => {
         <LogoSmallText>Admin</LogoSmallText>
       </LogoContainer>
       <HeaderRightContainer>
-        <HomePageButton>FlexRate 홈페이지</HomePageButton>
         {user ? <EmailBox>{user?.email}</EmailBox> : <></>}
       </HeaderRightContainer>
     </HeaderWrapper>

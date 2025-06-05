@@ -14,7 +14,6 @@ export const useCreditScoreEvaluate = () => {
     },
     enabled: typeof window !== 'undefined',
     retry: 1,
-    staleTime: 1000 * 60 * 5,
   });
 };
 
@@ -29,7 +28,6 @@ export const useCreditScore = () => {
     },
     enabled: typeof window !== 'undefined',
     retry: 1,
-    staleTime: 1000 * 60 * 5,
   });
 };
 
