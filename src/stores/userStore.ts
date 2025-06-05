@@ -11,6 +11,7 @@ export type ConsumptionType = 'CONSERVATIVE' | 'BALANCED' | 'PRACTICAL' | 'CONSU
 
 export type User = {
   username: string;
+  role: 'MEMBER' | 'ADMIN';
   email: string;
   recentLoanStatus: LoanStatusType;
   hasCreditScore: boolean;
