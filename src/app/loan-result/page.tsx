@@ -62,7 +62,7 @@ const LoanResult = () => {
 
   return (
     <Wrapper>
-      <Header type="대출 신청" />
+      <Header type="대출 신청" isLoggedIn={!!user} />
       <Container>
         <TitleContainer>
           <Title>{title}</Title>

@@ -36,7 +36,7 @@ export const usePostLoanApplication = (token: string) => {
   return useMutation<LoanApplicationResponse, Error, LoanApplicationRequest>({
     mutationFn: (data) => postLoanApplication(token, data),
 
-    onSuccess: (data) => {
+    onSuccess: () => {
       router.push('/loan-result');
     },
 
