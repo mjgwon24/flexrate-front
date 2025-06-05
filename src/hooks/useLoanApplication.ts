@@ -52,7 +52,6 @@ export const useGetLoanApplication = (token: string) => {
     queryKey: ['loan-result', [token]],
     queryFn: () => getLoanApplication(token),
     enabled: !!token,
-    staleTime: 1000 * 60 * 5,
     retry: 1,
   });
 };
