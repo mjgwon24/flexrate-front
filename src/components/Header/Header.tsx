@@ -31,7 +31,7 @@ interface HeaderProps {
   onLogoutClick?: () => void;
 }
 
-const Header = ({ type, backIcon = false, isLoggedIn = false, onLogoutClick }: HeaderProps) => {
+const Header = ({ type, backIcon = false, isLoggedIn, onLogoutClick }: HeaderProps) => {
   const router = useRouter();
   const { unreadCount } = useUnreadNotificationCount();
   const notifications = () => router.push('/notifications');
@@ -89,7 +89,7 @@ const Header = ({ type, backIcon = false, isLoggedIn = false, onLogoutClick }: H
       );
     }
 
-    if (type === '소비 습관 리포트' && isLoggedIn) {
+    if ((type === '소비 습관 리포트' || type === '대출 신청') && isLoggedIn) {
       return <None />;
     }
 

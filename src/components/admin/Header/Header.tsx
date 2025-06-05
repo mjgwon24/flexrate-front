@@ -8,7 +8,6 @@ import {
   EmailBox,
   HeaderRightContainer,
   HeaderWrapper,
-  HomePageButton,
   LogoContainer,
   LogoSmallText,
 } from './Header.style';

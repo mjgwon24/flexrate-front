@@ -12,7 +12,7 @@ import {
 } from '@/components/creditEvaluationStep/AgreementCredit.style';
 import TextField from '@/components/TextField/TextField';
 import { useGetLoanReivewApplication } from '@/hooks/useLoanApplication';
-import { applicationAgreeSchema, applicationSchema } from '@/schemas/application.schema';
+import { applicationAgreeSchema } from '@/schemas/application.schema';
 import { formatNumberComma } from '@/utils/formatNumberComma';
 
 import { FunnelContextMap } from '../LoanApplicationFunnel';
