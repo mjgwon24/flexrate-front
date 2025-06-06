@@ -21,6 +21,8 @@ export type User = {
 };
 
 type UserStore = {
+  _hasHydrated: boolean;
+  setHasHydrated: (state: boolean) => void;
   user: User | null;
   setUser: (user: User | null) => void;
   clearUser: () => void;
@@ -32,6 +34,8 @@ type UserStore = {
 export const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
+      _hasHydrated: false,
+      setHasHydrated: (state) => set({ _hasHydrated: state }),
       user: null,
       setUser: (user) => set({ user }),
       clearUser: () => set({ user: null }),
@@ -39,6 +43,9 @@ export const useUserStore = create<UserStore>()(
     {
       name: 'user-storage',
       storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     }
   )
 );
