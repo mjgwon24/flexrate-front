@@ -4,15 +4,16 @@ import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
-import { checkPinRegistered } from '@/apis/auth';
 import BottomSheet from '@/components/BottomSheet/BottomSheet';
 
 import {
+  BottomSheetHeaderContainer,
   BtnContainer,
   BtnWrapper,
   Container,
   Question,
   SheetBtn,
+  SubText,
   Title,
 } from './LoginSelector.style';
 
@@ -25,9 +26,8 @@ const LoginSelector = ({ onSelectFace, onSelectPassword }: LoginSelectorProps) =
   const router = useRouter();
 
   const handleSelectPin = async () => {
-
     alert('간편 비밀번호 기능은 현재 개발 중입니다.');
-    
+
     // const accessToken = localStorage.getItem('accessToken');
     // if (!accessToken) {
     //   alert('로그인이 필요합니다.');
@@ -48,6 +48,10 @@ const LoginSelector = ({ onSelectFace, onSelectPassword }: LoginSelectorProps) =
     // }
   };
 
+  const handleGoSignup = () => {
+    router.push('/auth/signup');
+  };
+
   return (
     <Container>
       <Title>
@@ -56,7 +60,10 @@ const LoginSelector = ({ onSelectFace, onSelectPassword }: LoginSelectorProps) =
         로그인을 진행할게요
       </Title>
       <BottomSheet isOpen={true}>
-        <Question>어떤 방법으로 로그인할까요?</Question>
+        <BottomSheetHeaderContainer>
+          <Question>어떤 방법으로 로그인할까요?</Question>
+          <SubText onClick={handleGoSignup}>회원가입</SubText>
+        </BottomSheetHeaderContainer>
         <BtnWrapper>
           <SheetBtn onClick={handleSelectPin}>
             <BtnContainer>
