@@ -9,5 +9,5 @@ export const AdminWrapper = styled.div`
 
 export const AdminBody = styled.div`
   display: flex;
-  min-width: 1050px;
+  min-width: 1090px;
 `;
