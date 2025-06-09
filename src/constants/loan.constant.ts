@@ -32,7 +32,7 @@ export type EmploymentTypeEnum =
   | 'UNEMPLOYED'
   | 'ETC';
 
-export type ResidenceTypeEnum = 'OWN' | 'JEONSE' | 'MONTHLY' | 'NONE';
+export type ResidenceTypeEnum = 'OWN' | 'JEONSE' | 'MONTHLY' | 'NO_HOUSE';
 
 export type LoanPurposeEnum = 'LIVING' | 'BUSINESS' | 'CAR' | 'EDUCATION' | 'HOUSE' | 'ETC';
 
@@ -49,7 +49,7 @@ export const RESIDENT_TYPE_MAP: Record<RESIDENT_TYPE, ResidenceTypeEnum> = {
   자가: 'OWN',
   월세: 'MONTHLY',
   전세: 'JEONSE',
-  무주택: 'NONE',
+  무주택: 'NO_HOUSE',
 };
 
 export const PURPOSE_TYPE_MAP: Record<PURPOSE_TYPE, LoanPurposeEnum> = {
