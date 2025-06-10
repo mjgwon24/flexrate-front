@@ -65,7 +65,7 @@ const LoginSelector = ({ onSelectFace, onSelectPassword }: LoginSelectorProps) =
           <SubText onClick={handleGoSignup}>회원가입</SubText>
         </BottomSheetHeaderContainer>
         <BtnWrapper>
-          <SheetBtn onClick={handleSelectPin}>
+          {/* <SheetBtn onClick={handleSelectPin}>
             <BtnContainer>
               <Image src={'/imgs/lock.svg'} width={36} height={36} alt="간편 비밀번호" />
               간편 비밀번호
@@ -76,7 +76,7 @@ const LoginSelector = ({ onSelectFace, onSelectPassword }: LoginSelectorProps) =
               <Image src={'/icons/finger_36.svg'} width={36} height={36} alt="지문" />
               지문 인증
             </BtnContainer>
-          </SheetBtn>
+          </SheetBtn> */}
           <SheetBtn onClick={onSelectPassword}>
             <BtnContainer>
               <Image src={'/icons/webee_36.svg'} width={36} height={36} alt="일반 로그인" />
